@@ -1,5 +1,6 @@
 """The canary's pure parts (D51, D52): no network, no curl_cffi."""
 
+import datetime as dt
 import socket
 
 from agentdown import canary
@@ -38,6 +39,15 @@ def test_select_splits_daily_and_websites_deterministically(catalog: Catalog) ->
     assert all(canary.is_daily(s) for s in daily)
     assert canary.select(catalog, "daily") == daily  # same order every run
     assert len(canary.select(catalog, "daily", sample=1)) == 1
+
+
+def test_scheduled_rotates_every_website_once_per_cycle(catalog: Catalog) -> None:
+    start = dt.date(2026, 10, 1)
+    days = [canary.select(catalog, "scheduled", day=start + dt.timedelta(d)) for d in range(30)]
+    daily = {s.id for s in canary.select(catalog, "daily")}
+    assert all(daily <= {s.id for s in day} for day in days)  # the daily set every day
+    seen = [s.id for day in days for s in day if s.id not in daily]
+    assert sorted(seen) == sorted(s.id for s in canary.select(catalog, "websites"))  # each once
 
 
 def test_host_problem_refuses_private_addresses_and_names_dns_failures() -> None:

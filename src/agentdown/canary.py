@@ -7,6 +7,7 @@ transaction, refuses private and internal addresses, and makes at most one reque
 second per host. Without `--report` it's a dry run: results go to a JSONL file only.
 """
 
+import datetime as dt
 import hashlib
 import ipaddress
 import json
@@ -30,6 +31,8 @@ TIMEOUT = 20
 MAX_REDIRECTS = 5
 MAX_BODY = 512 * 1024
 HOST_GAP = 1.0  # seconds between requests to one host
+ROTATION_DAYS = 30  # each website-only service is checked once in this many days
+MAX_REPORTS = 90  # per run: at 72 s apart, that's under 2 hours and the job's time limit
 
 # Markers of a block or challenge page, by vendor. Checked on any response.
 CHALLENGE_MARKERS = [
@@ -84,10 +87,15 @@ def is_daily(service: Service) -> bool:
 
 
 def select(
-    catalog: Catalog, which: str, sample: int | None = None, slot: int = 0, slots: int = 1
+    catalog: Catalog, which: str, sample: int | None = None, day: dt.date | None = None
 ) -> list[Service]:
-    pool = [s for s in catalog.services if is_daily(s) == (which == "daily")]
-    pool = [s for s in pool if _order(s.id) % slots == slot]
+    """`daily`, `websites`, or `scheduled`: the daily set plus that day's share of websites,
+    so each website is checked about once every ROTATION_DAYS days."""
+    if which == "scheduled":
+        slot = (day or dt.datetime.now(dt.UTC).date()).toordinal() % ROTATION_DAYS
+        pool = [s for s in catalog.services if is_daily(s) or _order(s.id) % ROTATION_DAYS == slot]
+    else:
+        pool = [s for s in catalog.services if is_daily(s) == (which == "daily")]
     pool.sort(key=lambda s: _order(s.id))
     return pool[:sample] if sample else pool
 
@@ -172,8 +180,8 @@ class Fetcher:
     def request(self, method: str, url: str, variant: str = "declared", **kw: Any) -> Fetched:
         for _ in range(MAX_REDIRECTS + 1):
             host = urllib.parse.urlsplit(url).hostname or ""
-            if urllib.parse.urlsplit(url).scheme != "https":
-                return Fetched(None, error=f"refused: not https ({url[:80]})")
+            if urllib.parse.urlsplit(url).scheme not in ("http", "https"):
+                return Fetched(None, error=f"refused: not a web URL ({url[:80]})")
             problem = host_problem(host)
             if problem:
                 return Fetched(None, error=problem)
@@ -215,7 +223,8 @@ def check_site(fx: Fetcher, url: str, variants: Iterable[str]) -> list[tuple]:
                     rp = urllib.robotparser.RobotFileParser()
                     rp.parse(robots.body.decode("utf-8", "replace").splitlines())
                     if not rp.can_fetch(USER_AGENT, url):
-                        return False, "bot_block", 200, "robots.txt disallows our user-agent"
+                        # Honoured, not reported: an agent wouldn't be stopped by it (D75).
+                        return True, None, 200, "skipped: robots.txt disallows our user-agent"
             f = fx.request("GET", url, variant)
             ok, what, detail = classify_site(f)
             return ok, what, f.status, detail
@@ -324,7 +333,7 @@ def failures(results: list[Result]) -> dict[str, list[str]]:
 def report(fx: Fetcher, api: str, failed: dict[str, list[str]], gap: float) -> Counter:
     """POST each failure to the public API, paced to stay under the per-reporter limit."""
     codes: Counter = Counter()
-    for i, (path_id, what) in enumerate(sorted(failed.items())):
+    for i, (path_id, what) in enumerate(sorted(failed.items())[:MAX_REPORTS]):
         if i:
             time.sleep(gap)
         body = {"target": path_id, "what_failed": what, "agent_type": "notworking_canary"}
@@ -348,7 +357,8 @@ def run(
     fx = Fetcher(Pacer())
     start = time.monotonic()
     with ThreadPoolExecutor(workers) as pool:
-        nested = pool.map(lambda sp: check_path(fx, sp[0], sp[1], which == "daily"), jobs)
+        # The Chrome variant only for services with MCP servers or skills (politeness).
+        nested = pool.map(lambda sp: check_path(fx, sp[0], sp[1], is_daily(sp[0])), jobs)
         results = [r for rs in nested for r in rs]
     elapsed = time.monotonic() - start
     with open(out_path, "w", encoding="utf-8", newline="\n") as fh:

@@ -1,13 +1,15 @@
 name: Canary
 
 on:
+  schedule:
+    - cron: "17 3 * * *"  # daily: the daily set plus a thirtieth of the websites, reported
   workflow_dispatch:
     inputs:
       set:
         description: Which services to check
         type: choice
-        options: [daily, websites]
-        default: daily
+        options: [scheduled, daily, websites]
+        default: scheduled
       sample:
         description: Only the first N services (blank for all)
         default: ""
@@ -29,9 +31,9 @@ jobs:
       - run: uv sync --locked --no-dev --group canary
       - name: Check
         env:
-          SET: ${{ inputs.set }}
+          SET: ${{ inputs.set || 'scheduled' }}
           SAMPLE: ${{ inputs.sample }}
-          REPORT: ${{ inputs.report }}
+          REPORT: ${{ github.event_name == 'schedule' || inputs.report }}
         run: |
           args=(--set "$SET" --out canary-results.jsonl)
           if [ -n "$SAMPLE" ]; then args+=(--sample "$SAMPLE"); fi
@@ -40,6 +42,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: canary-${{ inputs.set }}-${{ github.run_id }}
+          name: canary-${{ inputs.set || 'scheduled' }}-${{ github.run_id }}
           path: canary-*.json*
           retention-days: 90
