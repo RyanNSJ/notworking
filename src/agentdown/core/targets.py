@@ -51,6 +51,15 @@ class ParsedTarget:
 
 
 def parse_target(raw: str, type_hint: str | None = None) -> ParsedTarget:
+    try:
+        return _parse_target(raw, type_hint)
+    except TargetError:
+        raise
+    except ValueError as e:  # urlsplit rejects things like "http://[abc"
+        raise TargetError("the target isn't a valid URL or id") from e
+
+
+def _parse_target(raw: str, type_hint: str | None) -> ParsedTarget:
     s = raw.strip()
     if not s:
         raise TargetError("target is empty")

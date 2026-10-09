@@ -134,7 +134,9 @@ def _validate(body: ReportIn, options: Options) -> list[dict[str, str]]:
     if body.type is not None and body.type not in options.target_type:
         bad("type", "unknown type")
     if body.outcome not in (None, "failed"):
-        bad("outcome", "only failures are reported; leave outcome out")
+        # Only this problem: listing what_failed too would invite turning it into a failure.
+        bad("outcome", "only failures are reported; don't send a report when it worked")
+        return problems
     if not body.what_failed:
         bad("what_failed", "required: one or more values saying how it failed")
     for v in body.what_failed or []:
@@ -222,6 +224,11 @@ def submit_report(
 def badge_status(state: AppState, target: str, type_: str | None = None) -> str:
     """The status a badge shows: the target's, or a service's most raised path (listed or not,
     D71). Anything that can't be resolved to one target shows `unknown`."""
+    service = state.catalog.by_id.get(target.strip().lower()) if type_ is None else None
+    if service is not None:  # a service id means the whole service, even if it's also a site
+        with state.engine.connect() as conn:
+            counts = store.path_counts(conn, [p.id for p in service.paths], state.clock.now())
+        return max((c.status for c in counts.values()), key=LEVELS.index)
     try:
         res = resolve(state.catalog, target, type_)
     except TargetError:

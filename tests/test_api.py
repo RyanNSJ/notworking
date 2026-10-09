@@ -8,9 +8,10 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from agentdown import jobs, store
+from agentdown.catalog import parse_catalog
 from agentdown.core.clock import FixedClock
 from agentdown.db import engine as db
-from agentdown.lookup import NOTICE, PLEASE_REPORT
+from agentdown.lookup import NOTICE, PLEASE_REPORT, resolve
 from agentdown.service import AppState
 from agentdown.stats import render_stats
 from tests.conftest import PUBLIC_URL
@@ -80,6 +81,36 @@ def test_not_listed_and_no_match(client: TestClient) -> None:
     assert r.status_code == 404 and r.json()["error"] == "not_found"
 
 
+def test_malformed_targets_are_422_not_500(client: TestClient) -> None:
+    assert status(client, "[x").status_code in (404, 422)
+    assert status(client, "http://[abc").status_code in (404, 422)
+    r = client.post("/v1/report", json={"target": "https://[example.com]/", **FAIL})
+    assert r.status_code == 422
+
+
+def test_listed_ids_keep_their_catalogue_type(client: TestClient, app: FastAPI) -> None:
+    """A wrong type hint can't create a second row for a listed path (review finding)."""
+    r = client.post("/v1/report", json={"target": "xyz.com/booking", "type": "mcp", **FAIL})
+    assert r.status_code == 202 and r.json()["you_asked_about"]["type"] == "route"
+    with app.state.engine.connect() as conn:
+        types = conn.execute(
+            sa.text("SELECT type FROM targets WHERE target_id = 'xyz.com/booking'")
+        ).scalars()
+        assert list(types) == ["route"]
+
+
+def test_a_url_on_a_service_domain_can_be_reported() -> None:
+    """D71: brave.com is a service id that lists only search.brave.com; a report on a URL at
+    brave.com itself is an unlisted site, not 'that's a service' (review finding)."""
+    catalog = parse_catalog(
+        "version: 1\nservices:\n  - id: brave.com\n    name: Brave Search\n    paths:\n"
+        "      - id: search.brave.com\n        type: route\n        description: Search pages.\n"
+    )
+    res = resolve(catalog, "https://brave.com/download", by_name=False)
+    assert res.kind == "not_listed" and res.asked == ("site", "brave.com")
+    assert resolve(catalog, "https://brave.com/download").kind == "service"  # a lookup
+
+
 def test_bad_type_param(client: TestClient) -> None:
     r = status(client, "xyz.com", type="website")
     assert r.status_code == 422
@@ -106,10 +137,8 @@ def test_only_failures_are_reported(client: TestClient) -> None:
     body = {"target": "xyz.com", "what_failed": ["captcha"]}
     assert client.post("/v1/report", json=body).status_code == 202  # outcome isn't needed
     r = client.post("/v1/report", json={"target": "xyz.com", "outcome": "success"})
-    assert r.status_code == 422 and {p["field"] for p in r.json()["problems"]} == {
-        "outcome",
-        "what_failed",
-    }
+    # Only the outcome problem: listing what_failed too would invite a false failure.
+    assert r.status_code == 422 and {p["field"] for p in r.json()["problems"]} == {"outcome"}
 
 
 def test_counts_expire_after_the_window(client: TestClient, clock: FixedClock) -> None:

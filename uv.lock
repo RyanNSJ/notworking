@@ -33,11 +33,11 @@ requires-dist = [
     { name = "alembic", specifier = ">=1.14" },
     { name = "fastapi", specifier = ">=0.115" },
     { name = "jinja2", specifier = ">=3.1" },
-    { name = "mcp", specifier = ">=1.20" },
+    { name = "mcp", specifier = ">=2.3" },
     { name = "pydantic-settings", specifier = ">=2.6" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "sqlalchemy", specifier = ">=2.0" },
-    { name = "tldextract", specifier = ">=5.1" },
+    { name = "tldextract", specifier = ">=5.3" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.32" },
 ]
 

@@ -46,9 +46,10 @@ def resolve(
     """
     text = raw.strip()
     exact = text if catalog.is_listed(text) else text.lower()
-    if catalog.is_listed(exact) and type_hint in (None, catalog.path_types[exact]):
+    # A listed id always keeps its catalogue type, whatever type the caller hinted.
+    if catalog.is_listed(exact):
         return _for_path(catalog, (catalog.path_types[exact], exact))
-    if exact in catalog.by_id and type_hint is None:
+    if exact in catalog.by_id and type_hint is None and by_name:
         return Resolution("service", service=catalog.by_id[exact])
     try:
         parsed = parse_target(text, "site" if type_hint == "route" else type_hint)
@@ -63,8 +64,10 @@ def resolve(
         return Resolution("no_match", reason=str(e))
     asked = catalog.canonical(parsed)
     if catalog.is_listed(asked[1]):
-        return _for_path(catalog, asked)
-    if asked[0] == "site" and asked[1] in catalog.by_id:
+        return _for_path(catalog, (catalog.path_types[asked[1]], asked[1]))
+    # A lookup on a service's own domain shows the service; a report on it is an unlisted site
+    # (D71), so the agent can always report the URL it used.
+    if asked[0] == "site" and asked[1] in catalog.by_id and by_name:
         return Resolution("service", service=catalog.by_id[asked[1]])
     return Resolution("not_listed", asked=asked)
 

@@ -107,8 +107,15 @@ def build_mcp(state: AppState) -> tuple[MCPServer, Starlette]:
         ctx: Context,
         target: Annotated[str, Field(description="The access-path id (or URL) you used")],
         what_failed: Annotated[
-            list[WhatFailed] | None,  # pyright: ignore[reportInvalidTypeForm]
-            Field(description="Required: how it failed, one or more values"),
+            list[WhatFailed],  # pyright: ignore[reportInvalidTypeForm]
+            Field(description="How it failed: one or more values", min_length=1),
+        ],
+        type: Annotated[  # noqa: A002 - matches the HTTP API parameter
+            TargetType | None,  # pyright: ignore[reportInvalidTypeForm]
+            Field(
+                description="Optional: site, route, mcp or skill. Use mcp for an MCP server "
+                "that isn't in the catalogue, since its name can look like a domain"
+            ),
         ] = None,
         country: Annotated[
             str | None, Field(description="Optional ISO-3166 alpha-2 country code, like SG")
@@ -127,7 +134,8 @@ def build_mcp(state: AppState) -> tuple[MCPServer, Starlette]:
     ) -> dict[str, Any]:
         body = ReportIn(
             target=target,
-            what_failed=list(what_failed) if what_failed else None,
+            type=type,
+            what_failed=list(what_failed),
             country=country,
             agent_type=agent_type,
             note=note,

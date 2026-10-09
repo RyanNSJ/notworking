@@ -91,9 +91,10 @@ def test_report_via_mcp(client: TestClient, migrated_db_url: str, app: FastAPI) 
 def test_mcp_validation_errors_are_reported(client: TestClient) -> None:
     result = call(client, "report", target="xyz.com", what_failed=["broken"])
     assert result.get("isError") is True
-    missing = call(client, "report", target="xyz.com")["structuredContent"]
-    assert missing["error"] == "invalid_request"
-    assert {p["field"] for p in missing["problems"]} == {"what_failed"}
+    assert call(client, "report", target="xyz.com").get("isError") is True  # required in schema
+    tools = {t["name"]: t for t in rpc(client, "tools/list")["result"]["tools"]}
+    assert "what_failed" in tools["report"]["inputSchema"]["required"]
+    assert "type" in tools["report"]["inputSchema"]["properties"]
 
 
 # ---- discoverability -------------------------------------------------------------

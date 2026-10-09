@@ -16,7 +16,7 @@ from pathlib import Path
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, Response
 from fastapi.templating import Jinja2Templates
-from markupsafe import Markup
+from markupsafe import Markup, escape
 
 from agentdown import detector, publish, store
 from agentdown.catalog import AccessPath, Service
@@ -29,7 +29,7 @@ templates = Jinja2Templates(directory=Path(__file__).parent.parent / "site" / "t
 PAGE_CACHE = {"Cache-Control": "public, max-age=60"}
 BOARD_SIZE = 10
 SEARCH_LIMIT = 50
-LOOKUP_SPAN = dt.timedelta(days=7)
+LOOKUP_DAYS = 7
 
 STATUS_LABEL = {NONE: "no issues", ISSUES: "issues", MANY: "many issues"}
 STATUS_CLASS = {NONE: "ok", ISSUES: "warn", MANY: "bad"}
@@ -68,7 +68,7 @@ def strip_svg(buckets: list[int], status: str, *, height: int, label: str) -> Ma
         )
     return Markup(
         f'<svg class="strip" viewBox="0 0 {width} {height}" preserveAspectRatio="none" '
-        f'role="img" aria-label="{label}">{"".join(bars)}</svg>'
+        f'role="img" aria-label="{escape(label)}">{"".join(bars)}</svg>'
     )
 
 
@@ -80,7 +80,6 @@ def _rows(
     with state.engine.connect() as conn:
         counts = store.path_counts(conn, ids, now)
         days = store.day_activity(conn, ids, now)
-        lookups = store.service_lookups(conn, now.date() - LOOKUP_SPAN)
     rows = []
     for s in services:
         paths = [PathRow(p, counts[p.id], days[p.id]) for p in s.paths]
@@ -88,7 +87,7 @@ def _rows(
         buckets = [sum(r.day.buckets[i] for r in paths) for i in range(DAY_BUCKETS)]
         active = [r for r in paths if r.day.total]
         top = max(active, key=lambda r: (r.day.total, r.path.id)) if active else None
-        rows.append(ServiceRow(s, paths, status, buckets, sum(buckets), top, lookups.get(s.id, 0)))
+        rows.append(ServiceRow(s, paths, status, buckets, sum(buckets), top))
     return rows
 
 
@@ -126,7 +125,13 @@ def _page(request: Request, name: str, **context: object) -> HTMLResponse:
 @router.get("/")
 def home(request: Request) -> HTMLResponse:
     state: AppState = request.app.state
-    rows = ranked(_rows(state, state.clock.now()))
+    now = state.clock.now()
+    rows = _rows(state, now)
+    with state.engine.connect() as conn:  # the last LOOKUP_DAYS days, today included
+        lookups = store.service_lookups(conn, now.date() - dt.timedelta(days=LOOKUP_DAYS - 1))
+    for r in rows:
+        r.lookups_7d = lookups.get(r.service.id, 0)
+    rows = ranked(rows)
     return _page(
         request,
         "home.html",

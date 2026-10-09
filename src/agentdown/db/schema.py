@@ -28,6 +28,7 @@ targets = sa.Table(
     sa.Column("listed", sa.Boolean, nullable=False, server_default=sa.false()),
     sa.Column("created_at", UTCDateTime, nullable=False),
     sa.UniqueConstraint("type", "target_id"),
+    sa.Index(None, "target_id"),  # status and page queries look paths up by id alone
 )
 
 reports = sa.Table(

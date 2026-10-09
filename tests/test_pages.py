@@ -78,8 +78,8 @@ def test_notes_never_appear_on_pages(client: TestClient) -> None:
 
 
 def test_badges(client: TestClient, client_from: Callable[[str], TestClient], app: FastAPI) -> None:
-    def badge(target: str) -> str:
-        r = client.get("/v1/badge", params={"target": target})
+    def badge(target: str, **params: str) -> str:
+        r = client.get("/v1/badge", params={"target": target, **params})
         assert r.headers["content-type"] == "image/svg+xml"
         return r.text
 
@@ -89,7 +89,9 @@ def test_badges(client: TestClient, client_from: Callable[[str], TestClient], ap
     spike(client_from, app, "clawhub:abc/xyz-booking")
     assert "issues reported" in badge("clawhub:abc/xyz-booking")
     assert "issues reported" in badge("XYZ Booking")  # a service shows its most raised path
-    assert "no reported issues" in badge("xyz.com")  # the site path itself is quiet
+    assert "issues reported" in badge("xyz.com")  # the service id means the whole service
+    assert "no reported issues" in badge("xyz.com", type="site")  # the site path is quiet
+    assert ">unknown<" in badge("http://[abc")  # malformed, not a 500
 
 
 def _luminance(hex_color: str) -> float:
