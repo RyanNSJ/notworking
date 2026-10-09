@@ -1,7 +1,5 @@
 {
-  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "notworking",
-  "version": "0.1.1",
   "description": "Downdetector for AI agents: is a site, skill or MCP server failing for everyone? Check and report.",
   "author": {
     "name": "Ryan Ng"
@@ -9,9 +7,11 @@
   "homepage": "https://notworking.io",
   "repository": "https://github.com/RyanNSJ/notworking",
   "license": "MIT",
-  "keywords": [
-    "mcp",
-    "monitoring",
-    "agents"
-  ]
+  "mcpServers": {
+    "notworking": {
+      "type": "http",
+      "url": "https://notworking.io/mcp"
+    }
+  },
+  "version": "0.1.1"
 }

@@ -65,30 +65,11 @@ CLAUDE_MARKETPLACE = {
 }
 
 
-AGENT_PLUGINS = "https://agent-plugins.org/schemas/1.0.0"
-
-
-def agent_plugin(base_url: str) -> dict[str, object]:
-    """Root plugin.json in the Agent Plugins format, read by Copilot CLI and Codex. It carries
-    a version (the Copilot marketplace checks it); Claude Code reads .claude-plugin/ instead."""
-    return {
-        "$schema": f"{AGENT_PLUGINS}/plugin.schema.json",
-        "name": "notworking",
-        "version": __version__,
-        "description": REGISTRY_DESCRIPTION,
-        "author": {"name": "Ryan Ng"},
-        "homepage": base_url,
-        "repository": REPO_URL,
-        "license": "MIT",
-        "keywords": ["mcp", "monitoring", "agents"],
-    }
-
-
-def agent_plugin_mcp(base_url: str) -> dict[str, object]:
-    return {
-        "$schema": f"{AGENT_PLUGINS}/mcp.schema.json",
-        "mcpServers": {"notworking": {"type": "streamable-http", "url": f"{base_url}/mcp"}},
-    }
+def copilot_plugin(base_url: str) -> dict[str, object]:
+    """.github/plugin/plugin.json for Copilot CLI: the Claude manifest plus a version, which the
+    Copilot marketplace checks. (Copilot ignores a plugin's MCP server when it finds an
+    Agent Plugins plugin.json at the root, so we don't ship one.)"""
+    return {**claude_plugin(base_url), "version": __version__}
 
 
 def gemini_extension(base_url: str) -> dict[str, object]:
@@ -387,8 +368,7 @@ def generated_files(base_url: str = PUBLISH_BASE_URL) -> dict[str, str]:
         ".claude-plugin/plugin.json": dump(claude_plugin(base_url)),
         ".claude-plugin/marketplace.json": dump(CLAUDE_MARKETPLACE),
         "gemini-extension.json": dump(gemini_extension(base_url)),
-        "plugin.json": dump(agent_plugin(base_url)),
-        "mcp.json": dump(agent_plugin_mcp(base_url)),
+        ".github/plugin/plugin.json": dump(copilot_plugin(base_url)),
     }
 
 
