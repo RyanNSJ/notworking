@@ -29,6 +29,7 @@
   {%- else -%}
     No unusual number of reports about {{ row.service.name }} right now.
   {%- endif %} {{ row.total_24h }} failure report{{ "s" if row.total_24h != 1 }} in the last 24 hours.
+  {%- if row.checks_today %} Agents checked it {{ row.checks_today }} time{{ "s" if row.checks_today != 1 }} today.{% endif %}
 </p>
 <section class="chart" aria-labelledby="chart-title">
   <h2 id="chart-title">Failure reports per 15 minutes, all access paths</h2>

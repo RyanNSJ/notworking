@@ -51,6 +51,7 @@ class ServiceRow:
     total_24h: int
     top_path: PathRow | None  # the path with the most reports in 24h, if any
     lookups_7d: int = 0
+    checks_today: int = 0  # status lookups today (UTC): context only, never a status
 
 
 def strip_svg(buckets: list[int], status: str, *, height: int, label: str) -> Markup:
@@ -80,6 +81,7 @@ def _rows(
     with state.engine.connect() as conn:
         counts = store.path_counts(conn, ids, now)
         days = store.day_activity(conn, ids, now)
+        checks = store.service_lookups(conn, now.date())
     rows = []
     for s in services:
         paths = [PathRow(p, counts[p.id], days[p.id]) for p in s.paths]
@@ -87,7 +89,11 @@ def _rows(
         buckets = [sum(r.day.buckets[i] for r in paths) for i in range(DAY_BUCKETS)]
         active = [r for r in paths if r.day.total]
         top = max(active, key=lambda r: (r.day.total, r.path.id)) if active else None
-        rows.append(ServiceRow(s, paths, status, buckets, sum(buckets), top))
+        rows.append(
+            ServiceRow(
+                s, paths, status, buckets, sum(buckets), top, checks_today=checks.get(s.id, 0)
+            )
+        )
     return rows
 
 

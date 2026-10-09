@@ -167,3 +167,11 @@ def test_services_lists_reported_first(
     assert board_names(html) == ["Other Net"]  # charted: reported in the last 24h
     rest = re.findall(r'<li><a href="/service/[^"]+">([^<]+)</a>', html)
     assert rest == ["Example Org", "XYZ Booking"]
+
+
+def test_checks_today_are_shown_as_context(client: TestClient) -> None:
+    for _ in range(2):
+        client.get("/v1/status", params={"target": "xyz.com"})
+    assert "2 checks today" in client.get("/").text
+    assert "Agents checked it 2 times today." in client.get("/service/xyz.com").text
+    assert "check" not in client.get("/service/other.net").text.split("<main>")[1].split("<h2")[0]
