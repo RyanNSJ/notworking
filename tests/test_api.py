@@ -297,8 +297,11 @@ def test_usage_counters_and_stats(
     assert counts[("report", "xyz.com")] == 1
     assert ("lookup_service", "popular-unlisted.com") not in counts  # reports aren't lookups
     assert "Reports per lookup: 5.50" in out
-    assert "not-listed.com" in out
     assert "site:popular-unlisted.com" in out
+    unlisted = out.split("Unlisted targets agents used")[1].split("\n\n")[0].splitlines()
+    assert "       10         10        10        0  site:popular-unlisted.com" in unlisted
+    assert "        0          0         0        1  not-listed.com" in unlisted
+    assert not any("unparseable" in line or line.endswith(" xyz.com") for line in unlisted)
 
 
 def test_an_mcp_endpoint_url_finds_its_service(client: TestClient) -> None:
