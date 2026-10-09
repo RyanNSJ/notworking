@@ -17,7 +17,11 @@ def test_classify_site_maps_responses_to_what_failed() -> None:
     assert c(403) == (False, "bot_block")
     assert c(429) == (False, "bot_block")
     assert c(503, b"<title>Just a moment...</title>") == (False, "bot_block")
-    assert c(200, b"<script src='/cdn-cgi/challenge-platform/x'></script>") == (False, "bot_block")
+    assert c(200, b"<script>window._cf_chl_opt={}</script>") == (False, "bot_block")
+    # Cloudflare's background script on an ordinary page isn't a block (found in a real run).
+    assert c(
+        200, b"<title>Moz</title><script src='/cdn-cgi/challenge-platform/scripts/jsd/main.js'>"
+    ) == (True, None)
     assert c(200, b"", {"cf-mitigated": "challenge"}) == (False, "bot_block")
     assert c(403, b"captcha-delivery.com ... g-recaptcha") == (False, "captcha")
     assert c(404) == (False, "specific_page")
@@ -36,19 +40,19 @@ def test_select_splits_daily_and_websites_deterministically(catalog: Catalog) ->
     assert len(canary.select(catalog, "daily", sample=1)) == 1
 
 
-def test_public_host_refuses_private_and_internal_addresses() -> None:
+def test_host_problem_refuses_private_addresses_and_names_dns_failures() -> None:
     def fake(ips):
         return lambda host, port: [(socket.AF_INET, 0, 0, "", (ip, 0)) for ip in ips]
 
-    assert canary.public_host("ok", fake(["93.184.216.34"]))
+    assert canary.host_problem("ok", fake(["93.184.216.34"])) is None
     for ip in ["127.0.0.1", "10.0.0.5", "169.254.169.254", "192.168.1.1", "::1"]:
-        assert not canary.public_host("x", fake([ip])), ip
-    assert not canary.public_host("mixed", fake(["93.184.216.34", "10.0.0.1"]))
+        assert "private" in (canary.host_problem("x", fake([ip])) or ""), ip
+    assert canary.host_problem("mixed", fake(["93.184.216.34", "10.0.0.1"]))
 
     def boom(host, port):
         raise OSError("no such host")
 
-    assert not canary.public_host("nope", boom)
+    assert canary.host_problem("nope", boom) == "DNS lookup failed for nope"
 
 
 def test_failures_groups_one_report_per_path() -> None:

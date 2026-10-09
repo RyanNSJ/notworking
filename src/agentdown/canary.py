@@ -33,7 +33,8 @@ HOST_GAP = 1.0  # seconds between requests to one host
 
 # Markers of a block or challenge page, by vendor. Checked on any response.
 CHALLENGE_MARKERS = [
-    ("cloudflare", b"/cdn-cgi/challenge-platform"),
+    # Not "/cdn-cgi/challenge-platform": Cloudflare adds that script to ordinary pages too.
+    ("cloudflare", b"_cf_chl_opt"),
     ("cloudflare", b"Just a moment..."),
     ("cloudflare", b"Attention Required! | Cloudflare"),
     ("datadome", b"captcha-delivery.com"),
@@ -94,14 +95,15 @@ def select(
 # ---- safety and politeness -----------------------------------------------------
 
 
-def public_host(host: str, resolve: Callable[..., Any] = socket.getaddrinfo) -> bool:
-    """True only if every address the host resolves to is a public one."""
+def host_problem(host: str, resolve: Callable[..., Any] = socket.getaddrinfo) -> str | None:
+    """Why the canary won't connect to a host, or None if every address it has is public."""
     try:
-        infos = resolve(host, None)
+        addrs = {info[4][0] for info in resolve(host, None)}
     except OSError:
-        return False
-    addrs = {info[4][0] for info in infos}
-    return bool(addrs) and all(ipaddress.ip_address(a.split("%")[0]).is_global for a in addrs)
+        return f"DNS lookup failed for {host}"
+    if not addrs or not all(ipaddress.ip_address(a.split("%")[0]).is_global for a in addrs):
+        return f"refused: {host} resolves to a private or internal address"
+    return None
 
 
 class Pacer:
@@ -170,8 +172,11 @@ class Fetcher:
     def request(self, method: str, url: str, variant: str = "declared", **kw: Any) -> Fetched:
         for _ in range(MAX_REDIRECTS + 1):
             host = urllib.parse.urlsplit(url).hostname or ""
-            if urllib.parse.urlsplit(url).scheme != "https" or not public_host(host):
-                return Fetched(None, error=f"refused: {host or url} isn't a public https host")
+            if urllib.parse.urlsplit(url).scheme != "https":
+                return Fetched(None, error=f"refused: not https ({url[:80]})")
+            problem = host_problem(host)
+            if problem:
+                return Fetched(None, error=problem)
             self._pacer.wait(host)
             try:
                 r = self._session(variant).request(
