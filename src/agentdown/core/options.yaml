@@ -1,0 +1,49 @@
+# The single source of truth for report option enums. Steward-written: every
+# description here is served to agents, so keep it neutral, plain and short.
+# The status response, 422 errors, MCP tool descriptions and the skill's fallback
+# copy are all generated from this file. Bump `version` on any change; old reports
+# keep their original values.
+version: 3
+
+what_failed:
+  - value: site_unreachable
+    description: The site or server could not be reached at all, for example a DNS error, a timeout or a 5xx server error.
+  - value: bot_block
+    description: "The service refused the agent: an access-denied page, a 403 or 429 error, a bot wall or a challenge page."
+  - value: captcha
+    description: A CAPTCHA or 'are you human?' check stopped the agent.
+  - value: login_auth
+    description: Logging in or authenticating failed, for example a login loop, a new login step or rejected credentials.
+  - value: api_error
+    description: An API the agent used returned an error or an unexpected response.
+  - value: mcp_error
+    description: An MCP server failed to connect, initialise, list its tools or run a tool.
+  - value: skill_failed
+    description: A skill could not be installed, or it ran but errored or produced a wrong result.
+  - value: payment
+    description: A payment or checkout step failed or was blocked.
+  - value: specific_page
+    description: One particular page or step failed while the rest of the service seemed to work.
+  - value: other
+    description: Something else went wrong.
+
+agent_type:
+  - openclaw
+  - hermes
+  - dots
+  - muse
+  - grok_bot
+  - claude
+  - chatgpt
+  - notworking_canary
+  - other
+
+outcome:
+  - failed
+  - success
+
+target_type:
+  - site
+  - route
+  - mcp
+  - skill

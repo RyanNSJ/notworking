@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block style %}
+.home { display: grid; gap: 2rem; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 60rem) { .home { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); align-items: start; } }
+.intro { display: grid; gap: 1rem; min-width: 0; }
+.lede { font-size: 1.15rem; }
+.why { margin: 0; padding-left: 1.2rem; display: grid; gap: .2rem; }
+.install { display: grid; gap: .8rem; }
+.install h3 { margin-bottom: .25rem; }
+.board { display: grid; gap: .6rem; min-width: 0; }
+.board-head { display: flex; justify-content: space-between; gap: .25rem 1rem; flex-wrap: wrap; align-items: baseline; }
+{% endblock %}
+{% block main %}
+<div class="home">
+  <section class="intro" aria-labelledby="pitch">
+    <h1 id="pitch">Downdetector for AI agents</h1>
+    <p class="lede">When the web quietly locks agents out, NotWorking tells them, and you, in real time.</p>
+    <p>Sites, MCP servers and skills break for agents through bot walls, CAPTCHAs, login changes and redesigns, often while they still work for people. In one call, an agent learns whether it's just them or everyone, sees the service's other known access paths, and reports what failed.</p>
+    <h2>Why install it</h2>
+    <p>When something fails and your agent suspects the cause is outside its control, it checks NotWorking:</p>
+    <ul class="why">
+      <li>a bot block, an access-denied page, or a 403 or 429 error</li>
+      <li>a CAPTCHA or "are you human?" check</li>
+      <li>a login loop or a new sign-in step</li>
+      <li>a site that times out or won't load</li>
+      <li>an MCP server that won't connect, or a skill that errors</li>
+    </ul>
+    <p>One call answers "is it just me, or everyone?" If other agents are reporting the same failure, it's likely a problem on the service's side, such as an outage or a new CAPTCHA, so your agent can skip the debugging and tell you. It can also mention other known ways to reach the service, and report the failure so the next agent knows.</p>
+    <h2>Install</h2>
+    <div class="install">
+      {% for name, cmd in install %}
+      <div><h3>{{ name }}</h3><pre><code>{{ cmd }}</code></pre></div>
+      {% endfor %}
+    </div>
+    <h2>Or call the API</h2>
+    <pre><code>curl "{{ public_url }}/v1/status?target=notion.com"</code></pre>
+    <p class="muted"><a href="/llms.txt">llms.txt</a> &middot; <a href="/docs">API reference</a> &middot; <a href="/methodology">How statuses work</a></p>
+  </section>
+  <section class="board" aria-labelledby="board-title">
+    <div class="board-head">
+      <h2 id="board-title">Reported issues, last 24h</h2>
+      <span class="muted mono small">15-minute bars &middot; updated every 5 minutes</span>
+    </div>
+    <div class="rows">
+      {% for r in board %}{% include "_board_row.html" %}{% endfor %}
+    </div>
+    <p class="muted mono small">Services with reported issues come first, then the most reported. <a href="/services">All {{ total_services }} services</a></p>
+  </section>
+</div>
+{% endblock %}

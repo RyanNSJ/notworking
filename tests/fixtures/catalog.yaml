@@ -1,0 +1,41 @@
+version: 1
+services:
+  - id: xyz.com
+    name: XYZ Booking
+    aliases: [xyz, XYZ  booking]
+    paths:
+      - id: xyz.com
+        url: https://www.xyz.com/
+        description: The XYZ website, used directly in a browser.
+      - id: xyz.com/booking
+        type: route
+        description: The XYZ booking pages.
+      - id: login.xyz.com
+        type: route
+        description: XYZ's sign-in pages on their own subdomain.
+      - id: clawhub:abc/xyz-booking
+        description: ClawHub skill by abc. Books tables on the XYZ website using browser automation.
+      - id: clawhub:def/xyz
+        description: ClawHub skill by def. Uses XYZ's partner API.
+        no_longer_working_since: 2026-09-01
+      - id: io.github.xyz/booking-mcp
+        type: mcp
+        description: XYZ's MCP server for bookings.
+
+  - id: example.org
+    name: Example Org
+    aliases: [shared name]
+    paths:
+      - id: example.org
+        description: The Example Org website.
+      - id: clawhub:shared/browser
+        description: A general-purpose browser skill.
+
+  - id: other.net
+    name: Other Net
+    aliases: [shared name]
+    paths:
+      - id: other.net
+        description: The Other Net website.
+      - id: clawhub:shared/browser
+        description: A general-purpose browser skill.

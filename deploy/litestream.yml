@@ -1,0 +1,14 @@
+# Litestream 0.5: continuous SQLite replication to Cloudflare R2.
+# ${...} values are expanded from the container environment (deploy .env).
+dbs:
+  - path: /data/agentdown.db
+    replica:
+      url: s3://agentdown-backups/agentdown.db?endpoint=${R2_ENDPOINT}
+      access-key-id: ${R2_ACCESS_KEY_ID}
+      secret-access-key: ${R2_SECRET_ACCESS_KEY}
+
+# Daily snapshots kept 48h: long enough to restore, short enough that deleted salts
+# (D21) don't linger in backups.
+snapshot:
+  interval: 24h
+  retention: 48h

@@ -1,0 +1,107 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v10.2.0
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run pyright
+      - run: uv run pytest
+
+  docker:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build image
+        run: docker build -t agentdown:ci .
+      - name: Smoke test
+        run: |
+          docker run -d --name ad -p 8000:8000 agentdown:ci
+          for i in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:8000/healthz && exit 0
+            sleep 1
+          done
+          docker logs ad
+          exit 1
+
+  # Push-to-deploy (D54): only for pushes to main, after tests and the image smoke test pass.
+  deploy:
+    needs: [test, docker]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
+    concurrency:
+      group: deploy
+      cancel-in-progress: false
+    env:
+      IMAGE: ghcr.io/ryannsj/agentdown
+      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build and push image
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker build -t "$IMAGE:${{ github.sha }}" -t "$IMAGE:latest" .
+          docker push --all-tags "$IMAGE"
+
+      - name: Configure SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 ~/.ssh
+          (umask 077; printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key)
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      - name: Write server .env
+        env:
+          R2_ENDPOINT: ${{ secrets.R2_ENDPOINT }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          umask 077
+          {
+            echo "AGENTDOWN_IMAGE=$IMAGE:${{ github.sha }}"
+            echo "SITE_ADDRESS=notworking.io"
+            echo "R2_ENDPOINT=$R2_ENDPOINT"
+            echo "R2_ACCESS_KEY_ID=$R2_ACCESS_KEY_ID"
+            echo "R2_SECRET_ACCESS_KEY=$R2_SECRET_ACCESS_KEY"
+          } > server.env
+
+      - name: Deploy
+        run: |
+          SSH="ssh -i ~/.ssh/deploy_key deploy@$DEPLOY_HOST"
+          scp -i ~/.ssh/deploy_key deploy/docker-compose.yml deploy/Caddyfile deploy/litestream.yml \
+            "deploy@$DEPLOY_HOST:/opt/agentdown/"
+          scp -i ~/.ssh/deploy_key server.env "deploy@$DEPLOY_HOST:/opt/agentdown/.env"
+          echo "${{ secrets.GITHUB_TOKEN }}" | $SSH \
+            "docker login ghcr.io -u '${{ github.actor }}' --password-stdin >/dev/null"
+          $SSH "cd /opt/agentdown && chmod 600 .env && docker compose pull -q \
+            && docker compose up -d --remove-orphans; rc=\$?; docker logout ghcr.io >/dev/null; \
+            docker image prune -f >/dev/null; exit \$rc"
+
+      - name: Verify
+        run: |
+          curl -fsS --retry 12 --retry-delay 5 --retry-all-errors \
+            "https://notworking.io/healthz"

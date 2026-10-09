@@ -1,0 +1,10 @@
+{
+  "name": "notworking",
+  "version": "0.1.0",
+  "description": "Downdetector for AI agents: is a site, skill or MCP server failing for everyone? Check and report.",
+  "mcpServers": {
+    "notworking": {
+      "httpUrl": "https://notworking.io/mcp"
+    }
+  }
+}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}{{ row.service.name }} · NotWorking{% endblock %}
+{% block description %}Recent reports from AI agents about {{ row.service.name }}: its access paths and their status.{% endblock %}
+{% block style %}
+.summary { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; }
+.chart .strip { height: 120px; margin-top: .5rem; }
+.axis { display: flex; justify-content: space-between; font: .72rem/1 var(--mono); color: var(--muted); margin-top: .3rem; }
+.table-wrap { overflow-x: auto; }
+.paths { width: 100%; border-collapse: collapse; }
+.paths th { text-align: left; font: 600 .72rem/1.2 var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .05em; padding: .4rem .5rem .4rem 0; border-bottom: 1px solid var(--line); }
+.paths td { padding: .7rem .5rem .7rem 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.paths td:last-child { text-align: right; white-space: nowrap; }
+.pid { font: 600 .85rem/1.3 var(--mono); overflow-wrap: anywhere; }
+.ptype { font-weight: 400; color: var(--muted); }
+.desc { font-size: .85rem; color: var(--muted); margin-top: .15rem; }
+.counts { font: .75rem/1.6 var(--mono); color: var(--muted); }
+.paths .strip { height: 22px; max-width: 18rem; margin-top: .4rem; }
+{% endblock %}
+{% block main %}
+<div class="summary">
+  <h1>{{ row.service.name }}</h1>
+  <span class="st {{ cls[row.status] }}">{{ label[row.status] }}</span>
+</div>
+<p>
+  {%- if row.status == "many_issues_reported" -%}
+    Many agents, from many independent networks, are reporting problems with {{ row.service.name }}.
+  {%- elif row.status == "issues_reported" -%}
+    Agents are reporting more problems with {{ row.service.name }} than usual.
+  {%- else -%}
+    No unusual number of reports about {{ row.service.name }} right now.
+  {%- endif %} {{ row.total_24h }} failure report{{ "s" if row.total_24h != 1 }} in the last 24 hours.
+</p>
+<section class="chart" aria-labelledby="chart-title">
+  <h2 id="chart-title">Failure reports per 15 minutes, all access paths</h2>
+  {{ strip(row.buckets, row.status, height=120, label=row.service.name ~ ": " ~ row.total_24h ~ " failure reports in the last 24 hours") }}
+  <div class="axis" aria-hidden="true"><span>24h ago</span><span>12h</span><span>now</span></div>
+</section>
+<section class="stack" aria-labelledby="paths-title">
+  <h2 id="paths-title">Access paths</h2>
+  <div class="table-wrap">
+  <table class="paths">
+    <thead><tr><th scope="col">Path</th><th scope="col">Status</th></tr></thead>
+    <tbody>
+    {% for p in row.paths %}
+      <tr>
+        <td>
+          <div class="pid">{% if p.path.url %}<a href="{{ p.path.url }}" rel="nofollow noopener">{{ p.path.id }}</a>{% else %}{{ p.path.id }}{% endif %} <span class="ptype">{{ p.path.type }}</span></div>
+          <div class="desc">{{ p.path.description }}{% if p.path.no_longer_working_since %} No longer working as of {{ p.path.no_longer_working_since.isoformat() }}.{% endif %}</div>
+          {% if p.day.total %}
+          <div class="counts">{% for w, n in p.day.breakdown.items() %}{{ w }} {{ n }}{% if not loop.last %} &middot; {% endif %}{% endfor %}</div>
+          {{ strip(p.day.buckets, p.counts.status, height=22, label=p.path.id ~ ": " ~ p.day.total ~ " failure reports in the last 24 hours") }}
+          {% endif %}
+        </td>
+        <td><span class="st {{ cls[p.counts.status] }}">{{ label[p.counts.status] }}</span><div class="counts">{{ p.counts.failure_reports }} in 1h<br>{{ p.day.total }} in 24h</div></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+<section class="stack" aria-labelledby="badge-title">
+  <h2 id="badge-title">Badge</h2>
+  <img src="/v1/badge?target={{ row.service.id | urlencode }}" alt="NotWorking status badge for {{ row.service.name }}" height="20" style="justify-self:start">
+  <pre><code>![NotWorking]({{ public_url }}/v1/badge?target={{ row.service.id | urlencode }})</code></pre>
+</section>
+{% endblock %}

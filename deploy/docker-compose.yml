@@ -1,0 +1,80 @@
+# Production stack on the VM, in /opt/agentdown. The deploy job copies this file,
+# Caddyfile and litestream.yml there and writes .env (image tag, site address, R2 keys).
+name: agentdown
+
+# Cap container logs so they can't fill the disk.
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: "3"
+
+x-litestream: &litestream
+  image: litestream/litestream:0.5.17
+  logging: *logging
+  user: "10001:10001" # same uid as the app, so both can write the DB files
+  env_file: .env
+  volumes:
+    - data:/data
+    - ./litestream.yml:/etc/litestream.yml:ro
+
+services:
+  # One-off: make the data volume writable by the app's non-root user.
+  init:
+    image: ${AGENTDOWN_IMAGE}
+    user: "0"
+    entrypoint: ["chown", "-R", "10001:10001", "/data"]
+    volumes:
+      - data:/data
+
+  # One-off: on a fresh VM, restore the DB from R2 before the app starts.
+  restore:
+    <<: *litestream
+    command: ["restore", "-if-db-not-exists", "-if-replica-exists", "/data/agentdown.db"]
+    depends_on:
+      init:
+        condition: service_completed_successfully
+
+  app:
+    image: ${AGENTDOWN_IMAGE}
+    restart: unless-stopped
+    logging: *logging
+    environment:
+      AGENTDOWN_PUBLIC_URL: https://${SITE_ADDRESS}
+      # Only Caddy can reach the app (its port isn't published), so trust its X-Forwarded-For.
+      AGENTDOWN_FORWARDED_ALLOW_IPS: "*"
+    volumes:
+      - data:/data
+    depends_on:
+      restore:
+        condition: service_completed_successfully
+
+  # Continuous replication of every DB change to R2.
+  litestream:
+    <<: *litestream
+    command: ["replicate"]
+    restart: unless-stopped
+    depends_on:
+      - app
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    logging: *logging
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      SITE_ADDRESS: ${SITE_ADDRESS}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+
+volumes:
+  data:
+  caddy_data:
+  caddy_config:

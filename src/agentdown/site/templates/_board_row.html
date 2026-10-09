@@ -1,0 +1,14 @@
+<div class="row">
+  <div>
+    <a class="row-name" href="/service/{{ r.service.id }}">{{ r.service.name }}</a>
+    <div class="row-sub">
+      {%- if r.top_path -%}
+        {{ r.top_path.path.id }}{% for w in r.top_path.day.breakdown %}{% if loop.first %} &middot; {{ w }}{% endif %}{% endfor %} &middot; {{ r.total_24h }} in 24h
+      {%- else -%}
+        {{ r.paths | length }} access path{{ "s" if r.paths | length != 1 }} &middot; no reports
+      {%- endif -%}
+    </div>
+  </div>
+  <span class="st {{ cls[r.status] }}">{{ label[r.status] }}</span>
+  {{ strip(r.buckets, r.status, height=34, label=r.service.name ~ ": " ~ r.total_24h ~ " failure reports in the last 24 hours") }}
+</div>

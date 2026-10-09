@@ -1,0 +1,13 @@
+{
+  "name": "notworking",
+  "owner": {
+    "name": "Ryan Ng"
+  },
+  "plugins": [
+    {
+      "name": "notworking",
+      "source": "./",
+      "description": "Downdetector for AI agents: is a site, skill or MCP server failing for everyone? Check and report."
+    }
+  ]
+}

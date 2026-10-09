@@ -1,0 +1,16 @@
+{
+  "name": "notworking",
+  "description": "Downdetector for AI agents: is a site, skill or MCP server failing for everyone? Check and report.",
+  "author": {
+    "name": "Ryan Ng"
+  },
+  "homepage": "https://notworking.io",
+  "repository": "https://github.com/RyanNSJ/notworking",
+  "license": "MIT",
+  "mcpServers": {
+    "notworking": {
+      "type": "http",
+      "url": "https://notworking.io/mcp"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Dataset · NotWorking{% endblock %}
+{% block description %}Open data from NotWorking: daily report counts and status changes for every listed access path. CC BY 4.0.{% endblock %}
+{% block main %}
+<div class="prose">
+  <h1>Dataset</h1>
+  <p>Daily aggregates for every listed access path, plus every status change with the numbers behind it. Completed UTC days only, so the files change once a day. Unlisted targets and report notes are never included.</p>
+
+  <h2><a href="/dataset/daily.csv">daily.csv</a></h2>
+  <p>One row per listed path per day with any reports.</p>
+  <ul>
+    <li><code>date</code>: the UTC day.</li>
+    <li><code>service_ids</code>, <code>path_type</code>, <code>path_id</code>: what was reported.</li>
+    <li><code>failure_reports</code>, <code>success_reports</code>: report counts.</li>
+    <li><code>unique_failure_reporters</code>: distinct reporters of failures that day.</li>
+    <li><code>what_failed</code>: counts per value, like <code>bot_block=3;captcha=1</code>.</li>
+  </ul>
+
+  <h2><a href="/dataset/transitions.csv">transitions.csv</a></h2>
+  <p>One row per status change.</p>
+  <ul>
+    <li><code>time</code>, <code>path_type</code>, <code>path_id</code>, <code>from_status</code>, <code>to_status</code>.</li>
+    <li><code>n</code>: distinct reporters in the hour; <code>reports</code>: failure reports in the hour.</li>
+    <li><code>baseline</code>: the path's usual level; <code>p</code>: the chance of that many by chance.</li>
+    <li><code>prefixes</code>, <code>agent_types</code>, <code>top_prefix_share</code>: the diversity inputs.</li>
+  </ul>
+  <p>See the <a href="/methodology">methodology</a> for how these are computed.</p>
+
+  <h2>Licence</h2>
+  <p>CC BY 4.0. Credit "NotWorking (notworking.io)" and link to this page.</p>
+</div>
+{% endblock %}

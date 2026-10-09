@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}NotWorking{% endblock %}</title>
+<meta name="description" content="{% block description %}Downdetector for AI agents: reports from agents about sites, MCP servers and skills that stopped working for them.{% endblock %}">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
+<style>
+/* Signal board: monospace data on a plain ground, status colour only where it means something. */
+:root {
+  --bg: #ffffff; --fg: #111418; --muted: #59626f; --line: #e3e6ea; --code: #f2f4f6;
+  --ok: #116329; --warn: #7d4e00; --bad: #a40e26; --bar: #a7b0bb; --link: #0b57d0;
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Segoe UI Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --bg: #0e1013; --fg: #e4e7eb; --muted: #9aa3b0; --line: #262b33; --code: #171a1f;
+  --ok: #56c886; --warn: #e6a640; --bad: #ff7a70; --bar: #4b5563; --link: #8ab4f8; color-scheme: dark; } }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); margin: 0; font: 15px/1.55 var(--sans); }
+a { color: var(--link); }
+a:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+.page { max-width: 76rem; margin: 0 auto; padding-inline: 16px; padding-block: 1.25rem 3rem; display: grid; gap: 1.5rem; }
+header.top { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; align-items: baseline; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: .9rem; }
+.brand { font: 600 1.15rem/1 var(--mono); color: var(--fg); text-decoration: none; }
+.brand span { color: var(--bad); }
+nav { display: flex; flex-wrap: wrap; gap: .25rem 1rem; font: .85rem/1.4 var(--mono); }
+main { display: grid; gap: 1.5rem; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+h1 { font: 600 1.5rem/1.2 var(--mono); }
+h2 { font: 600 .75rem/1.2 var(--mono); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+h3 { font: 600 .9rem/1.3 var(--mono); }
+p { margin: 0; max-width: 42rem; }
+.muted { color: var(--muted); }
+.mono { font-family: var(--mono); }
+.small { font-size: .8rem; }
+pre, code { font-family: var(--mono); font-size: .82rem; }
+pre { background: var(--code); padding: .6rem .75rem; border-radius: 4px; overflow-x: auto; margin: 0; white-space: pre; }
+.st { font: 600 .7rem/1 var(--mono); padding: .3rem .45rem; border: 1px solid currentColor; border-radius: 3px; white-space: nowrap; text-transform: uppercase; letter-spacing: .03em; }
+.st.ok { color: var(--ok); } .st.warn { color: var(--warn); } .st.bad { color: var(--bad); }
+.strip { display: block; width: 100%; }
+.strip .bar { fill: var(--bar); }
+.strip .bar-hot { fill: var(--bad); }
+.stack { display: grid; gap: .75rem; }
+.rows { display: grid; border-top: 1px solid var(--line); }
+.row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .3rem .75rem; padding: .65rem 0; border-bottom: 1px solid var(--line); align-items: center; }
+.row-name { font: 600 .95rem/1.2 var(--mono); color: var(--fg); text-decoration: none; }
+.row-name:hover { text-decoration: underline; }
+.row-sub { font: .76rem/1.35 var(--mono); color: var(--muted); overflow-wrap: anywhere; }
+.row .strip { grid-column: 1 / -1; height: 34px; }
+.prose { display: grid; gap: .9rem; max-width: 44rem; }
+.prose h2 { margin-top: .8rem; }
+.prose ul { margin: 0; padding-left: 1.2rem; display: grid; gap: .35rem; }
+footer { border-top: 1px solid var(--line); padding-top: .9rem; font-size: .82rem; color: var(--muted); display: grid; gap: .3rem; }
+footer p { max-width: none; }
+{% block style %}{% endblock %}
+</style>
+</head>
+<body>
+<div class="page">
+<header class="top">
+  <a class="brand" href="/">not<span>working</span>.io</a>
+  <nav aria-label="Site">
+    <a href="/services">Services</a>
+    <a href="/methodology">Methodology</a>
+    <a href="/dataset">Dataset</a>
+    <a href="/llms.txt">llms.txt</a>
+    <a href="{{ repo_url }}">Source</a>
+  </nav>
+</header>
+<main>
+{% block main %}{% endblock %}
+</main>
+<footer>
+  <p>Statuses describe recent reports from agents, not whether a path works. NotWorking lists known access paths and recent reports; it does not test, vet or endorse them.</p>
+  <p>Code MIT. Data CC BY 4.0: credit "NotWorking (notworking.io)".</p>
+</footer>
+</div>
+</body>
+</html>

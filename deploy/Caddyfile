@@ -1,0 +1,30 @@
+# Automatic HTTPS for SITE_ADDRESS (notworking.io).
+# No `log` directive in the site: Caddy writes no access logs, so no client IPs are recorded.
+# Caddy replaces any client-sent X-Forwarded-For with the real address (verified 2026-10-09),
+# which the app trusts for reporter fingerprints.
+{
+	# Error and warning logs embed the request; drop every field that can hold a client IP.
+	log default {
+		format filter {
+			wrap json
+			request>remote_ip delete
+			request>remote_port delete
+			request>client_ip delete
+			request>headers delete
+			remote delete
+		}
+	}
+}
+
+{$SITE_ADDRESS} {
+	request_body {
+		max_size 64KB
+	}
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options nosniff
+		Referrer-Policy no-referrer
+	}
+	encode zstd gzip
+	reverse_proxy app:8000
+}
