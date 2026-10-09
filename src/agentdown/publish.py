@@ -18,15 +18,17 @@ REGISTRY_NAME = "io.notworking/notworking"
 REPO_URL = "https://github.com/RyanNSJ/notworking"
 REGISTRY_SCHEMA = "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json"
 
+# The one long description, used wherever a page or listing describes NotWorking.
 DESCRIPTION = (
-    "Downdetector for AI agents: check if a site, skill or MCP server is failing for everyone, "
-    "see its other access paths, and report failures."
+    "When a site, MCP server or skill fails for an agent, NotWorking says in one call whether "
+    "other agents are reporting the same problem, lists the service's other known access "
+    "paths, and takes anonymous failure reports."
 )
 
 
 # The MCP Registry caps description at 100 characters (schema 2025-12-11).
 REGISTRY_DESCRIPTION = (
-    "Downdetector for AI agents: is a site, skill or MCP server failing for everyone? "
+    "Downdetector for AI agents: is a site, MCP server or skill failing for everyone? "
     "Check and report."
 )
 
@@ -84,7 +86,7 @@ def gemini_extension(base_url: str) -> dict[str, object]:
 
 
 def options_json() -> dict[str, object]:
-    """The skill's fallback copy of the report options, for when the API is unreachable."""
+    """The skill's fallback copy of the what_failed values, for when the API is unreachable."""
     options = load_options()
     return {
         "version": options.version,
@@ -96,9 +98,9 @@ def options_json() -> dict[str, object]:
 
 LLMS_TEMPLATE = """# NotWorking
 
-> Downdetector for AI agents. When a website, URL route, skill or MCP server fails for an \
-agent, NotWorking says whether other agents are reporting the same problem, lists the \
-service's other known access paths, and takes anonymous reports.
+> Downdetector for AI agents. When a site, URL route, MCP server or skill fails for an \
+agent, NotWorking says in one call whether other agents are reporting the same problem, lists \
+the service's other known access paths, and takes anonymous failure reports.
 
 Statuses describe recent reports from agents, not whether a path works. NotWorking lists known \
 access paths and recent reports; it does not test, vet or endorse them.
@@ -228,7 +230,7 @@ def install_commands(base_url: str) -> list[tuple[str, str]]:
 
 SKILL_TEMPLATE = """---
 name: notworking
-description: Check whether a website, URL, skill or MCP server that just failed is failing \
+description: Check whether a site, URL, MCP server or skill that just failed is failing \
 for other AI agents too, see the service's other known access paths, and report the failure. \
 Use right after an external service fails in a way that looks like it isn't your fault - a \
 fetch that's blocked or errors, a bot block, CAPTCHA, 403 or 429 error, login loop, timeout, \
@@ -237,8 +239,9 @@ MCP connection error or skill error - before trying workarounds.
 
 # NotWorking
 
-NotWorking is a Downdetector for AI agents. It answers "is it just me?" from reports by other \
-agents, lists the other known ways to reach the same service, and takes anonymous reports.
+NotWorking is Downdetector for AI agents. When a site, URL route, MCP server or skill fails \
+for you, it says in one call whether other agents are reporting the same problem, lists the \
+service's other known access paths, and takes anonymous failure reports.
 
 Base URL: {base_url}
 MCP server (streamable HTTP, tools `check_status` and `report`): {base_url}/mcp
@@ -248,7 +251,7 @@ HTTP calls below. They take the same fields.
 
 ## When to use it
 
-Use it as soon as a website, URL route, skill or MCP server fails in a way that looks \
+Use it as soon as a site, URL route, MCP server or skill fails in a way that looks \
 external, before trying workarounds like other URLs, feeds or tools. One check tells you \
 whether other agents see the same problem, which saves debugging something you can't fix:
 - a fetch that's blocked or returns an error, a bot block, access-denied page, 403 or 429 \
@@ -291,9 +294,9 @@ last hour. Example, trimmed:
 ```
 
 `status` is one of:
-- `no_reported_issues`: no unusual number of reports
-- `issues_reported`: reports well above the usual level
-- `many_issues_reported`: many reports from many independent agents
+- `no_reported_issues`: no unusual number of failure reports in the last hour
+- `issues_reported`: well above that path's usual level
+- `many_issues_reported`: many reports from many independent agents and networks
 
 If the target isn't in the catalogue, the response has `listed: false`: you still get its \
 counts and status, but no description or other access paths.

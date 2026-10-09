@@ -1,8 +1,8 @@
 # NotWorking design
 
-NotWorking is Downdetector for AI agents. When a website, URL route, MCP server or skill fails
-for an agent, one call tells it whether other agents are reporting the same problem, lists the
-service's other known access paths, and takes an anonymous report. This page summarises how it
+NotWorking is Downdetector for AI agents. When a site, URL route, MCP server or skill fails
+for an agent, NotWorking says in one call whether other agents are reporting the same problem,
+lists the service's other known access paths, and takes anonymous failure reports. This page summarises how it
 works and the decisions the code refers to (the `D` numbers in comments).
 
 ## The surface
@@ -46,7 +46,7 @@ Pushes to `main` deploy automatically after CI passes. See `CLAUDE.md` for the c
 | D27 | Report notes are scrubbed and stored, and never shown to agents or on pages. |
 | D34 | The MCP server: streamable HTTP at `/mcp`, tools `check_status` and `report`, with option values generated into the tool descriptions. |
 | D42 | Human pages are server-rendered, with inline SVG charts and a basic search on the services page. |
-| D43 | The skill is published on ClawHub and skills.sh, with a bundled fallback copy of the report options. |
+| D43 | The skill is published on ClawHub and skills.sh, with a bundled fallback copy of the what_failed values. |
 | D46 | Discoverability: the MCP Registry, a server card at `/mcp/server-card`, `llms.txt`, OpenAPI and the skill hubs. |
 | D47 | `target` accepts anything (a URL, an access-path id, a name); the server infers the type and normalises it. |
 | D48 | The badge: a flat SVG, `notworking \| <status>`, with colours that meet WCAG AA. |
@@ -55,7 +55,7 @@ Pushes to `main` deploy automatically after CI passes. See `CLAUDE.md` for the c
 | D55 | The catalogue (`catalog/services.yaml`) lists services, their access paths, descriptions and aliases. A target in it is listed. |
 | D56 | Statuses are about recent reports; we never claim a path works or doesn't. |
 | D57 | Rate limits: one report per reporter per target per 10 minutes, and 60 per reporter per hour. Over that, 429 with `Retry-After`. |
-| D58 | The service view: looking up any path returns the whole service, every access path with its status and counts, the report options and a request to report. |
+| D58 | The service view: looking up any path returns the whole service, every access path with its status and counts, the what_failed values and a request to report. |
 | D59 | Agent-facing text is written by stewards and reviewed. Descriptions say what a path is, in at most 200 characters, and never tell an agent to use it. |
 | D60 | Access paths are listed alphabetically, never ranked. Stewards can mark a path as no longer working since a date. |
 | D61 | Lookups match exactly after normalising first, then by service name or alias. |

@@ -22,7 +22,7 @@
   <p>Statuses are recalculated every 5 minutes. They rise straight away, and fall back only after {{ d.CALM_RUNS_TO_STEP_DOWN }} calm checks in a row ({{ d.CALM_RUNS_TO_STEP_DOWN * 5 }} minutes), so they don't flicker. Every change is logged with the numbers behind it and published in the <a href="/dataset">dataset</a>.</p>
 
   <h2>Who reports</h2>
-  <p>Any agent can report, through the API, the MCP server or the skill. Reports are anonymous. Our own canary, a daily check of every listed path run from a cloud data centre, will report the same way, as an ordinary reporter with no extra weight; its reports are marked <code>notworking_canary</code> in the data.</p>
+  <p>Any agent can report, through the API, the MCP server or the skill. Reports are anonymous. Our own canary also checks listed services from a cloud data centre: services with MCP servers or skills every day, and every other service about once a month. It reports failures the same way, as an ordinary reporter with no extra weight, and honours <code>robots.txt</code>. Its reports are marked <code>notworking_canary</code> in the data.</p>
 
   <h2>What we store</h2>
   <ul>

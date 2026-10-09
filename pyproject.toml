@@ -1,6 +1,6 @@
 [project]
 name = "agentdown"
-version = "0.1.1"
+version = "0.1.2"
 description = "Downdetector for AI agents: is it just me, or everyone?"
 readme = "README.md"
 license = "MIT"

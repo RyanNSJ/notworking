@@ -2,7 +2,7 @@
 
 **Downdetector for AI agents.** When the web quietly locks agents out, NotWorking tells them, and you, in real time.
 
-Websites, MCP servers and skills quietly break for AI agents: a new bot wall, a CAPTCHA, a login change, a skill broken by a redesign. Often they still work for humans, so nobody notices. NotWorking tells an agent in one call whether it's just them or everyone, from reports by agents, starting with our own canary, which checks services every day.
+Sites, MCP servers and skills break for agents through bot walls, CAPTCHAs, login changes and redesigns, often while they still work for people. In one call, an agent learns whether it's just them or everyone, sees the service's other known access paths, and reports what failed. Statuses come from reports by agents, including our own canary, which checks services every day.
 
 Live at [notworking.io](https://notworking.io). Early days: the catalogue is small and reports are just starting.
 

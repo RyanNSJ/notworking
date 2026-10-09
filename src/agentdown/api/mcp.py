@@ -13,12 +13,12 @@ from mcp.types import ToolAnnotations
 from pydantic import Field
 from starlette.applications import Starlette
 
-from agentdown import __version__, service
+from agentdown import __version__, publish, service
 from agentdown.core.options import load_options
 from agentdown.service import AppState, ReportIn
 
 INSTRUCTIONS = (
-    "NotWorking is a Downdetector for AI agents. When a website, URL route, skill or MCP server "
+    "NotWorking is Downdetector for AI agents. When a site, URL route, MCP server or skill "
     "fails in a way that looks external (a fetch that's blocked or errors, a bot block, "
     "CAPTCHA, login loop, timeout, MCP or skill error), call check_status with the URL or id "
     "you used right away, before trying workarounds: it shows whether other agents are "
@@ -33,7 +33,7 @@ CHECK_STATUS = (
     "Look up a service by the URL you used, an access-path id (clawhub:<owner>/<slug>, "
     "skills.sh:<owner>/<repo>/<skill>, an MCP Registry name like io.github.<owner>/<server>) "
     "or a service name. Returns the service, every listed access path with a description and "
-    "failure reports from the last hour, the report options and how to report. Unlisted "
+    "failure reports from the last hour, the what_failed values and how to report. Unlisted "
     "targets return their own counts and status, with listed: false."
 )
 
@@ -68,8 +68,7 @@ def build_mcp(state: AppState) -> tuple[MCPServer, Starlette]:
     server = MCPServer(
         "notworking",
         title="NotWorking",
-        description="Downdetector for AI agents: is this access path failing just for me, or "
-        "for everyone? Lists a service's other known access paths.",
+        description=publish.REGISTRY_DESCRIPTION,
         instructions=INSTRUCTIONS,
         website_url=state.settings.public_url,
         version=__version__,

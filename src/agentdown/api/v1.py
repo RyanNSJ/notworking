@@ -17,9 +17,9 @@ def _send(result: Result) -> JSONResponse:
     "/status",
     summary="Is it just me? Look up a service and its access paths",
     description="Pass the URL, access-path id or service name that failed. Returns the service, "
-    "every listed access path with recent failure-report counts, the report options with "
-    "descriptions, and how to report. Targets not in the catalogue return their own counts and "
-    "status with `listed: false`.",
+    "every listed access path with failure reports from the last hour, the what_failed values "
+    "with descriptions, and how to report. Targets not in the catalogue return their own counts "
+    "and status with `listed: false`.",
 )
 def get_status(
     request: Request,

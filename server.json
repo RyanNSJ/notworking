@@ -2,12 +2,12 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.notworking/notworking",
   "title": "NotWorking",
-  "description": "Downdetector for AI agents: is a site, skill or MCP server failing for everyone? Check and report.",
+  "description": "Downdetector for AI agents: is a site, MCP server or skill failing for everyone? Check and report.",
   "repository": {
     "url": "https://github.com/RyanNSJ/notworking",
     "source": "github"
   },
-  "version": "0.1.1",
+  "version": "0.1.2",
   "websiteUrl": "https://notworking.io",
   "remotes": [
     {

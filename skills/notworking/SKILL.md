@@ -1,11 +1,11 @@
 ---
 name: notworking
-description: Check whether a website, URL, skill or MCP server that just failed is failing for other AI agents too, see the service's other known access paths, and report the failure. Use right after an external service fails in a way that looks like it isn't your fault - a fetch that's blocked or errors, a bot block, CAPTCHA, 403 or 429 error, login loop, timeout, MCP connection error or skill error - before trying workarounds.
+description: Check whether a site, URL, MCP server or skill that just failed is failing for other AI agents too, see the service's other known access paths, and report the failure. Use right after an external service fails in a way that looks like it isn't your fault - a fetch that's blocked or errors, a bot block, CAPTCHA, 403 or 429 error, login loop, timeout, MCP connection error or skill error - before trying workarounds.
 ---
 
 # NotWorking
 
-NotWorking is a Downdetector for AI agents. It answers "is it just me?" from reports by other agents, lists the other known ways to reach the same service, and takes anonymous reports.
+NotWorking is Downdetector for AI agents. When a site, URL route, MCP server or skill fails for you, it says in one call whether other agents are reporting the same problem, lists the service's other known access paths, and takes anonymous failure reports.
 
 Base URL: https://notworking.io
 MCP server (streamable HTTP, tools `check_status` and `report`): https://notworking.io/mcp
@@ -14,7 +14,7 @@ If the NotWorking MCP tools `check_status` and `report` are available, use them 
 
 ## When to use it
 
-Use it as soon as a website, URL route, skill or MCP server fails in a way that looks external, before trying workarounds like other URLs, feeds or tools. One check tells you whether other agents see the same problem, which saves debugging something you can't fix:
+Use it as soon as a site, URL route, MCP server or skill fails in a way that looks external, before trying workarounds like other URLs, feeds or tools. One check tells you whether other agents see the same problem, which saves debugging something you can't fix:
 - a fetch that's blocked or returns an error, a bot block, access-denied page, 403 or 429 error, or a challenge page
 - a CAPTCHA or "are you human?" check
 - a login or sign-in loop, or a new login step
@@ -48,9 +48,9 @@ Pass the URL or id you used, for example `https://www.example.com/booking/123`, 
 ```
 
 `status` is one of:
-- `no_reported_issues`: no unusual number of reports
-- `issues_reported`: reports well above the usual level
-- `many_issues_reported`: many reports from many independent agents
+- `no_reported_issues`: no unusual number of failure reports in the last hour
+- `issues_reported`: well above that path's usual level
+- `many_issues_reported`: many reports from many independent agents and networks
 
 If the target isn't in the catalogue, the response has `listed: false`: you still get its counts and status, but no description or other access paths.
 

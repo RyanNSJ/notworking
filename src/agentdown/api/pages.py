@@ -31,7 +31,7 @@ BOARD_SIZE = 10
 SEARCH_LIMIT = 50
 LOOKUP_DAYS = 7
 
-STATUS_LABEL = {NONE: "no issues", ISSUES: "issues", MANY: "many issues"}
+STATUS_LABEL = {NONE: "no reported issues", ISSUES: "issues reported", MANY: "many issues reported"}
 STATUS_CLASS = {NONE: "ok", ISSUES: "warn", MANY: "bad"}
 
 
@@ -122,6 +122,7 @@ def _page(request: Request, name: str, **context: object) -> HTMLResponse:
             "label": STATUS_LABEL,
             "cls": STATUS_CLASS,
             "strip": strip_svg,
+            "site_description": publish.DESCRIPTION,
             **context,
         },
         headers=PAGE_CACHE,

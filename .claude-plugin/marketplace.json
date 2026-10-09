@@ -7,7 +7,7 @@
     {
       "name": "notworking",
       "source": "./",
-      "description": "Downdetector for AI agents: is a site, skill or MCP server failing for everyone? Check and report."
+      "description": "Downdetector for AI agents: is a site, MCP server or skill failing for everyone? Check and report."
     }
   ]
 }
