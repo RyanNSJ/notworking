@@ -12,6 +12,7 @@ EXPECTED_TABLES = {
     "status_transitions",
     "salts",
     "usage_daily",
+    "checks_hourly",
     "alembic_version",
 }
 

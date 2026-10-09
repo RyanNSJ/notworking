@@ -14,6 +14,7 @@ from sqlalchemy.engine import Connection
 
 from agentdown.catalog import Catalog
 from agentdown.db.schema import (
+    checks_hourly,
     reports,
     salts,
     status_current,
@@ -27,6 +28,7 @@ PER_TARGET_GAP = dt.timedelta(minutes=10)  # D57
 PER_REPORTER_HOURLY = 60  # D57
 MISS_SUBJECTS_PER_DAY = 1000  # beyond this, lookup misses count under one subject
 OVER_CAP = "(over daily cap)"
+CHECKS_KEPT = dt.timedelta(days=8)
 
 
 def utc(value: dt.datetime) -> dt.datetime:
@@ -361,15 +363,38 @@ def listed_transitions(conn: Connection, before: dt.datetime) -> list[sa.Row]:
     )
 
 
-def usage_totals(conn: Connection, since: dt.date) -> dict[str, int]:
-    """Counts per event since `since` (D64 counters), for the site-wide counter."""
-    total = sa.func.sum(usage_daily.c.count)
-    rows = conn.execute(
-        sa.select(usage_daily.c.event, total)
-        .where(usage_daily.c.day >= since)
-        .group_by(usage_daily.c.event)
-    ).all()
-    return {event: int(n) for event, n in rows}
+def _hour(t: dt.datetime) -> dt.datetime:
+    return t.replace(minute=0, second=0, microsecond=0)
+
+
+def bump_checks(conn: Connection, now: dt.datetime) -> None:
+    """Count one status lookup in the current UTC hour."""
+    stmt = _insert(conn, checks_hourly).values(hour=_hour(now), count=1)
+    conn.execute(
+        stmt.on_conflict_do_update(
+            index_elements=["hour"], set_={"count": checks_hourly.c.count + 1}
+        )
+    )
+
+
+def delete_old_checks(conn: Connection, now: dt.datetime) -> None:
+    conn.execute(checks_hourly.delete().where(checks_hourly.c.hour < now - CHECKS_KEPT))
+
+
+def site_counts(conn: Connection, now: dt.datetime, window: dt.timedelta) -> tuple[int, int]:
+    """Status lookups and failure reports in the last `window`. Lookups are counted per hour,
+    so they include up to an hour more than `window`."""
+    checks = conn.execute(
+        sa.select(sa.func.coalesce(sa.func.sum(checks_hourly.c.count), 0)).where(
+            checks_hourly.c.hour >= _hour(now - window)
+        )
+    ).scalar_one()
+    failures = conn.execute(
+        sa.select(sa.func.count())
+        .select_from(reports)
+        .where(reports.c.created_at >= now - window, reports.c.outcome == "failed")
+    ).scalar_one()
+    return int(checks), int(failures)
 
 
 def service_lookups(conn: Connection, since: dt.date) -> dict[str, int]:

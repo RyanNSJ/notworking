@@ -80,6 +80,8 @@ def _view(state: AppState, res: Resolution, now, *, count: bool) -> Result:
     options = load_options()
     url = state.settings.public_url
     with state.engine.begin() as conn:
+        if count:
+            store.bump_checks(conn, now)
 
         def bump(event: str, subject: str) -> None:
             if count:

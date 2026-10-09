@@ -70,7 +70,7 @@ footer p { max-width: none; }
     <a href="/llms.txt">llms.txt</a>
     <a href="{{ repo_url }}">Source</a>
   </nav>
-  <p class="counter">Today (UTC): checks {{ counter.lookups[0] }} &middot; reports {{ counter.reports[0] }} &nbsp;|&nbsp; Last 7 days: checks {{ counter.lookups[1] }} &middot; reports {{ counter.reports[1] }}</p>
+  <p class="counter">Last 24h: checks {{ counter.day[0] }} &middot; reports {{ counter.day[1] }} &nbsp;|&nbsp; Last 7 days: checks {{ counter.week[0] }} &middot; reports {{ counter.week[1] }}</p>
 </header>
 <main>
 {% block main %}{% endblock %}

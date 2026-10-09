@@ -51,6 +51,7 @@ reports = sa.Table(
     sa.Column("created_at", UTCDateTime, nullable=False),
     sa.Index(None, "target_pk", "created_at"),
     sa.Index(None, "reporter_fp", "target_pk", "created_at"),
+    sa.Index(None, "created_at"),  # the site-wide counter
 )
 
 status_current = sa.Table(
@@ -97,5 +98,13 @@ usage_daily = sa.Table(
     sa.Column("day", sa.Date, primary_key=True),
     sa.Column("event", sa.String(16), primary_key=True),
     sa.Column("subject", sa.String(512), primary_key=True),
+    sa.Column("count", sa.Integer, nullable=False, server_default="0"),
+)
+
+# Status lookups per UTC hour, for the rolling counter in the page header. Pruned after 8 days.
+checks_hourly = sa.Table(
+    "checks_hourly",
+    metadata,
+    sa.Column("hour", UTCDateTime, primary_key=True),
     sa.Column("count", sa.Integer, nullable=False, server_default="0"),
 )

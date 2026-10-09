@@ -75,7 +75,7 @@ Nothing else goes into the MVP. Searching across services by task ("book a table
 - One small VM (Singapore region) running Docker Compose and Caddy, with Cloudflare in front of public GETs once the real domain exists.
 - Push-to-deploy: CI passes → the image goes to GHCR → `docker compose pull && up -d` over SSH.
 - Build order: M0 scaffold → M1 infra → M2 core API → M3 MCP + skill → M4 detection → M5 pages, badge and dataset → M6 canary reporter.
-- Background jobs: a plain asyncio loop in the app (`jobs.py`, D69) runs the 5-minute detector and salt pruning. No scheduler library; the dataset is computed on request (D70).
+- Background jobs: a plain asyncio loop in the app (`jobs.py`, D69) runs the 5-minute detector, salt pruning and pruning of the hourly check counts behind the header counter. No scheduler library; the dataset is computed on request (D70).
 - Canary: `agentdown canary` (`canary.py`), run by `.github/workflows/canary.yml`: daily at 03:17 UTC with reporting on, covering every path of services with MCP servers or skills plus a thirtieth of the website-only services (each checked about monthly), and manually as a dry run. It uses curl_cffi (dependency group `canary`) for the declared-UA variant and, for services with MCP servers or skills only, a Chrome variant, and POSTs failures to the public API, at most 90 a run, 72 s apart. Anything it can't access is a failure against the target it was accessing, except a `robots.txt` disallow, which it honours without reporting (D75). Run detail goes to an Actions artifact (90 days).
 - MCP: Python MCP SDK, streamable HTTP, mounted at `/mcp`.
 - Pages: server-rendered Jinja2, design direction A "Signal board" (D70). System fonts only; charts are inline SVG drawn on the server.

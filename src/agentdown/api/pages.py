@@ -112,19 +112,13 @@ def ranked(rows: list[ServiceRow]) -> list[ServiceRow]:
 
 
 def _counter(state: AppState) -> dict[str, tuple[int, int]]:
-    """Lookups and reports today and over the last 7 days (UTC days), for the header."""
-    today = state.clock.now().date()
+    """(checks, reports) in the last 24 hours and the last 7 days, for the header."""
+    now = state.clock.now()
     with state.engine.connect() as conn:
-        day = store.usage_totals(conn, today)
-        week = store.usage_totals(conn, today - dt.timedelta(days=LOOKUP_DAYS - 1))
-
-    def lookups(t: dict[str, int]) -> int:
-        return t.get("lookup_service", 0) + t.get("lookup_miss", 0)
-
-    return {
-        "lookups": (lookups(day), lookups(week)),
-        "reports": (day.get("report", 0), week.get("report", 0)),
-    }
+        return {
+            "day": store.site_counts(conn, now, dt.timedelta(hours=24)),
+            "week": store.site_counts(conn, now, dt.timedelta(days=7)),
+        }
 
 
 def _page(request: Request, name: str, **context: object) -> HTMLResponse:

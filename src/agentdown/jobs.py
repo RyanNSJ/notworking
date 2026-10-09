@@ -1,6 +1,6 @@
 """Background jobs, run in-process by the app (one process, so no scheduler library).
 
-Every 5 minutes: the detector (M4) and salt pruning (D21).
+Every 5 minutes: the detector (M4), salt pruning (D21) and hourly check pruning.
 """
 
 import asyncio
@@ -30,6 +30,7 @@ def tick(state: AppState) -> int:
     now = state.clock.now()
     with state.engine.begin() as conn:
         store.delete_old_salts(conn, now)
+        store.delete_old_checks(conn, now)
         return detector.run(conn, now)
 
 

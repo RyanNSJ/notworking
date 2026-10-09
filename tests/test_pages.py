@@ -7,12 +7,14 @@ import re
 from collections.abc import Callable
 from typing import cast
 
+import sqlalchemy as sa
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from agentdown import jobs
 from agentdown.api.v1 import BADGE, BADGE_LEFT
 from agentdown.core.clock import FixedClock
+from agentdown.db.schema import checks_hourly
 from agentdown.service import AppState
 from tests.conftest import PUBLIC_URL
 
@@ -177,15 +179,34 @@ def test_checks_today_are_shown_as_context(client: TestClient) -> None:
     assert "check" not in client.get("/service/other.net").text.split("<main>")[1].split("<h2")[0]
 
 
-def test_header_counts_checks_and_reports(
-    client: TestClient, client_from: Callable[[str], TestClient]
+def test_header_counts_checks_and_reports_over_rolling_windows(
+    client: TestClient,
+    client_from: Callable[[str], TestClient],
+    app: FastAPI,
+    clock: FixedClock,
 ) -> None:
     client.get("/v1/status", params={"target": "xyz.com"})
     client.get("/v1/status", params={"target": "unlisted.example"})
     client_from("192.0.2.1").post("/v1/report", json={"target": "example.org", **FAIL})
-    html = client.get("/privacy").text
-    assert "Today (UTC): checks 2 &middot; reports 1" in html
-    assert "Last 7 days: checks 2 &middot; reports 1" in html
+
+    def counter() -> str:
+        html = client.get("/privacy").text
+        return html.split('class="counter">')[1].split("</p>")[0]
+
+    assert counter() == (
+        "Last 24h: checks 2 &middot; reports 1 &nbsp;|&nbsp; "
+        "Last 7 days: checks 2 &middot; reports 1"
+    )
+    clock.advance(dt.timedelta(hours=23, minutes=59))
+    assert "Last 24h: checks 2 &middot; reports 1" in counter()
+    clock.advance(dt.timedelta(hours=2))  # past 24h, and past the lookups' hour
+    assert "Last 24h: checks 0 &middot; reports 0" in counter()
+    assert "Last 7 days: checks 2 &middot; reports 1" in counter()
+    clock.advance(dt.timedelta(days=8))
+    jobs.tick(cast(AppState, app.state))
+    assert "Last 7 days: checks 0 &middot; reports 0" in counter()
+    with app.state.engine.connect() as conn:  # old hourly counts are pruned
+        assert conn.execute(sa.select(sa.func.count()).select_from(checks_hourly)).scalar() == 0
 
 
 def test_robots_and_sitemap_for_search_engines(client: TestClient) -> None:
