@@ -54,6 +54,7 @@ def claude_plugin(base_url: str) -> dict[str, object]:
         "homepage": base_url,
         "repository": REPO_URL,
         "license": "MIT",
+        "privacyPolicyUrl": f"{base_url}/privacy",
         "mcpServers": {"notworking": {"type": "http", "url": f"{base_url}/mcp"}},
     }
 
