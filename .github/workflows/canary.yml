@@ -1,0 +1,45 @@
+name: Canary
+
+on:
+  workflow_dispatch:
+    inputs:
+      set:
+        description: Which services to check
+        type: choice
+        options: [daily, websites]
+        default: daily
+      sample:
+        description: Only the first N services (blank for all)
+        default: ""
+      report:
+        description: Report failures to the public API (otherwise a dry run)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  canary:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v10.2.0
+      - run: uv sync --locked --no-dev --group canary
+      - name: Check
+        env:
+          SET: ${{ inputs.set }}
+          SAMPLE: ${{ inputs.sample }}
+          REPORT: ${{ inputs.report }}
+        run: |
+          args=(--set "$SET" --out canary-results.jsonl)
+          if [ -n "$SAMPLE" ]; then args+=(--sample "$SAMPLE"); fi
+          if [ "$REPORT" = "true" ]; then args+=(--report); fi
+          uv run --no-sync agentdown canary "${args[@]}" | tee canary-summary.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: canary-${{ inputs.set }}-${{ github.run_id }}
+          path: canary-*.json*
+          retention-days: 90

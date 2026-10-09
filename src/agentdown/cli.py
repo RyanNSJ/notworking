@@ -19,6 +19,11 @@ def main(argv: list[str] | None = None) -> None:
     stats = sub.add_parser("stats", help="print a usage summary for stewards")
     stats.add_argument("--days", type=int, default=7)
     sub.add_parser("check-catalog", help="validate catalog/services.yaml and exit")
+    can = sub.add_parser("canary", help="check listed access paths (dry run unless --report)")
+    can.add_argument("--set", choices=["daily", "websites"], default="daily")
+    can.add_argument("--sample", type=int, default=None, help="only the first N services")
+    can.add_argument("--out", default="canary-results.jsonl")
+    can.add_argument("--report", action="store_true", help="POST failures to the public API")
     gen = sub.add_parser("generate", help="write the skill and server.json for publishing")
     gen.add_argument("--base-url", default=None, help="defaults to publish.PUBLISH_BASE_URL")
     args = parser.parse_args(argv)
@@ -51,6 +56,15 @@ def main(argv: list[str] | None = None) -> None:
         catalog = load_catalog(settings.catalog_path)
         paths = sum(len(s.paths) for s in catalog.services)
         print(f"catalog ok: {len(catalog.services)} services, {paths} access paths")
+    elif args.command == "canary":
+        import json
+
+        from agentdown import canary
+        from agentdown.catalog import load_catalog
+
+        catalog = load_catalog(settings.catalog_path)
+        summary = canary.run(catalog, args.set, args.sample, args.out, do_report=args.report)
+        print(json.dumps(summary, indent=2))
     elif args.command == "generate":
         from pathlib import Path
 
