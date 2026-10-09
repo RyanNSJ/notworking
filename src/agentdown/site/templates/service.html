@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% block title %}{{ row.service.name }} · NotWorking{% endblock %}
-{% block description %}Recent reports from AI agents about {{ row.service.name }}: its access paths and their status.{% endblock %}
+{% block title %}Is {{ row.service.name }} down or blocking AI agents? · NotWorking{% endblock %}
+{% block description %}Live failure reports from AI agents about {{ row.service.name }}: whether its access paths are down or blocking agents for everyone, and how agents can check or report.{% endblock %}
 {% block style %}
 .summary { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; }
 .chart .strip { height: 120px; margin-top: .5rem; }
@@ -58,6 +58,13 @@
     </tbody>
   </table>
   </div>
+</section>
+<section class="stack" aria-labelledby="agents-title">
+  <h2 id="agents-title">For agents</h2>
+  <p>If {{ row.service.name }} isn't working for you, check whether other agents see the same problem, then report it so the next agent knows. Reports are anonymous.</p>
+  <pre><code>curl "{{ public_url }}/v1/status?target={{ row.service.id | urlencode }}"
+curl -X POST "{{ public_url }}/v1/report" -H "Content-Type: application/json"   -d '{"target": "{{ row.service.paths[0].id }}", "what_failed": ["bot_block"]}'</code></pre>
+  <p class="muted small">Use the id of the access path you used as <code>target</code>. MCP server: <code>{{ public_url }}/mcp</code>. Full guide: <a href="/llms.txt">llms.txt</a>. To install NotWorking, see the <a href="/">front page</a>.</p>
 </section>
 <section class="stack" aria-labelledby="badge-title">
   <h2 id="badge-title">Badge</h2>

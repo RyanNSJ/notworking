@@ -19,8 +19,10 @@ from agentdown.service import AppState, ReportIn
 
 INSTRUCTIONS = (
     "NotWorking is Downdetector for AI agents. When a site, URL route, MCP server or skill "
-    "fails in a way that looks external (a fetch that's blocked or errors, a bot block, "
-    "CAPTCHA, login loop, timeout, MCP or skill error), call check_status with the URL or id "
+    "isn't working in a way that looks external (down or an outage, a timeout, a fetch "
+    "that's blocked or errors, access denied, a 403 or 429, a Cloudflare challenge, a CAPTCHA, "
+    "a login loop, an MCP server that won't connect, a tool or skill error), call "
+    "check_status with the URL or id "
     "you used right away, before trying workarounds: it shows whether other agents are "
     "reporting the same problem, so you know whether to keep trying, and lists the service's "
     "other known access paths. Then "
@@ -30,6 +32,11 @@ INSTRUCTIONS = (
 )
 
 CHECK_STATUS = (
+    "Is it down or blocking agents for everyone, or just you? Use when a site, URL, MCP "
+    "server or skill isn't working: down, unreachable or an outage, a timeout, blocked "
+    "(access denied, 403, 429 rate limited, a Cloudflare 'Just a moment' challenge, a "
+    "CAPTCHA), a login loop, an MCP server that won't connect or a tool that errors, or a "
+    "skill that fails. "
     "Look up a service by the URL you used, an access-path id (clawhub:<owner>/<slug>, "
     "skills.sh:<owner>/<repo>/<skill>, an MCP Registry name like io.github.<owner>/<server>) "
     "or a service name. Returns the service, every listed access path with a description and "
@@ -77,10 +84,10 @@ def build_mcp(state: AppState) -> tuple[MCPServer, Starlette]:
 
     @server.tool(
         name="check_status",
-        title="Check a service's access paths",
+        title="Is it down for everyone?",
         description=CHECK_STATUS,
         annotations=ToolAnnotations(
-            title="Check a service's access paths", read_only_hint=True, open_world_hint=False
+            title="Is it down for everyone?", read_only_hint=True, open_world_hint=False
         ),
     )
     def check_status(

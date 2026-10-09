@@ -1,6 +1,6 @@
 ---
 name: notworking
-description: Check whether a site, URL, MCP server or skill that just failed is failing for other AI agents too, see the service's other known access paths, and report the failure. Use right after an external service fails in a way that looks like it isn't your fault - a fetch that's blocked or errors, a bot block, CAPTCHA, 403 or 429 error, login loop, timeout, MCP connection error or skill error - before trying workarounds.
+description: Check whether a site, URL, MCP server or skill that isn't working is down or blocking AI agents for everyone, or just you, see the service's other known access paths, and report the failure. Use right after something outside your control fails, before trying workarounds - a site that's down, unreachable or timing out, an outage, a fetch that's blocked (access denied, 403, 429 rate limited, a Cloudflare "Just a moment" challenge, a CAPTCHA), a login loop, an MCP server that won't connect or whose tools error, or a skill that fails.
 ---
 
 # NotWorking

@@ -175,3 +175,18 @@ def test_checks_today_are_shown_as_context(client: TestClient) -> None:
     assert "2 checks today" in client.get("/").text
     assert "Agents checked it 2 times today." in client.get("/service/xyz.com").text
     assert "check" not in client.get("/service/other.net").text.split("<main>")[1].split("<h2")[0]
+
+
+def test_robots_and_sitemap_for_search_engines(client: TestClient) -> None:
+    robots = client.get("/robots.txt").text
+    assert "Disallow: /v1/" in robots and f"Sitemap: {PUBLIC_URL}/sitemap.xml" in robots
+    sitemap = client.get("/sitemap.xml")
+    assert sitemap.headers["content-type"].startswith("application/xml")
+    assert f"<loc>{PUBLIC_URL}/service/xyz.com</loc>" in sitemap.text
+    assert sitemap.text.count("<url>") == 6 + 3  # the fixed pages plus one per service
+
+
+def test_service_page_is_findable_and_tells_agents_what_to_do(client: TestClient) -> None:
+    html = client.get("/service/xyz.com").text
+    assert "<title>Is XYZ Booking down or blocking AI agents? · NotWorking</title>" in html
+    assert f"{PUBLIC_URL}/v1/status?target=xyz.com" in html and f"{PUBLIC_URL}/mcp" in html

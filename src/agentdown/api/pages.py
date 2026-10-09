@@ -203,6 +203,34 @@ def terms(request: Request) -> HTMLResponse:
     return _page(request, "terms.html")
 
 
+@router.get("/robots.txt")
+def robots(request: Request) -> Response:
+    """Crawl the pages, not the API: crawler lookups would inflate the check counts."""
+    url = request.app.state.settings.public_url
+    text = (
+        f"User-agent: *\nAllow: /\nDisallow: /v1/\nDisallow: /mcp\n\nSitemap: {url}/sitemap.xml\n"
+    )
+    return Response(
+        text, media_type="text/plain", headers={"Cache-Control": "public, max-age=3600"}
+    )
+
+
+@router.get("/sitemap.xml")
+def sitemap(request: Request) -> Response:
+    state: AppState = request.app.state
+    url = state.settings.public_url
+    pages = ["/", "/services", "/methodology", "/dataset", "/privacy", "/terms"]
+    pages += [f"/service/{s.id}" for s in state.catalog.services]
+    body = "".join(f"<url><loc>{escape(url + p)}</loc></url>" for p in pages)
+    xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>'
+        f'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{body}</urlset>'
+    )
+    return Response(
+        xml, media_type="application/xml", headers={"Cache-Control": "public, max-age=3600"}
+    )
+
+
 def _csv(rows: list[list[object]], header: list[str], filename: str) -> Response:
     buf = io.StringIO()
     writer = csv.writer(buf, lineterminator="\n")
