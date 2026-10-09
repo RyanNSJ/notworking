@@ -29,6 +29,7 @@ templates = Jinja2Templates(directory=Path(__file__).parent.parent / "site" / "t
 PAGE_CACHE = {"Cache-Control": "public, max-age=60"}
 BOARD_SIZE = 10
 SEARCH_LIMIT = 50
+LOOKUP_SPAN = dt.timedelta(days=7)
 
 STATUS_LABEL = {NONE: "no issues", ISSUES: "issues", MANY: "many issues"}
 STATUS_CLASS = {NONE: "ok", ISSUES: "warn", MANY: "bad"}
@@ -49,6 +50,7 @@ class ServiceRow:
     buckets: list[int]
     total_24h: int
     top_path: PathRow | None  # the path with the most reports in 24h, if any
+    lookups_7d: int = 0
 
 
 def strip_svg(buckets: list[int], status: str, *, height: int, label: str) -> Markup:
@@ -78,6 +80,7 @@ def _rows(
     with state.engine.connect() as conn:
         counts = store.path_counts(conn, ids, now)
         days = store.day_activity(conn, ids, now)
+        lookups = store.service_lookups(conn, now.date() - LOOKUP_SPAN)
     rows = []
     for s in services:
         paths = [PathRow(p, counts[p.id], days[p.id]) for p in s.paths]
@@ -85,19 +88,19 @@ def _rows(
         buckets = [sum(r.day.buckets[i] for r in paths) for i in range(DAY_BUCKETS)]
         active = [r for r in paths if r.day.total]
         top = max(active, key=lambda r: (r.day.total, r.path.id)) if active else None
-        rows.append(ServiceRow(s, paths, status, buckets, sum(buckets), top))
+        rows.append(ServiceRow(s, paths, status, buckets, sum(buckets), top, lookups.get(s.id, 0)))
     return rows
 
 
 def ranked(rows: list[ServiceRow]) -> list[ServiceRow]:
-    """Raised statuses first, then most reports in 24h, then most known access paths, then
-    alphabetical. Fixed and explainable; access paths within a service stay alphabetical."""
+    """Raised statuses first (most reported first), then the most looked-up services in the
+    last 7 days, then alphabetical. Access paths within a service stay alphabetical."""
     return sorted(
         rows,
         key=lambda r: (
             -LEVELS.index(r.status),
-            -r.total_24h,
-            -len(r.paths),
+            -r.total_24h if r.status != NONE else 0,
+            -r.lookups_7d,
             r.service.name.lower(),
         ),
     )

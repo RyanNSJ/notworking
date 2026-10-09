@@ -359,3 +359,14 @@ def listed_transitions(conn: Connection, before: dt.datetime) -> list[sa.Row]:
             .order_by(status_transitions.c.created_at)
         ).all()
     )
+
+
+def service_lookups(conn: Connection, since: dt.date) -> dict[str, int]:
+    """Lookups per service id since `since` (D64 counters), for ranking quiet services."""
+    total = sa.func.sum(usage_daily.c.count)
+    rows = conn.execute(
+        sa.select(usage_daily.c.subject, total)
+        .where(usage_daily.c.day >= since, usage_daily.c.event == "lookup_service")
+        .group_by(usage_daily.c.subject)
+    ).all()
+    return {subject: int(n) for subject, n in rows}

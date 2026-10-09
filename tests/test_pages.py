@@ -34,16 +34,17 @@ def test_home_has_install_and_a_board(client: TestClient) -> None:
     assert r.status_code == 200 and r.headers["content-type"].startswith("text/html")
     assert f"{PUBLIC_URL}/mcp" in r.text and "claude plugin install notworking" in r.text
     assert "Why install it" in r.text and 'a CAPTCHA or "are you human?" check' in r.text
-    # All quiet: most known access paths first (XYZ has 6), then A-Z.
-    assert board_names(r.text) == ["XYZ Booking", "Example Org", "Other Net"]
+    assert board_names(r.text) == ["Example Org", "Other Net", "XYZ Booking"]  # cold start: A-Z
 
 
-def test_board_ranks_raised_then_busiest(
+def test_board_ranks_raised_then_looked_up(
     client: TestClient, client_from: Callable[[str], TestClient], app: FastAPI
 ) -> None:
-    client_from("192.0.2.1").post("/v1/report", json={"target": "other.net", **FAIL})
+    client_from("192.0.2.1").post("/v1/report", json={"target": "example.org", **FAIL})
+    client.get("/v1/status", params={"target": "other.net"})  # a lookup, not a report
     spike(client_from, app, "xyz.com")
     html = client.get("/").text
+    # Raised first; then quiet services by lookups (a lone report doesn't lift Example Org).
     assert board_names(html) == ["XYZ Booking", "Other Net", "Example Org"]
     assert "xyz.com &middot; bot_block &middot; 5 in 24h" in html
     assert 'class="bar-hot"' in html  # the last hour is coloured while raised
