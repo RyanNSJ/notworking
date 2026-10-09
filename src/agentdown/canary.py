@@ -382,3 +382,13 @@ def run(
     if do_report:
         summary["reported"] = dict(report(fx, api, failed, gap=72.0))  # about 50 an hour
     return summary
+
+
+def report_problems(summary: dict[str, Any]) -> dict[int, int]:
+    """Report responses other than accepted (202) or rate-limited (429). Any of these means
+    reporting itself is broken, so the run fails and GitHub emails the maintainer."""
+    return {
+        int(code): n
+        for code, n in (summary.get("reported") or {}).items()
+        if int(code) not in (202, 429)
+    }

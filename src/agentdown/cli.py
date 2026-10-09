@@ -65,6 +65,9 @@ def main(argv: list[str] | None = None) -> None:
         catalog = load_catalog(settings.catalog_path)
         summary = canary.run(catalog, args.set, args.sample, args.out, do_report=args.report)
         print(json.dumps(summary, indent=2))
+        problems = canary.report_problems(summary)
+        if problems:  # 0 means the request itself failed (network, DNS, TLS)
+            raise SystemExit(f"reports were rejected or failed: {problems}")
     elif args.command == "generate":
         from pathlib import Path
 

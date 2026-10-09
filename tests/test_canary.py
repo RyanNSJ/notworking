@@ -76,3 +76,9 @@ def test_failures_groups_one_report_per_path() -> None:
         Result("s", "b.com", "site", "declared", True),
     ]
     assert canary.failures(results) == {"a.com": ["bot_block", "captcha"]}
+
+
+def test_report_problems_flag_anything_but_accepted_or_rate_limited() -> None:
+    assert canary.report_problems({"reported": None}) == {}  # a dry run
+    assert canary.report_problems({"reported": {202: 9, 429: 1}}) == {}
+    assert canary.report_problems({"reported": {"202": 3, "500": 2, "0": 1}}) == {500: 2, 0: 1}
