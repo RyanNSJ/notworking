@@ -108,7 +108,7 @@ def _common(options: Options, public_url: str, now: dt.datetime, example_target:
             "message": PLEASE_REPORT,
             "method": "POST",
             "url": f"{public_url}/v1/report",
-            "example": {"target": example_target, "outcome": "failed", "what_failed": ["captcha"]},
+            "example": {"target": example_target, "what_failed": ["captcha"]},
         },
         "what_failed_options": options.what_failed_payload(),
         "agent_type_options": list(options.agent_type),

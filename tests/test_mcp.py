@@ -54,7 +54,7 @@ def test_tools_are_described_from_options(client: TestClient) -> None:
         assert o.value in tools["report"]["description"]
         assert o.description in tools["report"]["description"]
     schema = json.dumps(tools["report"]["inputSchema"])
-    assert '"failed"' in schema and '"notworking_canary"' in schema
+    assert '"outcome"' not in schema and '"notworking_canary"' in schema
 
 
 def test_check_status_matches_http(client: TestClient) -> None:
@@ -69,7 +69,6 @@ def test_report_via_mcp(client: TestClient, migrated_db_url: str, app: FastAPI) 
         client,
         "report",
         target="clawhub:abc/xyz-booking",
-        outcome="failed",
         what_failed=["captcha"],
         note="ping me at a@b.com",
     )["structuredContent"]
@@ -90,9 +89,9 @@ def test_report_via_mcp(client: TestClient, migrated_db_url: str, app: FastAPI) 
 
 
 def test_mcp_validation_errors_are_reported(client: TestClient) -> None:
-    result = call(client, "report", target="xyz.com", outcome="broken")
+    result = call(client, "report", target="xyz.com", what_failed=["broken"])
     assert result.get("isError") is True
-    missing = call(client, "report", target="xyz.com", outcome="failed")["structuredContent"]
+    missing = call(client, "report", target="xyz.com")["structuredContent"]
     assert missing["error"] == "invalid_request"
     assert {p["field"] for p in missing["problems"]} == {"what_failed"}
 

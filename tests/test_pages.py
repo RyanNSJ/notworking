@@ -122,7 +122,6 @@ def test_dataset_csvs(
             "path_type": "site",
             "path_id": "xyz.com",
             "failure_reports": "5",
-            "success_reports": "0",
             "unique_failure_reporters": "5",
             "what_failed": "bot_block=5",
         }

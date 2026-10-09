@@ -40,7 +40,7 @@ def _report_description() -> str:
     options = load_options()
     values = "; ".join(f"{o.value}: {o.description}" for o in options.what_failed)
     return (
-        "Report that an access path failed (or worked) for you. Use the access-path id from "
+        "Report that an access path failed for you. Use the access-path id from "
         "check_status, or the URL you used. Anonymous. Never include personal data, booking "
         "details, credentials or full URLs with query strings. target is which access path "
         "failed; what_failed is how, from this list (the same for every service): " + values
@@ -58,7 +58,6 @@ def _client(ctx: Context) -> tuple[str | None, str | None]:
 def build_mcp(state: AppState) -> tuple[MCPServer, Starlette]:
     options = load_options()
     TargetType = Literal[tuple(options.target_type)]  # pyright: ignore[reportInvalidTypeForm]
-    Outcome = Literal[tuple(options.outcome)]  # pyright: ignore[reportInvalidTypeForm]
     WhatFailed = Literal[tuple(options.what_failed_values)]  # pyright: ignore[reportInvalidTypeForm]
     AgentType = Literal[tuple(options.agent_type)]  # pyright: ignore[reportInvalidTypeForm]
 
@@ -107,10 +106,9 @@ def build_mcp(state: AppState) -> tuple[MCPServer, Starlette]:
     def report(
         ctx: Context,
         target: Annotated[str, Field(description="The access-path id (or URL) you used")],
-        outcome: Annotated[Outcome, Field(description="failed or success")],  # pyright: ignore[reportInvalidTypeForm]
         what_failed: Annotated[
             list[WhatFailed] | None,  # pyright: ignore[reportInvalidTypeForm]
-            Field(description="Required when outcome is failed: one or more values"),
+            Field(description="Required: how it failed, one or more values"),
         ] = None,
         country: Annotated[
             str | None, Field(description="Optional ISO-3166 alpha-2 country code, like SG")
@@ -129,7 +127,6 @@ def build_mcp(state: AppState) -> tuple[MCPServer, Starlette]:
     ) -> dict[str, Any]:
         body = ReportIn(
             target=target,
-            outcome=outcome,
             what_failed=list(what_failed) if what_failed else None,
             country=country,
             agent_type=agent_type,

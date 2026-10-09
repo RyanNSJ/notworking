@@ -49,7 +49,7 @@ class ReportIn(BaseModel):
 
     target: str
     type: str | None = None
-    outcome: str
+    outcome: str | None = None  # only "failed"; kept so older clients that send it still work
     what_failed: list[str] | None = None
     country: str | None = None
     agent_type: str | None = None
@@ -65,13 +65,12 @@ def problems_result(options: Options, problems: list[dict[str, str]]) -> Result:
             "error": "invalid_request",
             "problems": problems,
             "valid_values": {
-                "outcome": list(options.outcome),
                 "what_failed": options.what_failed_payload(),
                 "agent_type": list(options.agent_type),
                 "type": list(options.target_type),
             },
             "hint": "target is the URL or the access-path id you used, as listed by the "
-            "status lookup. what_failed is required when outcome is 'failed'.",
+            "status lookup. what_failed says how it failed: one or more of the values.",
         },
     )
 
@@ -134,12 +133,10 @@ def _validate(body: ReportIn, options: Options) -> list[dict[str, str]]:
 
     if body.type is not None and body.type not in options.target_type:
         bad("type", "unknown type")
-    if body.outcome not in options.outcome:
-        bad("outcome", "must be 'failed' or 'success'")
-    elif body.outcome == "failed" and not body.what_failed:
-        bad("what_failed", "required when outcome is 'failed': one or more values")
-    elif body.outcome == "success" and body.what_failed:
-        bad("what_failed", "leave out what_failed when outcome is 'success'")
+    if body.outcome not in (None, "failed"):
+        bad("outcome", "only failures are reported; leave outcome out")
+    if not body.what_failed:
+        bad("what_failed", "required: one or more values saying how it failed")
     for v in body.what_failed or []:
         if v not in options.what_failed_values:
             bad("what_failed", f"unknown value {v[:40]!r}")
@@ -205,8 +202,8 @@ def submit_report(
         store.insert_report(
             conn,
             target_pk=tpk,
-            outcome=body.outcome,
-            what_failed=body.what_failed if body.outcome == "failed" else None,
+            outcome="failed",
+            what_failed=body.what_failed,
             country=body.country.upper() if body.country else None,
             agent_type=body.agent_type,
             note_scrubbed=scrub_note(body.note),

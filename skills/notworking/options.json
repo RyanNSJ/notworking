@@ -1,9 +1,5 @@
 {
-  "version": 3,
-  "outcome": [
-    "failed",
-    "success"
-  ],
+  "version": 4,
   "what_failed": [
     {
       "value": "site_unreachable",

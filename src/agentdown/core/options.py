@@ -20,7 +20,6 @@ class Options:
     version: int
     what_failed: tuple[Option, ...]
     agent_type: tuple[str, ...]
-    outcome: tuple[str, ...]
     target_type: tuple[str, ...]
 
     @property
@@ -77,7 +76,6 @@ def parse_options(text: str) -> Options:
         version=version,
         what_failed=_described(raw, "what_failed"),
         agent_type=_enum(raw, "agent_type"),
-        outcome=_enum(raw, "outcome"),
         target_type=_enum(raw, "target_type"),
     )
 

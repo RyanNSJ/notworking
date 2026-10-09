@@ -209,24 +209,21 @@ def daily_csv(request: Request) -> Response:
         reports = store.listed_reports(conn, _today(state))
     agg: dict[tuple[str, str, str], dict] = {}
     for ttype, tid, outcome, what_failed, fp, created in reports:
+        if outcome != "failed":  # older success reports, from before they were removed
+            continue
         day = store.utc(created).date().isoformat()
-        a = agg.setdefault(
-            (day, ttype, tid), {"failed": 0, "success": 0, "reporters": set(), "what": {}}
-        )
-        a[outcome] += 1
-        if outcome == "failed":
-            a["reporters"].add(fp)  # fingerprints rotate daily, so this is per-day unique
-            for w in what_failed or []:
-                a["what"][w] = a["what"].get(w, 0) + 1
+        a = agg.setdefault((day, ttype, tid), {"failed": 0, "reporters": set(), "what": {}})
+        a["failed"] += 1
+        a["reporters"].add(fp)  # fingerprints rotate daily, so this is per-day unique
+        for w in what_failed or []:
+            a["what"][w] = a["what"].get(w, 0) + 1
     rows = []
     for (day, ttype, tid), a in agg.items():
         services = ";".join(s.id for s in state.catalog.services_for_path.get(tid, []))
         what = ";".join(f"{k}={v}" for k, v in sorted(a["what"].items()))
-        rows.append(
-            [day, services, ttype, tid, a["failed"], a["success"], len(a["reporters"]), what]
-        )
+        rows.append([day, services, ttype, tid, a["failed"], len(a["reporters"]), what])
     header = [
-        "date", "service_ids", "path_type", "path_id", "failure_reports", "success_reports",
+        "date", "service_ids", "path_type", "path_id", "failure_reports",
         "unique_failure_reporters", "what_failed",
     ]  # fmt: skip
     return _csv(rows, header, "notworking-daily.csv")

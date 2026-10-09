@@ -35,8 +35,10 @@ reports = sa.Table(
     metadata,
     sa.Column("pk", sa.Integer, primary_key=True),
     sa.Column("target_pk", sa.Integer, sa.ForeignKey("targets.pk"), nullable=False),
-    sa.Column("outcome", sa.String(16), nullable=False),  # failed | success
-    sa.Column("what_failed", sa.JSON),  # list of enum values; null for success
+    sa.Column(
+        "outcome", sa.String(16), nullable=False
+    ),  # always "failed" (success reports removed)
+    sa.Column("what_failed", sa.JSON),  # list of enum values
     sa.Column("country", sa.String(2)),  # ISO-3166 alpha-2, self-reported
     sa.Column("agent_type", sa.String(32)),
     sa.Column("note_scrubbed", sa.Text),  # never served to agents

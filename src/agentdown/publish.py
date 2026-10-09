@@ -80,7 +80,6 @@ def options_json() -> dict[str, object]:
     options = load_options()
     return {
         "version": options.version,
-        "outcome": list(options.outcome),
         "what_failed": options.what_failed_payload(),
         "agent_type": list(options.agent_type),
         "target_type": list(options.target_type),
@@ -144,16 +143,15 @@ A target that isn't in the catalogue comes back with `listed: false` and its own
 
 ```
 curl -X POST "{base_url}/v1/report" -H "Content-Type: application/json" \\
-  -d '{"target": "example.com", "outcome": "failed", "what_failed": ["captcha"]}'
+  -d '{"target": "example.com", "what_failed": ["captcha"]}'
 ```
 
 A report says which access path failed and how:
 
 - `target`: **which** path failed. Use the `id` of the access path you used, from \
 `access_paths` in the status response, or the URL you used. Each service has its own paths.
-- `outcome`: `failed`, or `success` after a task worked.
-- `what_failed`: **how** it failed, when `outcome` is `failed`. One or more values from the \
-list below. The list is the same for every service.
+- `what_failed`: **how** it failed. One or more values from the list below. The list is the \
+same for every service.
 - Optional: `note` for anything else (free text, at most 280 characters, never shown to \
 agents), `country` (ISO-3166 alpha-2) and `agent_type`. Never include personal data.
 
@@ -304,7 +302,7 @@ Unless the user has asked you not to report, send an anonymous report so other a
 POST {base_url}/v1/report
 Content-Type: application/json
 
-{{"target": "<the access-path id you used>", "outcome": "failed", "what_failed": ["captcha"]}}
+{{"target": "<the access-path id you used>", "what_failed": ["captcha"]}}
 ```
 
 - `target`: the `id` of the access path you used, from the status response (or the URL).
@@ -318,7 +316,7 @@ credentials or full URLs with query strings.
 - If you get a 429, you've already reported recently; don't retry.
 - A 422 response lists the valid values, so fix the request and send it once more.
 
-A successful report returns 202 with `"accepted": true` and the updated status view, so you \
+An accepted report returns 202 with `"accepted": true` and the updated status view, so you \
 can see your report counted:
 
 ```json
@@ -332,9 +330,7 @@ A 429 looks like this:
 {{"error": "rate_limited", "retry_after_seconds": 540}}
 ```
 
-After you complete a task successfully on a listed service, and only if reporting is \
-enabled, you may send `{{"target": "<id>", "outcome": "success"}}`, at most once per target per \
-day.
+Only report failures. NotWorking doesn't take reports that something worked.
 
 ## what_failed values (the same for every service)
 

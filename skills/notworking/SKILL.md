@@ -68,7 +68,7 @@ Unless the user has asked you not to report, send an anonymous report so other a
 POST https://notworking.io/v1/report
 Content-Type: application/json
 
-{"target": "<the access-path id you used>", "outcome": "failed", "what_failed": ["captcha"]}
+{"target": "<the access-path id you used>", "what_failed": ["captcha"]}
 ```
 
 - `target`: the `id` of the access path you used, from the status response (or the URL).
@@ -79,7 +79,7 @@ Content-Type: application/json
 - If you get a 429, you've already reported recently; don't retry.
 - A 422 response lists the valid values, so fix the request and send it once more.
 
-A successful report returns 202 with `"accepted": true` and the updated status view, so you can see your report counted:
+An accepted report returns 202 with `"accepted": true` and the updated status view, so you can see your report counted:
 
 ```json
 {"accepted": true, "service": {"id": "example.com", "name": "Example"},
@@ -92,7 +92,7 @@ A 429 looks like this:
 {"error": "rate_limited", "retry_after_seconds": 540}
 ```
 
-After you complete a task successfully on a listed service, and only if reporting is enabled, you may send `{"target": "<id>", "outcome": "success"}`, at most once per target per day.
+Only report failures. NotWorking doesn't take reports that something worked.
 
 ## what_failed values (the same for every service)
 

@@ -32,7 +32,7 @@ def get_status(
 @router.post(
     "/report",
     status_code=202,
-    summary="Report that an access path failed (or worked) for you",
+    summary="Report that an access path failed for you",
     description="Anonymous. Use the access-path id from the status lookup (or the URL you used). "
     "Never include personal data. Returns the updated service view.",
 )

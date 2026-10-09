@@ -102,11 +102,14 @@ def test_report_returns_service_view_and_counts(client: TestClient) -> None:
     assert "breakdown" not in other and other["failure_reports"] == 0
 
 
-def test_success_reports_are_not_failures(client: TestClient) -> None:
+def test_only_failures_are_reported(client: TestClient) -> None:
+    body = {"target": "xyz.com", "what_failed": ["captcha"]}
+    assert client.post("/v1/report", json=body).status_code == 202  # outcome isn't needed
     r = client.post("/v1/report", json={"target": "xyz.com", "outcome": "success"})
-    assert r.status_code == 202
-    site = next(p for p in r.json()["access_paths"] if p["id"] == "xyz.com")
-    assert site["failure_reports"] == 0
+    assert r.status_code == 422 and {p["field"] for p in r.json()["problems"]} == {
+        "outcome",
+        "what_failed",
+    }
 
 
 def test_counts_expire_after_the_window(client: TestClient, clock: FixedClock) -> None:
@@ -203,8 +206,8 @@ def test_report_validation(client: TestClient) -> None:
         return client.post("/v1/report", json={"target": "xyz.com", **body})
 
     assert _problems(post(outcome="failed")) == {"what_failed"}
-    assert _problems(post(outcome="success", what_failed=["captcha"])) == {"what_failed"}
-    assert _problems(post(outcome="broken")) == {"outcome"}
+    assert _problems(post(outcome="success", what_failed=["captcha"])) == {"outcome"}
+    assert _problems(post(outcome="broken", what_failed=["captcha"])) == {"outcome"}
     assert _problems(post(outcome="failed", what_failed=["meh"])) == {"what_failed"}
     assert _problems(post(**FAIL, agent_type="robot")) == {"agent_type"}
     assert _problems(post(**FAIL, country="XX")) == {"country"}

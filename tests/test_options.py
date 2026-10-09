@@ -9,7 +9,6 @@ def test_bundled_options_load() -> None:
     assert "other" in opts.what_failed_values
     assert all(o.description for o in opts.what_failed)  # D58: every option is described
     assert "notworking_canary" in opts.agent_type  # D51
-    assert set(opts.outcome) == {"failed", "success"}
     assert set(opts.target_type) == {"site", "route", "mcp", "skill"}
 
 
@@ -18,7 +17,6 @@ version: 1
 what_failed:
   - {value: a, description: An a.}
 agent_type: [b]
-outcome: [failed, success]
 target_type: [site]
 """
 

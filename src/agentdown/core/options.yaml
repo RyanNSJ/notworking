@@ -3,7 +3,7 @@
 # The status response, 422 errors, MCP tool descriptions and the skill's fallback
 # copy are all generated from this file. Bump `version` on any change; old reports
 # keep their original values.
-version: 3
+version: 4
 
 what_failed:
   - value: site_unreachable
@@ -37,10 +37,6 @@ agent_type:
   - chatgpt
   - notworking_canary
   - other
-
-outcome:
-  - failed
-  - success
 
 target_type:
   - site

@@ -9,7 +9,7 @@ works and the decisions the code refers to (the `D` numbers in comments).
 
 - `GET /v1/status?target=…`: the status of any target, with the service's access paths when
   the target is listed.
-- `POST /v1/report`: report that an access path failed (or worked).
+- `POST /v1/report`: report that an access path failed. Only failures are reported.
 - An MCP server at `/mcp` with the same two calls as tools, listed in the MCP Registry.
 - The `notworking` skill and plugins for Claude Code, Codex, Copilot CLI, Gemini CLI and pi.
 - A badge, human pages (front page, services, one page per service, methodology) and an open
