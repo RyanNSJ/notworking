@@ -299,3 +299,10 @@ def test_usage_counters_and_stats(
     assert "Reports per lookup: 5.50" in out
     assert "not-listed.com" in out
     assert "site:popular-unlisted.com" in out
+
+
+def test_an_mcp_endpoint_url_finds_its_service(client: TestClient) -> None:
+    """Agents know the URL they connect to, not the Registry name (found in a real session)."""
+    body = status(client, "https://www.xyz.com/mcp", type="mcp").json()
+    assert body["service"]["id"] == "xyz.com"
+    assert any(p["id"] == "io.github.xyz/booking-mcp" for p in body["access_paths"])

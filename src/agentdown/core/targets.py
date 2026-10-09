@@ -74,6 +74,10 @@ def _parse_target(raw: str, type_hint: str | None) -> ParsedTarget:
 
     if type_hint == "skill" or low.startswith(("clawhub:", "skills.sh:")):
         return _parse_skill(low)
+    if type_hint == "mcp" and "://" in s:
+        # An MCP server's endpoint URL (what agents know), not its Registry name: resolve it
+        # like any URL, which finds the service whose domain it's on.
+        type_hint = None
     if type_hint == "mcp" or low.startswith("mcp:"):
         return _parse_mcp(s[4:] if low.startswith("mcp:") else s)
     if type_hint in (None, "site", "route") and "://" in s:
