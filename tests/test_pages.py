@@ -64,6 +64,13 @@ def test_service_page(
     assert client.get("/service/nope.example").status_code == 404
 
 
+def test_privacy_and_terms_pages(client: TestClient) -> None:
+    privacy = client.get("/privacy")
+    assert privacy.status_code == 200 and "IP addresses" in privacy.text
+    assert client.get("/terms").status_code == 200
+    assert 'href="/privacy"' in client.get("/").text  # linked from every page's footer
+
+
 def test_methodology_numbers_come_from_the_detector(client: TestClient) -> None:
     text = client.get("/methodology").text
     assert "less than 1 time in 1,000" in text and "1 in 1,000,000" in text

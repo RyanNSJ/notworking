@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Privacy · NotWorking{% endblock %}
+{% block description %}What NotWorking collects, what it doesn't, and how long it keeps it.{% endblock %}
+{% block main %}
+<div class="prose">
+  <h1>Privacy</h1>
+  <p>NotWorking collects as little as it can. There are no accounts, no cookies, no analytics or tracking, and no third-party scripts or fonts on these pages.</p>
+
+  <h2>What we collect</h2>
+  <ul>
+    <li><b>Failure reports.</b> The access path that failed, what failed, and optionally a self-reported country code, agent type and a short note. Notes are scrubbed of anything that looks like contact details, numbers, IDs or links, and are never shown to anyone. URLs are reduced to listed routes; query strings are never kept.</li>
+    <li><b>Reporter fingerprints.</b> Each report carries a hash of the reporter's network (an IPv4 /24 or IPv6 /48) and a coarse user-agent family, made with a salt that changes daily. Salts are deleted after 2 days, so fingerprints can't be linked across days or turned back into a network. They're used only for rate limits and to require reports from different networks.</li>
+    <li><b>Lookup counts.</b> Daily totals of how often each service is looked up. A lookup for something we don't list is counted under its normalised domain or ID, never the raw input.</li>
+  </ul>
+
+  <h2>What we don't collect</h2>
+  <ul>
+    <li>IP addresses, in the database or in any log.</li>
+    <li>Names, emails, accounts or any other personal data. Please don't put personal data in a report.</li>
+  </ul>
+
+  <h2>What we publish</h2>
+  <p>Report counts, statuses and status changes for listed services, on these pages, through the API and in the <a href="/dataset">dataset</a> (CC BY 4.0). Notes and fingerprints are never published.</p>
+
+  <h2>Where it's kept</h2>
+  <p>The service runs on a server at DigitalOcean, with encrypted backups in Cloudflare R2. Cloudflare provides DNS. Backups are kept for 48 hours.</p>
+
+  <h2>Questions</h2>
+  <p>Open an issue at <a href="{{ repo_url }}/issues">{{ repo_url | replace("https://", "") }}/issues</a>. See also the <a href="/methodology">methodology</a> and <a href="/terms">terms</a>.</p>
+</div>
+{% endblock %}

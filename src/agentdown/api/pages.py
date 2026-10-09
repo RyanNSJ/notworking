@@ -186,6 +186,16 @@ def dataset(request: Request) -> HTMLResponse:
     return _page(request, "dataset.html")
 
 
+@router.get("/privacy")
+def privacy(request: Request) -> HTMLResponse:
+    return _page(request, "privacy.html")
+
+
+@router.get("/terms")
+def terms(request: Request) -> HTMLResponse:
+    return _page(request, "terms.html")
+
+
 def _csv(rows: list[list[object]], header: list[str], filename: str) -> Response:
     buf = io.StringIO()
     writer = csv.writer(buf, lineterminator="\n")
