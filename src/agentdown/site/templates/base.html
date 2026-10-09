@@ -26,6 +26,7 @@ a:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
 header.top { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; align-items: baseline; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: .9rem; }
 .brand { font: 600 1.15rem/1 var(--mono); color: var(--fg); text-decoration: none; }
 .brand span { color: var(--bad); }
+.counter { flex-basis: 100%; margin: 0; font: .78rem/1.4 var(--mono); color: var(--muted); }
 nav { display: flex; flex-wrap: wrap; gap: .25rem 1rem; font: .85rem/1.4 var(--mono); }
 main { display: grid; gap: 1.5rem; }
 h1, h2, h3 { text-wrap: balance; margin: 0; }
@@ -69,6 +70,7 @@ footer p { max-width: none; }
     <a href="/llms.txt">llms.txt</a>
     <a href="{{ repo_url }}">Source</a>
   </nav>
+  <p class="counter">Today (UTC): checks {{ counter.lookups[0] }} &middot; reports {{ counter.reports[0] }} &nbsp;|&nbsp; Last 7 days: checks {{ counter.lookups[1] }} &middot; reports {{ counter.reports[1] }}</p>
 </header>
 <main>
 {% block main %}{% endblock %}

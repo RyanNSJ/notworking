@@ -177,6 +177,17 @@ def test_checks_today_are_shown_as_context(client: TestClient) -> None:
     assert "check" not in client.get("/service/other.net").text.split("<main>")[1].split("<h2")[0]
 
 
+def test_header_counts_checks_and_reports(
+    client: TestClient, client_from: Callable[[str], TestClient]
+) -> None:
+    client.get("/v1/status", params={"target": "xyz.com"})
+    client.get("/v1/status", params={"target": "unlisted.example"})
+    client_from("192.0.2.1").post("/v1/report", json={"target": "example.org", **FAIL})
+    html = client.get("/privacy").text
+    assert "Today (UTC): checks 2 &middot; reports 1" in html
+    assert "Last 7 days: checks 2 &middot; reports 1" in html
+
+
 def test_robots_and_sitemap_for_search_engines(client: TestClient) -> None:
     robots = client.get("/robots.txt").text
     assert "Disallow: /v1/" in robots and f"Sitemap: {PUBLIC_URL}/sitemap.xml" in robots

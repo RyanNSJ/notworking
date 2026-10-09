@@ -361,6 +361,17 @@ def listed_transitions(conn: Connection, before: dt.datetime) -> list[sa.Row]:
     )
 
 
+def usage_totals(conn: Connection, since: dt.date) -> dict[str, int]:
+    """Counts per event since `since` (D64 counters), for the site-wide counter."""
+    total = sa.func.sum(usage_daily.c.count)
+    rows = conn.execute(
+        sa.select(usage_daily.c.event, total)
+        .where(usage_daily.c.day >= since)
+        .group_by(usage_daily.c.event)
+    ).all()
+    return {event: int(n) for event, n in rows}
+
+
 def service_lookups(conn: Connection, since: dt.date) -> dict[str, int]:
     """Lookups per service id since `since` (D64 counters), for ranking quiet services."""
     total = sa.func.sum(usage_daily.c.count)
