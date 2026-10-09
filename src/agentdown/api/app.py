@@ -92,6 +92,8 @@ def create_app(
                 conn.execute(sa.text("SELECT 1"))
         except SQLAlchemyError:
             return JSONResponse({"status": "error", "db": "unreachable"}, status_code=503)
+        if settings.run_jobs and jobs.stale(clock.now()):  # the uptime check alerts on 503
+            return JSONResponse({"status": "error", "detector": "stale"}, status_code=503)
         return JSONResponse({"status": "ok", "version": __version__})
 
     # Last: the MCP app serves /mcp. Routes above take precedence; anything else is a 404.

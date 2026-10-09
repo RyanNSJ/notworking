@@ -29,6 +29,9 @@ def test_classify_site_maps_responses_to_what_failed() -> None:
     assert c(401) == (False, "login_auth")
     # A normal page that embeds reCAPTCHA (say, on a login form) isn't a failure.
     assert c(200, b"<form><div class='g-recaptcha'></div></form>") == (True, None)
+    # A large 200 page with a vendor's marker is the real page (challenge pages are small).
+    assert c(200, b"awswaf" + b"x" * 200_000) == (True, None)
+    assert c(200, b"<title>Human Verification</title> awswaf") == (False, "bot_block")
 
 
 def test_select_splits_daily_and_websites_deterministically(catalog: Catalog) -> None:

@@ -162,3 +162,15 @@ def test_tick_prunes_old_salts(client: TestClient, app: FastAPI, clock: FixedClo
     tick(app)
     with app.state.engine.connect() as conn:
         assert conn.execute(sa.text("SELECT count(*) FROM salts")).scalar() == 0
+
+
+def test_detector_staleness_for_healthz(monkeypatch) -> None:
+    monkeypatch.setattr(jobs, "started_at", None)
+    monkeypatch.setattr(jobs, "last_success", None)
+    assert not jobs.stale(START)  # loop not running (tests, or run_jobs off)
+    monkeypatch.setattr(jobs, "started_at", START)
+    assert not jobs.stale(START + dt.timedelta(minutes=14))  # first run still allowed time
+    assert jobs.stale(START + dt.timedelta(minutes=16))
+    monkeypatch.setattr(jobs, "last_success", START + dt.timedelta(minutes=10))
+    assert not jobs.stale(START + dt.timedelta(minutes=24))
+    assert jobs.stale(START + dt.timedelta(minutes=26))

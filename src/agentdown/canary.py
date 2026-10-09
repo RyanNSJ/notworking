@@ -30,6 +30,7 @@ REGISTRY = "https://registry.modelcontextprotocol.io/v0/servers"
 TIMEOUT = 20
 MAX_REDIRECTS = 5
 MAX_BODY = 512 * 1024
+REAL_PAGE_BYTES = 100 * 1024  # challenge pages seen so far: 2-30 KB; real pages: far more
 HOST_GAP = 1.0  # seconds between requests to one host
 ROTATION_DAYS = 30  # each website-only service is checked once in this many days
 MAX_REPORTS = 90  # per run: at 72 s apart, that's under 2 hours and the job's time limit
@@ -138,6 +139,8 @@ def classify_site(f: Fetched) -> tuple[bool, str | None, str]:
         return False, "site_unreachable", f.error
     body = f.body[:MAX_BODY]
     vendor = next((v for v, m in CHALLENGE_MARKERS if m in body), None)
+    if f.status == 200 and len(body) > REAL_PAGE_BYTES:
+        vendor = None  # challenge pages are small; a big 200 is the real page with a script
     if f.headers.get("cf-mitigated", "").lower() == "challenge":
         vendor = "cloudflare"
     blocked = f.status in (403, 429) or (f.status == 503 and vendor) or vendor
