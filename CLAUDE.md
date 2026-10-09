@@ -34,7 +34,7 @@ Nothing else goes into the MVP. Searching across services by task ("book a table
 
 - **Keep it simple.** In any ambiguity, pick the simplest option. There's no deadline, so don't rush.
 - **Build only the milestone the user has started.** M0 (scaffold), M1 (infra), M2 (core API + starter catalogue), M3 (MCP, skill, plugin manifests, front page, published), M4 (detector) and M5 (pages, badge, dataset) are done. Don't start a milestone without the user's go.
-- Tasks that need Ryan (accounts, secrets, payments) go in `ryan_todo.md` (local only, git-ignored). Keep it short.
+- `ryan_todo.md` (local only, git-ignored) holds only Ryan's own next steps for tasks discussed in chat, with the detail he needs to do them. No status updates, logs or Claude-side follow-ups: report progress in chat, and keep Claude's backlog in `notes/PLAN.md`. Remove items once done.
 - Never commit working or reference files (notes, todos, personal Claude Code config). Stage files by name, not with `git add -A`.
 - **Keep public text terse.** Commit messages, pull request titles and descriptions, code comments and public docs say *what* changed, not the reasoning behind it. Reasoning and decisions go in `notes/PLAN.md`.
 - **Never describe in public** (commits, pull requests, docs, comments, catalogue files) where catalogue services come from, how they're collected or found, or the catalogue's scope or size targets.
