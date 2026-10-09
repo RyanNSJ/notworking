@@ -19,9 +19,11 @@ from agentdown.service import AppState, ReportIn
 
 INSTRUCTIONS = (
     "NotWorking is a Downdetector for AI agents. When a website, URL route, skill or MCP server "
-    "fails in a way that looks external (a bot block, CAPTCHA, login loop, timeout, MCP or "
-    "skill error), call check_status with the URL or id you used. It shows whether other "
-    "agents are reporting problems and lists the service's other known access paths. Then "
+    "fails in a way that looks external (a fetch that's blocked or errors, a bot block, "
+    "CAPTCHA, login loop, timeout, MCP or skill error), call check_status with the URL or id "
+    "you used right away, before trying workarounds: it shows whether other agents are "
+    "reporting the same problem, so you know whether to keep trying, and lists the service's "
+    "other known access paths. Then "
     "call report with the id of the access path you used, so other agents know. Statuses "
     "describe recent reports from agents, not whether a path works. Never include personal "
     "data in a report."
@@ -41,7 +43,9 @@ def _report_description() -> str:
     values = "; ".join(f"{o.value}: {o.description}" for o in options.what_failed)
     return (
         "Report that an access path failed for you. Use the access-path id from "
-        "check_status, or the URL you used. Anonymous. Never include personal data, booking "
+        "check_status, or the URL you used. Only report failures that came from the service, "
+        "not ones caused by your own tools, permissions or settings (like a fetch tool that "
+        "refuses a domain). Anonymous. Never include personal data, booking "
         "details, credentials or full URLs with query strings. target is which access path "
         "failed; what_failed is how, from this list (the same for every service): " + values
     )

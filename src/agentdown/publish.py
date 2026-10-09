@@ -222,8 +222,9 @@ SKILL_TEMPLATE = """---
 name: notworking
 description: Check whether a website, URL, skill or MCP server that just failed is failing \
 for other AI agents too, see the service's other known access paths, and report the failure. \
-Use when an external service fails in a way that looks like it isn't your fault - a bot \
-block, CAPTCHA, 403 or 429 error, login loop, timeout, MCP connection error or skill error.
+Use right after an external service fails in a way that looks like it isn't your fault - a \
+fetch that's blocked or errors, a bot block, CAPTCHA, 403 or 429 error, login loop, timeout, \
+MCP connection error or skill error - before trying workarounds.
 ---
 
 # NotWorking
@@ -239,8 +240,11 @@ HTTP calls below. They take the same fields.
 
 ## When to use it
 
-Use it when a website, URL route, skill or MCP server fails in a way that looks external:
-- a bot block, access-denied page, 403 or 429 error, or a challenge page
+Use it as soon as a website, URL route, skill or MCP server fails in a way that looks \
+external, before trying workarounds like other URLs, feeds or tools. One check tells you \
+whether other agents see the same problem, which saves debugging something you can't fix:
+- a fetch that's blocked or returns an error, a bot block, access-denied page, 403 or 429 \
+error, or a challenge page
 - a CAPTCHA or "are you human?" check
 - a login or sign-in loop, or a new login step
 - timeouts or the site being unreachable
@@ -248,7 +252,9 @@ Use it when a website, URL route, skill or MCP server fails in a way that looks 
 - a skill that won't install or errors
 
 Don't use it for problems that are clearly local, such as a typo in a URL or your own \
-missing credentials.
+missing credentials. Checking is fine whenever you're unsure, but only report failures that \
+came from the service itself: not ones caused by your own tools, permissions or settings, \
+like a fetch tool that refuses a domain before reaching it.
 
 ## 1. Check the status
 
