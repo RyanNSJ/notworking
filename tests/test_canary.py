@@ -121,3 +121,20 @@ def test_check_mcp_looks_the_server_up_by_name_and_initializes() -> None:
     assert check(Fetched(405))[:3] == (False, "mcp_error", 405)
     fx = FakeFetcher({})
     assert canary.check_mcp(fx, "com.x/mcp")[0][1:3] == (False, "mcp_error")  # type: ignore[arg-type]
+
+
+def test_check_skill_reads_public_listing_pages() -> None:
+    real = Fetched(200, {}, b"<title>jira - ClawHub</title> ... SKILL.md ...")
+    missing = Fetched(200, {}, b"<title>jira - ClawHub</title>")  # hubs answer 200 for anything
+    page = "https://clawhub.ai/jdrhyne/skills/jira"
+
+    def check(answers: dict, skill_id: str = "clawhub:jdrhyne/jira") -> tuple:
+        return canary.check_skill(FakeFetcher(answers), skill_id)[0][1:3]  # type: ignore[arg-type]
+
+    assert check({("GET", page): real}) == (True, None)
+    assert check({("GET", page): missing}) == (False, "skill_failed")
+    sh = ("GET", "https://skills.sh/vercel/skills/next")
+    assert check({sh: Fetched(200, {}, b"First Seen")}, "skills.sh:vercel/skills/next") == (
+        True,
+        None,
+    )

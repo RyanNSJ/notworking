@@ -281,20 +281,16 @@ def check_mcp(fx: Fetcher, name: str) -> list[tuple]:
 
 def check_skill(fx: Fetcher, skill_id: str) -> list[tuple]:
     def run() -> tuple[bool, str | None, int | None, str]:
+        # Public listing pages (robots.txt disallows both hubs' /api/). Both answer 200 for a
+        # missing skill, so a marker only real listings carry decides.
         hub, _, rest = skill_id.partition(":")
         if hub == "clawhub":
             owner, slug = rest.split("/", 1)
-            q = urllib.parse.urlencode({"owner": owner, "path": "SKILL.md"})
-            f = fx.request("GET", f"https://clawhub.ai/api/v1/skills/{slug}/file?{q}")
-            ok = f.status == 200 and f.body.lstrip().startswith(b"---") and b"name:" in f.body
-            return (
-                ok,
-                None if ok else "skill_failed",
-                f.status,
-                "SKILL.md parsed" if ok else (f.error or f"SKILL.md {f.status}"),
-            )
-        f = fx.request("GET", f"https://skills.sh/{rest}")
-        ok = f.status == 200 and b"First Seen" in f.body
+            url, marker = f"https://clawhub.ai/{owner}/skills/{slug}", b"SKILL.md"
+        else:
+            url, marker = f"https://skills.sh/{rest}", b"First Seen"
+        f = fx.request("GET", url)
+        ok = f.status == 200 and marker in f.body
         return (
             ok,
             None if ok else "skill_failed",
