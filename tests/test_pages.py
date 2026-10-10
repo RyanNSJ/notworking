@@ -52,6 +52,19 @@ def test_board_ranks_raised_then_looked_up(
     assert 'class="bar-hot"' in html  # the last hour is coloured while raised
 
 
+def test_board_ranks_checks_today_before_earlier_lookups(
+    client: TestClient, clock: FixedClock
+) -> None:
+    for _ in range(3):
+        client.get("/v1/status", params={"target": "example.org"})
+    clock.advance(dt.timedelta(days=2))
+    client.get("/v1/status", params={"target": "xyz.com"})
+    html = client.get("/").text
+    # One check today outranks three earlier in the week; the 7 days break the tie.
+    assert board_names(html) == ["XYZ Booking", "Example Org", "Other Net"]
+    assert "1 check today" in html
+
+
 def test_service_page(
     client: TestClient, client_from: Callable[[str], TestClient], app: FastAPI
 ) -> None:

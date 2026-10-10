@@ -99,13 +99,15 @@ def _rows(
 
 
 def ranked(rows: list[ServiceRow]) -> list[ServiceRow]:
-    """Raised statuses first (most reported first), then the most looked-up services in the
-    last 7 days, then alphabetical. Access paths within a service stay alphabetical."""
+    """Raised statuses first (most reported first), then the most checked services today (the
+    count each row shows), then the last 7 days, then alphabetical. Access paths within a
+    service stay alphabetical."""
     return sorted(
         rows,
         key=lambda r: (
             -LEVELS.index(r.status),
             -r.total_24h if r.status != NONE else 0,
+            -r.checks_today,
             -r.lookups_7d,
             r.service.name.lower(),
         ),
