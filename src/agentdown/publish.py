@@ -126,14 +126,16 @@ or a service name. Example response, trimmed:
   "service": {"id": "example.com", "name": "Example"},
   "you_asked_about": {"type": "site", "id": "example.com"},
   "listed": true,
+  "summary": "Agents are reporting failures on example.com in the last hour, ...",
   "window": "1h",
   "access_paths": [
     {"type": "mcp", "id": "com.example/mcp", "description": "Example's hosted MCP server.",
-     "status": "no_reported_issues", "failure_reports": 0, "unique_reporters": 0},
+     "status": "no_reported_issues", "failure_reports": 0, "unique_reporters": 0,
+     "failure_reports_24h": 0},
     {"type": "site", "id": "example.com", "url": "https://www.example.com/",
      "description": "The Example website.", "status": "issues_reported",
      "failure_reports": 7, "unique_reporters": 6, "breakdown": {"captcha": 5, "bot_block": 2},
-     "last_report_at": "2026-10-09T08:40:00Z"}
+     "failure_reports_24h": 9, "last_report_at": "2026-10-09T08:40:00Z"}
   ],
   "please_report": {"method": "POST", "url": "{base_url}/v1/report", "...": "..."},
   "what_failed_options": [{"value": "captcha", "description": "..."}]
@@ -146,8 +148,11 @@ Each access path's `status` is one of:
 - `issues_reported`: well above that path's usual level
 - `many_issues_reported`: many reports from many independent agents and networks
 
-A target that isn't in the catalogue comes back with `listed: false` and its own `status`, \
-`failure_reports` and `unique_reporters`, but no `service` or `access_paths`.
+`failure_reports` and `unique_reporters` cover the last hour. `failure_reports_24h` and \
+`last_report_at` cover the last 24 hours, as context only. `summary` says it in one sentence.
+
+A target that isn't in the catalogue comes back with `listed: false`, a `summary` and its own \
+`status` and counts, but no `service` or `access_paths`.
 
 ## 2. Report what failed
 
@@ -277,19 +282,21 @@ GET {base_url}/v1/status?target=<the URL, access-path id or service name>
 Pass the URL or id you used, for example `https://www.example.com/booking/123`, \
 `clawhub:owner/slug` or `io.github.owner/server`. The response lists the service's \
 `access_paths`. Each has an `id`, a `description`, a `status` and `failure_reports` from the \
-last hour. Example, trimmed:
+last hour, plus `failure_reports_24h` as context. `summary` says it in one sentence. Example, \
+trimmed:
 
 ```json
 {{
   "service": {{"id": "example.com", "name": "Example"}},
   "you_asked_about": {{"type": "site", "id": "example.com"}},
   "listed": true,
+  "summary": "Agents are reporting failures on example.com in the last hour, ...",
   "access_paths": [
     {{"type": "mcp", "id": "com.example/mcp", "description": "Example's hosted MCP server.",
-     "status": "no_reported_issues", "failure_reports": 0}},
+     "status": "no_reported_issues", "failure_reports": 0, "failure_reports_24h": 0}},
     {{"type": "site", "id": "example.com", "description": "The Example website.",
      "status": "issues_reported", "failure_reports": 7, "unique_reporters": 6,
-     "breakdown": {{"captcha": 5, "bot_block": 2}}}}
+     "breakdown": {{"captcha": 5, "bot_block": 2}}, "failure_reports_24h": 9}}
   ]
 }}
 ```

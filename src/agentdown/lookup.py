@@ -21,6 +21,10 @@ PLEASE_REPORT = (
     "If one of these access paths failed for you, please report it so other agents know. "
     "Use the id of the path you used. Reports are anonymous."
 )
+PLEASE_REPORT_NOT_LISTED = (
+    "If this target failed for you, please report it so other agents know. Use the URL or id "
+    "you used. Reports are anonymous."
+)
 NOT_LISTED = (
     "This target isn't in the NotWorking catalogue, so there's no description or list of other "
     "access paths for it. The counts are reports from agents about this exact target. If it "
@@ -95,20 +99,69 @@ def _path_entry(path: AccessPath, counts: PathCounts) -> dict[str, object]:
     entry["description"] = path.description
     if path.no_longer_working_since:
         entry["no_longer_working_since"] = _iso(path.no_longer_working_since)
-    entry["status"] = counts.status
-    entry["failure_reports"] = counts.failure_reports
-    entry["unique_reporters"] = counts.unique_reporters
+    return entry | _counts(counts)
+
+
+def _counts(counts: PathCounts) -> dict[str, object]:
+    entry: dict[str, object] = {
+        "status": counts.status,
+        "failure_reports": counts.failure_reports,
+        "unique_reporters": counts.unique_reporters,
+    }
     if counts.failure_reports:
         entry["breakdown"] = counts.breakdown
-        if counts.last_report_at:
-            entry["last_report_at"] = _iso(counts.last_report_at)
+    entry["failure_reports_24h"] = counts.failure_reports_24h
+    if counts.last_report_at:
+        entry["last_report_at"] = _iso(counts.last_report_at)
     return entry
 
 
-def _common(options: Options, public_url: str, now: dt.datetime, example_target: str):
+def _reports(n: int) -> str:
+    return f"{n} failure report{'' if n == 1 else 's'}"
+
+
+def summary(subject: str, counts: dict[str, PathCounts]) -> str:
+    """One plain sentence about recent reports, built only from fixed text, the catalogue's
+    name and ids, and counts. It describes reports, never whether anything works."""
+    raised = sorted(pid for pid, c in counts.items() if c.status != "no_reported_issues")
+    hour = sum(c.failure_reports for c in counts.values())
+    day = sum(c.failure_reports_24h for c in counts.values())
+    if raised:
+        return (
+            f"Agents are reporting failures on {', '.join(raised)} in the last hour, well above "
+            f"the usual level. If it failed for you too, please report it."
+        )
+    if hour:
+        recent = sorted(pid for pid, c in counts.items() if c.failure_reports)
+        return (
+            f"{_reports(hour)} on {', '.join(recent)} in the last hour, not enough to raise a "
+            f"status. If it failed for you, please report it so other agents know."
+        )
+    if day:
+        latest = max(
+            (c.last_report_at, pid) for pid, c in counts.items() if c.last_report_at is not None
+        )
+        return (
+            f"No failure reports for {subject} in the last hour; {_reports(day)} in the last 24 "
+            f"hours, most recently on {latest[1]} at {_iso(latest[0])}. If it failed for you, "
+            f"please report it so other agents know."
+        )
+    return (
+        f"No other agents reported failures for {subject} in the last 24 hours. If it failed "
+        f"for you, please report it so other agents know."
+    )
+
+
+def _common(
+    options: Options,
+    public_url: str,
+    now: dt.datetime,
+    example_target: str,
+    please: str = PLEASE_REPORT,
+):
     return {
         "please_report": {
-            "message": PLEASE_REPORT,
+            "message": please,
             "method": "POST",
             "url": f"{public_url}/v1/report",
             "example": {"target": example_target, "what_failed": ["captcha"]},
@@ -133,12 +186,14 @@ def service_view(
     # Looked up by service name or id: there's no single path to point at.
     asked = res.asked or ("service", service.id)
     example = res.asked[1] if res.asked else service.paths[0].id
+    path_counts = {p.id: counts.get(p.id, PathCounts()) for p in service.paths}
     return {
         "service": {"id": service.id, "name": service.name},
         "you_asked_about": {"type": asked[0], "id": asked[1]},
         "listed": True,
+        "summary": summary(service.name, path_counts),
         "window": "1h",
-        "access_paths": [_path_entry(p, counts.get(p.id, PathCounts())) for p in service.paths],
+        "access_paths": [_path_entry(p, path_counts[p.id]) for p in service.paths],
         **_common(options, public_url, now, example),
     }
 
@@ -150,22 +205,14 @@ def not_listed_view(
 
     The only id in it is the one the asking agent sent, so no reporter text reaches it."""
     assert res.asked is not None
-    entry: dict[str, object] = {
-        "status": counts.status,
-        "failure_reports": counts.failure_reports,
-        "unique_reporters": counts.unique_reporters,
-    }
-    if counts.failure_reports:
-        entry["breakdown"] = counts.breakdown
-        if counts.last_report_at:
-            entry["last_report_at"] = _iso(counts.last_report_at)
     return {
         "you_asked_about": {"type": res.asked[0], "id": res.asked[1]},
         "listed": False,
+        "summary": summary(res.asked[1], {res.asked[1]: counts}),
         "window": "1h",
-        **entry,
+        **_counts(counts),
         "message": NOT_LISTED,
-        **_common(options, public_url, now, res.asked[1]),
+        **_common(options, public_url, now, res.asked[1], PLEASE_REPORT_NOT_LISTED),
     }
 
 

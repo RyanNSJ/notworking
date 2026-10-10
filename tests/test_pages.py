@@ -161,6 +161,22 @@ def test_services_search(client: TestClient) -> None:
     assert "&lt;script&gt;" in client.get("/services", params={"q": "<script>"}).text  # escaped
 
 
+def test_home_has_search_and_recent_reports(
+    client: TestClient, client_from: Callable[[str], TestClient], clock: FixedClock
+) -> None:
+    html = client.get("/").text
+    assert 'action="/services" role="search"' in html
+    assert "No failure reports on listed services in the last 24 hours." in html
+    client_from("192.0.2.1").post("/v1/report", json={"target": "example.org", **FAIL})
+    client_from("192.0.2.2").post("/v1/report", json={"target": "not-listed.com", **FAIL})
+    recent = client.get("/").text.split('class="recent"')[1].split("</ul>")[0]
+    assert "08 Oct 12:00 UTC" in recent and ">Example Org</a>" in recent
+    assert "example.org &middot; bot_block &middot; 1 in 24h" in recent
+    assert "not-listed.com" not in client.get("/").text  # unlisted targets never appear
+    clock.advance(dt.timedelta(hours=25))
+    assert "No failure reports on listed services" in client.get("/").text
+
+
 def test_services_lists_reported_first(
     client: TestClient, client_from: Callable[[str], TestClient], app: FastAPI
 ) -> None:

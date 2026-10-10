@@ -9,6 +9,7 @@
 .install { display: grid; gap: .8rem; grid-template-columns: minmax(0, 1fr); }
 .install h3 { margin-bottom: .25rem; }
 .board { display: grid; gap: .6rem; min-width: 0; grid-template-columns: minmax(0, 1fr); }
+.recent { margin: 0; padding: 0; list-style: none; display: grid; gap: .35rem; font: .82rem/1.4 var(--mono); overflow-wrap: anywhere; }
 .board-head { display: flex; justify-content: space-between; gap: .25rem 1rem; flex-wrap: wrap; align-items: baseline; }
 {% endblock %}
 {% block main %}
@@ -16,6 +17,13 @@
   <section class="intro" aria-labelledby="pitch">
     <h1 id="pitch">Downdetector for AI agents</h1>
     <p class="lede">When the web quietly locks agents out, NotWorking tells them, and you, in real time.</p>
+    <form class="search" method="get" action="/services" role="search">
+      <label for="q">Is it down for agents? Search a service, site, MCP server or skill</label>
+      <div class="search-row">
+        <input id="q" name="q" type="search" maxlength="100" autocomplete="off" placeholder="notion, github.com">
+        <button type="submit">Search</button>
+      </div>
+    </form>
     <p>Sites, MCP servers and skills break for agents through bot walls, CAPTCHAs, login changes and redesigns, often while they still work for people. In one call, an agent learns whether it's just them or everyone, sees the service's other known access paths, and reports what failed.</p>
     <h2>Why install it</h2>
     <p>When something fails and your agent suspects the cause is outside its control, it checks NotWorking:</p>
@@ -46,6 +54,16 @@
       {% for r in board %}{% include "_board_row.html" %}{% endfor %}
     </div>
     <p class="muted mono small">Services with reported issues come first, then the most looked-up services, then A to Z. <a href="/services">All {{ total_services }} services</a></p>
+    <h2 id="recent-title">Recent reports, last 24h</h2>
+    {% if recent %}
+    <ul class="recent" aria-labelledby="recent-title">
+      {% for r, p in recent %}
+      <li><span class="muted">{{ p.counts.last_report_at.strftime("%d %b %H:%M") }} UTC</span> <a href="/service/{{ r.service.id }}">{{ r.service.name }}</a> <span class="row-sub">{{ p.path.id }}{% for w in p.day.breakdown %}{% if loop.first %} &middot; {{ w }}{% endif %}{% endfor %} &middot; {{ p.day.total }} in 24h</span></li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="muted mono small">No failure reports on listed services in the last 24 hours.</p>
+    {% endif %}
   </section>
 </div>
 {% endblock %}

@@ -24,6 +24,7 @@ from agentdown.db.schema import (
 )
 
 WINDOW = dt.timedelta(hours=1)
+CONTEXT_WINDOW = dt.timedelta(hours=24)
 PER_TARGET_GAP = dt.timedelta(minutes=10)  # D57
 PER_REPORTER_HOURLY = 60  # D57
 MISS_SUBJECTS_PER_DAY = 1000  # beyond this, lookup misses count under one subject
@@ -132,12 +133,14 @@ class PathCounts:
     failure_reports: int = 0
     unique_reporters: int = 0
     breakdown: dict[str, int] = field(default_factory=dict)
-    last_report_at: dt.datetime | None = None
+    failure_reports_24h: int = 0  # context only, never a status
+    last_report_at: dt.datetime | None = None  # the latest in the last 24 hours
     status: str = "no_reported_issues"  # set by the detector (M4)
 
 
 def path_counts(conn: Connection, path_ids: list[str], now: dt.datetime) -> dict[str, PathCounts]:
-    """Failure counts per path id over the last hour."""
+    """Failure counts per path id over the last hour (the status window), plus the last 24
+    hours' count and latest report time as context."""
     rows = conn.execute(
         sa.select(
             targets.c.target_id,
@@ -149,20 +152,21 @@ def path_counts(conn: Connection, path_ids: list[str], now: dt.datetime) -> dict
         .where(
             targets.c.target_id.in_(path_ids),
             reports.c.outcome == "failed",
-            reports.c.created_at > now - WINDOW,
+            reports.c.created_at > now - CONTEXT_WINDOW,
         )
     ).all()
     out = {pid: PathCounts() for pid in path_ids}
     reporters: dict[str, set[str]] = {pid: set() for pid in path_ids}
     breakdowns: dict[str, Counter[str]] = {pid: Counter() for pid in path_ids}
     for tid, fp, what_failed, created in rows:
-        c = out[tid]
-        c.failure_reports += 1
-        reporters[tid].add(fp)
-        breakdowns[tid].update(what_failed or [])
-        created = utc(created)
+        c, created = out[tid], utc(created)
+        c.failure_reports_24h += 1
         if c.last_report_at is None or created > c.last_report_at:
             c.last_report_at = created
+        if created > now - WINDOW:
+            c.failure_reports += 1
+            reporters[tid].add(fp)
+            breakdowns[tid].update(what_failed or [])
     for pid, c in out.items():
         c.unique_reporters = len(reporters[pid])
         c.breakdown = dict(sorted(breakdowns[pid].items()))

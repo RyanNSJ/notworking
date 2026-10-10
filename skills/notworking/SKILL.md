@@ -30,19 +30,20 @@ Don't use it for problems that are clearly local, such as a typo in a URL or you
 GET https://notworking.io/v1/status?target=<the URL, access-path id or service name>
 ```
 
-Pass the URL or id you used, for example `https://www.example.com/booking/123`, `clawhub:owner/slug` or `io.github.owner/server`. The response lists the service's `access_paths`. Each has an `id`, a `description`, a `status` and `failure_reports` from the last hour. Example, trimmed:
+Pass the URL or id you used, for example `https://www.example.com/booking/123`, `clawhub:owner/slug` or `io.github.owner/server`. The response lists the service's `access_paths`. Each has an `id`, a `description`, a `status` and `failure_reports` from the last hour, plus `failure_reports_24h` as context. `summary` says it in one sentence. Example, trimmed:
 
 ```json
 {
   "service": {"id": "example.com", "name": "Example"},
   "you_asked_about": {"type": "site", "id": "example.com"},
   "listed": true,
+  "summary": "Agents are reporting failures on example.com in the last hour, ...",
   "access_paths": [
     {"type": "mcp", "id": "com.example/mcp", "description": "Example's hosted MCP server.",
-     "status": "no_reported_issues", "failure_reports": 0},
+     "status": "no_reported_issues", "failure_reports": 0, "failure_reports_24h": 0},
     {"type": "site", "id": "example.com", "description": "The Example website.",
      "status": "issues_reported", "failure_reports": 7, "unique_reporters": 6,
-     "breakdown": {"captcha": 5, "bot_block": 2}}
+     "breakdown": {"captcha": 5, "bot_block": 2}, "failure_reports_24h": 9}
   ]
 }
 ```

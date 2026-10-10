@@ -117,6 +117,43 @@ def test_bad_type_param(client: TestClient) -> None:
     assert r.json()["valid_values"]["type"] == ["site", "route", "mcp", "skill"]
 
 
+def test_summary_and_24h_context(
+    client: TestClient, client_from: Callable[[str], TestClient], app: FastAPI, clock: FixedClock
+) -> None:
+    def view() -> tuple[str, dict]:
+        body = status(client, "xyz.com").json()
+        return body["summary"], next(p for p in body["access_paths"] if p["id"] == "xyz.com")
+
+    assert view()[0] == (
+        "No other agents reported failures for XYZ Booking in the last 24 hours. "
+        "If it failed for you, please report it so other agents know."
+    )
+    assert "summary" not in report(client, "xyz.com").json()  # it would ask for a report
+    text, path = view()
+    assert text.startswith("1 failure report on xyz.com in the last hour, not enough to raise")
+    assert path["failure_reports"] == 1 and path["failure_reports_24h"] == 1
+
+    clock.advance(dt.timedelta(hours=2))  # out of the status window, still in the 24h context
+    text, path = view()
+    assert text.startswith(
+        "No failure reports for XYZ Booking in the last hour; 1 failure report in the last 24 "
+        "hours, most recently on xyz.com at 2026-10-08T12:00:00Z."
+    )
+    assert path["failure_reports"] == 0 and "breakdown" not in path
+    assert path["failure_reports_24h"] == 1 and path["last_report_at"] == "2026-10-08T12:00:00Z"
+
+    for i in range(5):  # five networks: the status rises
+        report(client_from(f"198.51.{100 + i}.1"), "xyz.com/booking")
+    jobs.tick(cast(AppState, app.state))
+    assert view()[0].startswith("Agents are reporting failures on xyz.com/booking in the last hour")
+
+    clock.advance(dt.timedelta(days=2))
+    unlisted = status(client, "not-listed.com").json()
+    assert unlisted["summary"].startswith("No other agents reported failures for not-listed.com")
+    assert unlisted["failure_reports_24h"] == 0
+    assert unlisted["please_report"]["message"].startswith("If this target failed for you")
+
+
 # ---- reports -------------------------------------------------------------------
 
 

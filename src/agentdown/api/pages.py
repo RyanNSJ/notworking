@@ -28,6 +28,7 @@ router = APIRouter(include_in_schema=False)
 templates = Jinja2Templates(directory=Path(__file__).parent.parent / "site" / "templates")
 PAGE_CACHE = {"Cache-Control": "public, max-age=60"}
 BOARD_SIZE = 10
+RECENT_SIZE = 10
 SEARCH_LIMIT = 50
 LOOKUP_DAYS = 7
 
@@ -149,11 +150,14 @@ def home(request: Request) -> HTMLResponse:
         lookups = store.service_lookups(conn, now.date() - dt.timedelta(days=LOOKUP_DAYS - 1))
     for r in rows:
         r.lookups_7d = lookups.get(r.service.id, 0)
+    reported = [(r, p) for r in rows for p in r.paths if p.counts.last_report_at]
+    recent = sorted(reported, key=lambda rp: rp[1].counts.last_report_at or now, reverse=True)
     rows = ranked(rows)
     return _page(
         request,
         "home.html",
         board=rows[:BOARD_SIZE],
+        recent=recent[:RECENT_SIZE],
         total_services=len(rows),
         install=publish.install_commands(state.settings.public_url),
         description=publish.DESCRIPTION,

@@ -28,6 +28,12 @@ a:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
 header.top { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; align-items: baseline; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: .9rem; }
 .brand { font: 600 1.15rem/1 var(--mono); color: var(--fg); text-decoration: none; }
 .brand span { color: var(--bad); }
+.search { display: grid; gap: .35rem; max-width: 32rem; }
+.search label { font: .8rem/1.3 var(--mono); color: var(--muted); }
+.search-row { display: flex; gap: .5rem; }
+.search input { flex: 1; min-width: 0; font: .9rem/1.4 var(--mono); padding: .45rem .6rem; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; }
+.search button { font: 600 .8rem/1 var(--mono); padding: .45rem .8rem; color: var(--bg); background: var(--fg); border: 0; border-radius: 4px; cursor: pointer; }
+.search input:focus-visible, .search button:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
 .counter { flex-basis: 100%; margin: 0; font: .78rem/1.4 var(--mono); color: var(--muted); }
 nav { display: flex; flex-wrap: wrap; gap: .25rem 1rem; font: .85rem/1.4 var(--mono); }
 main { display: grid; gap: 1.5rem; }

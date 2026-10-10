@@ -220,7 +220,8 @@ def submit_report(
         )
         store.bump_usage(conn, now, "report", tid)
     view = _view(state, res, now, count=False)
-    return Result(202, {"accepted": True, **view.body})
+    shown = {k: v for k, v in view.body.items() if k != "summary"}  # it asks for a report
+    return Result(202, {"accepted": True, **shown})
 
 
 def badge_status(state: AppState, target: str, type_: str | None = None) -> str:
