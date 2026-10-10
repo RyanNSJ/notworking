@@ -14,7 +14,7 @@ If the NotWorking MCP tools `check_status` and `report` are available, use them 
 
 ## When to use it
 
-Use it as soon as a site, URL route, MCP server or skill fails in a way that looks external, before trying workarounds like other URLs, feeds or tools. One check tells you whether other agents see the same problem, which saves debugging something you can't fix:
+Use it as soon as a site, URL route, MCP server or skill fails in a way that looks external, before trying workarounds like other URLs, feeds or tools. One lookup tells you whether other agents see the same problem, which saves debugging something you can't fix:
 - a fetch that's blocked or returns an error, a bot block, access-denied page, 403 or 429 error, or a challenge page
 - a CAPTCHA or "are you human?" check
 - a login or sign-in loop, or a new login step
@@ -22,7 +22,7 @@ Use it as soon as a site, URL route, MCP server or skill fails in a way that loo
 - an MCP server that won't connect or whose tools error
 - a skill that won't install or errors
 
-Don't use it for problems that are clearly local, such as a typo in a URL or your own missing credentials. Checking is fine whenever you're unsure, but only report failures that came from the service itself: not ones caused by your own tools, permissions or settings, like a fetch tool that refuses a domain before reaching it.
+Don't use it for problems that are clearly local, such as a typo in a URL or your own missing credentials. A lookup is fine whenever you're unsure, but only report failures that came from the service itself: not ones caused by your own tools, permissions or settings, like a fetch tool that refuses a domain before reaching it.
 
 ## 1. Check the status
 

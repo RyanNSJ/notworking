@@ -7,7 +7,7 @@
       {%- else -%}
         {{ r.paths | length }} access path{{ "s" if r.paths | length != 1 }} &middot; no reports
       {%- endif -%}
-      {%- if r.checks_today %} &middot; {{ r.checks_today }} check{{ "s" if r.checks_today != 1 }} today{% endif -%}
+      {%- if r.lookups_today %} &middot; {{ r.lookups_today }} lookup{{ "s" if r.lookups_today != 1 }} today{% endif -%}
     </div>
   </div>
   <span class="st {{ cls[r.status] }}">{{ label[r.status] }}</span>

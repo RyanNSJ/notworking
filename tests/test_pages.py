@@ -52,7 +52,7 @@ def test_board_ranks_raised_then_looked_up(
     assert 'class="bar-hot"' in html  # the last hour is coloured while raised
 
 
-def test_board_ranks_checks_today_before_earlier_lookups(
+def test_board_ranks_lookups_today_before_earlier_ones(
     client: TestClient, clock: FixedClock
 ) -> None:
     for _ in range(3):
@@ -60,9 +60,9 @@ def test_board_ranks_checks_today_before_earlier_lookups(
     clock.advance(dt.timedelta(days=2))
     client.get("/v1/status", params={"target": "xyz.com"})
     html = client.get("/").text
-    # One check today outranks three earlier in the week; the 7 days break the tie.
+    # One lookup today outranks three earlier in the week; the 7 days break the tie.
     assert board_names(html) == ["XYZ Booking", "Example Org", "Other Net"]
-    assert "1 check today" in html
+    assert "1 lookup today" in html
 
 
 def test_service_page(
@@ -200,15 +200,15 @@ def test_services_lists_reported_first(
     assert rest == ["Example Org", "XYZ Booking"]
 
 
-def test_checks_today_are_shown_as_context(client: TestClient) -> None:
+def test_lookups_today_are_shown_as_context(client: TestClient) -> None:
     for _ in range(2):
         client.get("/v1/status", params={"target": "xyz.com"})
-    assert "2 checks today" in client.get("/").text
-    assert "Agents checked it 2 times today." in client.get("/service/xyz.com").text
-    assert "check" not in client.get("/service/other.net").text.split("<main>")[1].split("<h2")[0]
+    assert "2 lookups today" in client.get("/").text
+    assert "Agents looked it up 2 times today." in client.get("/service/xyz.com").text
+    assert "look" not in client.get("/service/other.net").text.split("<main>")[1].split("<h2")[0]
 
 
-def test_header_counts_checks_and_reports_over_rolling_windows(
+def test_header_counts_lookups_and_reports_over_rolling_windows(
     client: TestClient,
     client_from: Callable[[str], TestClient],
     app: FastAPI,
@@ -223,17 +223,17 @@ def test_header_counts_checks_and_reports_over_rolling_windows(
         return html.split('class="counter">')[1].split("</p>")[0]
 
     assert counter() == (
-        "Last 24h: checks 2 &middot; reports 1 &nbsp;|&nbsp; "
-        "Last 7 days: checks 2 &middot; reports 1"
+        "Last 24h: lookups 2 &middot; reports 1 &nbsp;|&nbsp; "
+        "Last 7 days: lookups 2 &middot; reports 1"
     )
     clock.advance(dt.timedelta(hours=23, minutes=59))
-    assert "Last 24h: checks 2 &middot; reports 1" in counter()
+    assert "Last 24h: lookups 2 &middot; reports 1" in counter()
     clock.advance(dt.timedelta(hours=2))  # past 24h, and past the lookups' hour
-    assert "Last 24h: checks 0 &middot; reports 0" in counter()
-    assert "Last 7 days: checks 2 &middot; reports 1" in counter()
+    assert "Last 24h: lookups 0 &middot; reports 0" in counter()
+    assert "Last 7 days: lookups 2 &middot; reports 1" in counter()
     clock.advance(dt.timedelta(days=8))
     jobs.tick(cast(AppState, app.state))
-    assert "Last 7 days: checks 0 &middot; reports 0" in counter()
+    assert "Last 7 days: lookups 0 &middot; reports 0" in counter()
     with app.state.engine.connect() as conn:  # old hourly counts are pruned
         assert conn.execute(sa.select(sa.func.count()).select_from(checks_hourly)).scalar() == 0
 

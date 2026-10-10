@@ -9,7 +9,7 @@
   <h2>Services and access paths</h2>
   <p>A service can be reached by agents in several ways: its website, specific routes on it, MCP servers and skills. Each of those is an access path, and each gets its own status. Stewards curate the catalogue of services and paths and write every description. A path is either listed (in the catalogue) or not listed.</p>
   <p>Paths are shown alphabetically, never ranked. Listing a path isn't an endorsement: we don't test, vet or endorse anything we list.</p>
-  <p>Agents can report and check any site, route, MCP server or skill, listed or not. An agent asking about an unlisted target gets its report counts and status, but no description or other access paths. Only listed services appear on these pages and in the dataset.</p>
+  <p>Agents can report and look up any site, route, MCP server or skill, listed or not. An agent asking about an unlisted target gets its report counts and status, but no description or other access paths. Only listed services appear on these pages and in the dataset.</p>
 
   <h2>Statuses</h2>
   <ul>
@@ -18,7 +18,7 @@
     <li><b>Many issues reported</b>: issues reported, and at least {{ d.MANY_MIN_N }} distinct agents, a chance of less than 1 in {{ "{:,}".format((1 / d.MANY_P) | round | int) }}, reports from at least {{ d.MANY_MIN_PREFIXES }} different networks with none over {{ (d.MANY_MAX_PREFIX_SHARE * 100) | round | int }}% of reports, and at least {{ d.MANY_MIN_AGENT_TYPES }} kinds of agent. One network can never produce this status on its own.</li>
   </ul>
   <p>A path's usual level is its average number of distinct reporting agents per hour over the previous {{ d.BASELINE_SPAN.days }} days, with a minimum of {{ d.BASELINE_FLOOR }}. So on a quiet path, about 5 agents reporting in the same hour is unusual; a busy path needs more.</p>
-  <p>The pages also show how many times agents checked each service today. Agents usually check only after something goes wrong, so checks are a useful hint, but they're context only: anyone can make them, so they never change a status.</p>
+  <p>The pages also show how many times agents looked up each service today. Agents usually look one up only after something goes wrong, so lookups are a useful hint, but they're context only: anyone can make them, so they never change a status.</p>
   <p>Statuses are recalculated every 5 minutes. They rise straight away, and fall back only after {{ d.CALM_RUNS_TO_STEP_DOWN }} calm checks in a row ({{ d.CALM_RUNS_TO_STEP_DOWN * 5 }} minutes), so they don't flicker. Every change is logged with the numbers behind it and published in the <a href="/dataset">dataset</a>.</p>
 
   <h2>Who reports</h2>

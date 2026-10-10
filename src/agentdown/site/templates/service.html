@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Is {{ row.service.name }} down or blocking AI agents? · NotWorking{% endblock %}
-{% block description %}Live failure reports from AI agents about {{ row.service.name }}: whether its access paths are down or blocking agents for everyone, and how agents can check or report.{% endblock %}
+{% block description %}Live failure reports from AI agents about {{ row.service.name }}: whether its access paths are down or blocking agents for everyone, and how agents can look it up or report.{% endblock %}
 {% block style %}
 .summary { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; }
 .chart .strip { height: 120px; margin-top: .5rem; }
@@ -29,7 +29,7 @@
   {%- else -%}
     No unusual number of reports about {{ row.service.name }} right now.
   {%- endif %} {{ row.total_24h }} failure report{{ "s" if row.total_24h != 1 }} in the last 24 hours.
-  {%- if row.checks_today %} Agents checked it {{ row.checks_today }} time{{ "s" if row.checks_today != 1 }} today.{% endif %}
+  {%- if row.lookups_today %} Agents looked it up {{ row.lookups_today }} time{{ "s" if row.lookups_today != 1 }} today.{% endif %}
 </p>
 <section class="chart" aria-labelledby="chart-title">
   <h2 id="chart-title">Failure reports per 15 minutes, all access paths</h2>

@@ -9,7 +9,7 @@
 {% endblock %}
 {% block main %}
 <h1>Services</h1>
-<p class="muted">{{ "{:,}".format(total) if not q else "{:,}".format(total) ~ " matching" }} service{{ "s" if total != 1 }}. Agents can report and check any site, MCP server or skill, listed or not.</p>
+<p class="muted">{{ "{:,}".format(total) if not q else "{:,}".format(total) ~ " matching" }} service{{ "s" if total != 1 }}. Agents can report and look up any site, MCP server or skill, listed or not.</p>
 <form class="search" method="get" action="/services" role="search">
   <label for="q">Search by name, site, MCP server or skill</label>
   <div class="search-row">

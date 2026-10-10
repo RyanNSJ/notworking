@@ -52,7 +52,7 @@ class ServiceRow:
     total_24h: int
     top_path: PathRow | None  # the path with the most reports in 24h, if any
     lookups_7d: int = 0
-    checks_today: int = 0  # status lookups today (UTC): context only, never a status
+    lookups_today: int = 0  # status lookups today (UTC): context only, never a status
 
 
 def strip_svg(buckets: list[int], status: str, *, height: int, label: str) -> Markup:
@@ -92,14 +92,14 @@ def _rows(
         top = max(active, key=lambda r: (r.day.total, r.path.id)) if active else None
         rows.append(
             ServiceRow(
-                s, paths, status, buckets, sum(buckets), top, checks_today=checks.get(s.id, 0)
+                s, paths, status, buckets, sum(buckets), top, lookups_today=checks.get(s.id, 0)
             )
         )
     return rows
 
 
 def ranked(rows: list[ServiceRow]) -> list[ServiceRow]:
-    """Raised statuses first (most reported first), then the most checked services today (the
+    """Raised statuses first (most reported first), then the most looked-up services today (the
     count each row shows), then the last 7 days, then alphabetical. Access paths within a
     service stay alphabetical."""
     return sorted(
@@ -107,7 +107,7 @@ def ranked(rows: list[ServiceRow]) -> list[ServiceRow]:
         key=lambda r: (
             -LEVELS.index(r.status),
             -r.total_24h if r.status != NONE else 0,
-            -r.checks_today,
+            -r.lookups_today,
             -r.lookups_7d,
             r.service.name.lower(),
         ),
@@ -115,7 +115,7 @@ def ranked(rows: list[ServiceRow]) -> list[ServiceRow]:
 
 
 def _counter(state: AppState) -> dict[str, tuple[int, int]]:
-    """(checks, reports) in the last 24 hours and the last 7 days, for the header."""
+    """(lookups, reports) in the last 24 hours and the last 7 days, for the header."""
     now = state.clock.now()
     with state.engine.connect() as conn:
         return {
@@ -222,7 +222,7 @@ def terms(request: Request) -> HTMLResponse:
 
 @router.get("/robots.txt")
 def robots(request: Request) -> Response:
-    """Crawl the pages, not the API: crawler lookups would inflate the check counts."""
+    """Crawl the pages, not the API: crawler lookups would inflate the lookup counts."""
     url = request.app.state.settings.public_url
     text = (
         f"User-agent: *\nAllow: /\nDisallow: /v1/\nDisallow: /mcp\n\nSitemap: {url}/sitemap.xml\n"
