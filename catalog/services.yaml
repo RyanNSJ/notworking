@@ -104,6 +104,9 @@ services:
     paths:
       - id: 1stcollab.com
         description: The 1stcollab.com website.
+      - id: com.1stcollab/influencers
+        type: mcp
+        description: 1stcollab.com's remote MCP server.
 
 
   - id: 222.place
@@ -503,6 +506,9 @@ services:
     paths:
       - id: aftership.com
         description: The aftership.com website.
+      - id: com.aftership.mcp/tracking-public
+        type: mcp
+        description: aftership.com's remote MCP server.
 
 
   - id: agendapro.com
@@ -559,6 +565,9 @@ services:
     paths:
       - id: agentmail.to
         description: The AgentMail website.
+      - id: to.agentmail/agentmail
+        type: mcp
+        description: AgentMail's remote MCP server.
 
 
   - id: agentops.ai
@@ -727,6 +736,9 @@ services:
     paths:
       - id: airtable.com
         description: The Airtable website.
+      - id: com.airtable/mcp
+        type: mcp
+        description: Airtable's remote MCP server.
 
 
   - id: airwallex.com
@@ -790,6 +802,9 @@ services:
     paths:
       - id: akiflow.com
         description: The akiflow.com website.
+      - id: com.akiflow/akiflow
+        type: mcp
+        description: akiflow.com's remote MCP server.
 
 
   - id: akutehealth.com
@@ -1084,6 +1099,9 @@ services:
     paths:
       - id: amplitude.com
         description: The Amplitude website.
+      - id: com.amplitude/mcp-server
+        type: mcp
+        description: Amplitude's remote MCP server.
 
 
   - id: ampup.io
@@ -1147,6 +1165,9 @@ services:
     paths:
       - id: andiai.com
         description: The andiai.com website.
+      - id: com.andiai/andi-search
+        type: mcp
+        description: andiai.com's remote MCP server.
 
 
   - id: andsonbiotech.com
@@ -1222,6 +1243,9 @@ services:
   - id: anomalyarmor.ai
     name: AnomalyArmor
     paths:
+      - id: ai.anomalyarmor/armor-mcp
+        type: mcp
+        description: AnomalyArmor's remote MCP server.
       - id: anomalyarmor.ai
         description: The AnomalyArmor website.
 
@@ -1351,6 +1375,9 @@ services:
     paths:
       - id: appcircle.io
         description: The appcircle.io website.
+      - id: io.appcircle/appcircle-mcp
+        type: mcp
+        description: appcircle.io's remote MCP server.
 
 
   - id: appdynamics.com
@@ -2401,6 +2428,9 @@ services:
     paths:
       - id: basedash.com
         description: The basedash.com website.
+      - id: com.basedash/mcp
+        type: mcp
+        description: basedash.com's remote MCP server.
 
 
   - id: baserun.ai
@@ -2471,6 +2501,9 @@ services:
     paths:
       - id: beehiiv.com
         description: The beehiiv.com website.
+      - id: com.beehiiv/beehiiv
+        type: mcp
+        description: beehiiv.com's remote MCP server.
 
 
   - id: beglaubigt.de
@@ -2478,6 +2511,9 @@ services:
     paths:
       - id: beglaubigt.de
         description: The beglaubigt.de website.
+      - id: de.beglaubigt/incorporation
+        type: mcp
+        description: beglaubigt.de's remote MCP server.
 
 
   - id: bego.ai
@@ -2709,6 +2745,9 @@ services:
     paths:
       - id: bird.com
         description: The bird.com website.
+      - id: com.bird/mcp
+        type: mcp
+        description: bird.com's remote MCP server.
 
 
   - id: bitboard.work
@@ -2751,6 +2790,9 @@ services:
     paths:
       - id: bitmovin.com
         description: The bitmovin.com website.
+      - id: com.bitmovin.mcp.analytics/analytics-mcp
+        type: mcp
+        description: bitmovin.com's remote MCP server.
 
 
   - id: bitrise.io
@@ -2835,6 +2877,9 @@ services:
     paths:
       - id: blindpay.com
         description: The blindpay.com website.
+      - id: com.blindpay/mcp
+        type: mcp
+        description: blindpay.com's remote MCP server.
 
 
   - id: blink.new
@@ -3640,6 +3685,9 @@ services:
     paths:
       - id: canva.com
         description: The Canva website.
+      - id: com.canva.mcp/mcp
+        type: mcp
+        description: Canva's remote MCP server.
 
 
   - id: capacities.io
@@ -3647,6 +3695,9 @@ services:
     paths:
       - id: capacities.io
         description: The capacities.io website.
+      - id: io.capacities/mcp
+        type: mcp
+        description: capacities.io's remote MCP server.
 
 
   - id: capchase.com
@@ -3953,6 +4004,9 @@ services:
   - id: cerebrium.ai
     name: cerebrium.ai
     paths:
+      - id: ai.cerebrium/docs
+        type: mcp
+        description: cerebrium.ai's remote MCP server.
       - id: cerebrium.ai
         description: The cerebrium.ai website.
 
@@ -4095,6 +4149,9 @@ services:
     paths:
       - id: chilipiper.com
         description: The chilipiper.com website.
+      - id: com.chilipiper/mcp
+        type: mcp
+        description: chilipiper.com's remote MCP server.
 
 
   - id: chime.aws
@@ -4235,6 +4292,9 @@ services:
     paths:
       - id: circleci.com
         description: The CircleCI website.
+      - id: com.circleci/mcp
+        type: mcp
+        description: CircleCI's remote MCP server.
 
 
   - id: circlemedical.com
@@ -4487,6 +4547,9 @@ services:
     paths:
       - id: close.com
         description: The Close website.
+      - id: com.close/close-mcp
+        type: mcp
+        description: Close's remote MCP server.
 
 
   - id: closera.com
@@ -4602,6 +4665,9 @@ services:
     paths:
       - id: clueso.io
         description: The clueso.io website.
+      - id: io.clueso/video
+        type: mcp
+        description: clueso.io's remote MCP server.
 
 
   - id: cmux.com
@@ -4854,6 +4920,9 @@ services:
     paths:
       - id: cogram.com
         description: The cogram.com website.
+      - id: com.cogram/project
+        type: mcp
+        description: cogram.com's remote MCP server.
 
 
   - id: cohere.com
@@ -4985,6 +5054,9 @@ services:
   - id: commonpaper.com
     name: commonpaper.com
     paths:
+      - id: com.commonpaper/contracts
+        type: mcp
+        description: commonpaper.com's remote MCP server.
       - id: commonpaper.com
         description: The commonpaper.com website.
 
@@ -5280,6 +5352,9 @@ services:
   - id: conveo.ai
     name: conveo.ai
     paths:
+      - id: ai.conveo/conveo
+        type: mcp
+        description: conveo.ai's remote MCP server.
       - id: conveo.ai
         description: The conveo.ai website.
 
@@ -5542,6 +5617,9 @@ services:
     paths:
       - id: craft.do
         description: The Craft website.
+      - id: do.craft.mcp/server
+        type: mcp
+        description: Craft's remote MCP server.
 
 
   - id: craft.io
@@ -5724,6 +5802,9 @@ services:
     paths:
       - id: cubic.dev
         description: The cubic.dev website.
+      - id: dev.cubic/cubic
+        type: mcp
+        description: cubic.dev's remote MCP server.
 
 
   - id: cuckoo.so
@@ -5857,6 +5938,9 @@ services:
     paths:
       - id: cypress.io
         description: The Cypress website.
+      - id: io.cypress.mcp/cypress-cloud
+        type: mcp
+        description: Cypress's remote MCP server.
 
 
   - id: d-id.com
@@ -5953,6 +6037,9 @@ services:
   - id: dartai.com
     name: dartai.com
     paths:
+      - id: com.dartai/dart
+        type: mcp
+        description: dartai.com's remote MCP server.
       - id: dartai.com
         description: The dartai.com website.
 
@@ -6366,6 +6453,9 @@ services:
   - id: devcycle.com
     name: devcycle.com
     paths:
+      - id: com.devcycle/mcp
+        type: mcp
+        description: devcycle.com's remote MCP server.
       - id: devcycle.com
         description: The devcycle.com website.
 
@@ -6431,6 +6521,9 @@ services:
     paths:
       - id: didit.me
         description: The didit.me website.
+      - id: me.didit/mcp
+        type: mcp
+        description: didit.me's remote MCP server.
 
 
   - id: diffuse.bio
@@ -6786,6 +6879,9 @@ services:
   - id: dragoneye.ai
     name: dragoneye.ai
     paths:
+      - id: ai.dragoneye/mcp
+        type: mcp
+        description: dragoneye.ai's remote MCP server.
       - id: dragoneye.ai
         description: The dragoneye.ai website.
 
@@ -7024,6 +7120,9 @@ services:
   - id: easyship.com
     name: easyship.com
     paths:
+      - id: com.easyship/mcp
+        type: mcp
+        description: easyship.com's remote MCP server.
       - id: easyship.com
         description: The easyship.com website.
 
@@ -7201,6 +7300,9 @@ services:
     paths:
       - id: elevenlabs.io
         description: The ElevenLabs website.
+      - id: io.elevenlabs/mcp
+        type: mcp
+        description: ElevenLabs's remote MCP server.
 
 
   - id: eligible.com
@@ -7458,6 +7560,9 @@ services:
   - id: epidemicsound.com
     name: epidemicsound.com
     paths:
+      - id: com.epidemicsound/mcp-server
+        type: mcp
+        description: epidemicsound.com's remote MCP server.
       - id: epidemicsound.com
         description: The epidemicsound.com website.
 
@@ -7702,6 +7807,9 @@ services:
   - id: extend.ai
     name: extend.ai
     paths:
+      - id: ai.extend/extend
+        type: mcp
+        description: extend.ai's remote MCP server.
       - id: extend.ai
         description: The extend.ai website.
 
@@ -7842,6 +7950,9 @@ services:
   - id: fathom.ai
     name: fathom.ai
     paths:
+      - id: ai.fathom.api/mcp
+        type: mcp
+        description: fathom.ai's remote MCP server.
       - id: fathom.ai
         description: The fathom.ai website.
 
@@ -7926,6 +8037,9 @@ services:
   - id: fiber.ai
     name: fiber.ai
     paths:
+      - id: ai.fiber/mcp
+        type: mcp
+        description: fiber.ai's remote MCP server.
       - id: fiber.ai
         description: The fiber.ai website.
 
@@ -8140,6 +8254,9 @@ services:
   - id: fireflies.ai
     name: Fireflies.ai
     paths:
+      - id: ai.fireflies/fireflies
+        type: mcp
+        description: Fireflies.ai's remote MCP server.
       - id: fireflies.ai
         description: The Fireflies.ai website.
 
@@ -8357,6 +8474,9 @@ services:
   - id: floot.com
     name: floot.com
     paths:
+      - id: com.floot/floot
+        type: mcp
+        description: floot.com's remote MCP server.
       - id: floot.com
         description: The floot.com website.
 
@@ -8597,6 +8717,9 @@ services:
     paths:
       - id: frase.io
         description: The frase.io website.
+      - id: io.frase/mcp-server
+        type: mcp
+        description: frase.io's remote MCP server.
 
 
   - id: freestyle.sh
@@ -8674,6 +8797,9 @@ services:
     paths:
       - id: fusionauth.io
         description: The FusionAuth website.
+      - id: io.fusionauth/mcp-docs
+        type: mcp
+        description: FusionAuth's remote MCP server.
 
 
   - id: galileo.ai
@@ -8750,6 +8876,9 @@ services:
   - id: getalai.com
     name: getalai.com
     paths:
+      - id: com.getalai/presentations
+        type: mcp
+        description: getalai.com's remote MCP server.
       - id: getalai.com
         description: The getalai.com website.
 
@@ -9345,6 +9474,9 @@ services:
   - id: getveles.com
     name: getveles.com
     paths:
+      - id: com.getveles/cpq
+        type: mcp
+        description: getveles.com's remote MCP server.
       - id: getveles.com
         description: The getveles.com website.
 
@@ -9521,6 +9653,9 @@ services:
   - id: gitlab.com
     name: GitLab
     paths:
+      - id: com.gitlab/mcp
+        type: mcp
+        description: GitLab's remote MCP server.
       - id: gitlab.com
         description: The GitLab website.
 
@@ -9598,6 +9733,9 @@ services:
   - id: glif.app
     name: Glif
     paths:
+      - id: app.glif/glif
+        type: mcp
+        description: Glif's remote MCP server.
       - id: glif.app
         description: The Glif website.
 
@@ -9661,6 +9799,9 @@ services:
   - id: gocardless.com
     name: GoCardless
     paths:
+      - id: com.gocardless/gc-mcp
+        type: mcp
+        description: GoCardless's remote MCP server.
       - id: gocardless.com
         description: The GoCardless website.
 
@@ -10045,6 +10186,12 @@ services:
   - id: guruhotel.com
     name: guruhotel.com
     paths:
+      - id: com.guruhotel/manager
+        type: mcp
+        description: guruhotel.com's remote MCP server (manager).
+      - id: com.guruhotel/mcp
+        type: mcp
+        description: guruhotel.com's remote MCP server (mcp).
       - id: guruhotel.com
         description: The guruhotel.com website.
 
@@ -10670,6 +10817,9 @@ services:
     paths:
       - id: honeycomb.io
         description: The Honeycomb website.
+      - id: io.honeycomb/mcp
+        type: mcp
+        description: Honeycomb's remote MCP server.
 
 
   - id: honeydew.ai
@@ -10828,6 +10978,9 @@ services:
   - id: huggingface.co
     name: Hugging Face
     paths:
+      - id: co.huggingface/hf-mcp-server
+        type: mcp
+        description: Hugging Face's remote MCP server.
       - id: huggingface.co
         description: The Hugging Face website.
 
@@ -11038,6 +11191,9 @@ services:
   - id: ifttt.com
     name: IFTTT
     paths:
+      - id: com.ifttt/mcp
+        type: mcp
+        description: IFTTT's remote MCP server.
       - id: ifttt.com
         description: The IFTTT website.
 
@@ -11759,6 +11915,9 @@ services:
   - id: jitsu.com
     name: jitsu.com
     paths:
+      - id: com.jitsu/mcp
+        type: mcp
+        description: jitsu.com's remote MCP server.
       - id: jitsu.com
         description: The jitsu.com website.
 
@@ -11955,6 +12114,9 @@ services:
   - id: jumpcloud.com
     name: JumpCloud
     paths:
+      - id: com.jumpcloud/jumpcloud-genai
+        type: mcp
+        description: JumpCloud's remote MCP server.
       - id: jumpcloud.com
         description: The JumpCloud website.
 
@@ -12088,6 +12250,9 @@ services:
   - id: kajabi.com
     name: kajabi.com
     paths:
+      - id: com.kajabi/kajabi
+        type: mcp
+        description: kajabi.com's remote MCP server.
       - id: kajabi.com
         description: The kajabi.com website.
 
@@ -12466,6 +12631,9 @@ services:
   - id: klavis.ai
     name: Klavis
     paths:
+      - id: ai.klavis/strata
+        type: mcp
+        description: Klavis's remote MCP server.
       - id: klavis.ai
         description: The Klavis website.
 
@@ -12536,6 +12704,9 @@ services:
   - id: konghq.com
     name: Kong
     paths:
+      - id: com.konghq/konnect
+        type: mcp
+        description: Kong's remote MCP server.
       - id: konghq.com
         description: The Kong website.
 
@@ -13244,6 +13415,9 @@ services:
   - id: lingo.dev
     name: lingo.dev
     paths:
+      - id: dev.lingo/main
+        type: mcp
+        description: lingo.dev's remote MCP server.
       - id: lingo.dev
         description: The lingo.dev website.
 
@@ -13281,6 +13455,9 @@ services:
     paths:
       - id: linkup.so
         description: The Linkup website.
+      - id: so.linkup.mcp/linkup-mcp-server
+        type: mcp
+        description: Linkup's remote MCP server.
 
 
   - id: linode.com
@@ -13580,6 +13757,9 @@ services:
   - id: lovable.dev
     name: Lovable
     paths:
+      - id: dev.lovable/mcp
+        type: mcp
+        description: Lovable's remote MCP server.
       - id: lovable.dev
         description: The Lovable website.
 
@@ -13916,6 +14096,9 @@ services:
   - id: make.com
     name: Make
     paths:
+      - id: com.make/mcp-server
+        type: mcp
+        description: Make's remote MCP server.
       - id: make.com
         description: The Make website.
 
@@ -14280,6 +14463,9 @@ services:
   - id: medplum.com
     name: medplum.com
     paths:
+      - id: com.medplum/mcp
+        type: mcp
+        description: medplum.com's remote MCP server.
       - id: medplum.com
         description: The medplum.com website.
 
@@ -14287,6 +14473,9 @@ services:
   - id: medusajs.com
     name: Medusa
     paths:
+      - id: com.medusajs/medusa-mcp
+        type: mcp
+        description: Medusa's remote MCP server.
       - id: medusajs.com
         description: The Medusa website.
 
@@ -14617,6 +14806,12 @@ services:
   - id: microsoft.com
     name: microsoft.com
     paths:
+      - id: com.microsoft/microsoft-learn-mcp
+        type: mcp
+        description: microsoft.com's remote MCP server (microsoft-learn-mcp).
+      - id: com.microsoft/sentinel-data-exploration
+        type: mcp
+        description: microsoft.com's remote MCP server (sentinel-data-exploration).
       - id: microsoft.com
         description: The microsoft.com website.
 
@@ -15009,6 +15204,9 @@ services:
   - id: monday.com
     name: Monday.com
     paths:
+      - id: com.monday/monday.com
+        type: mcp
+        description: Monday.com's remote MCP server.
       - id: monday.com
         description: The Monday.com website.
 
@@ -15296,6 +15494,9 @@ services:
   - id: mural.co
     name: Mural
     paths:
+      - id: co.mural/mural
+        type: mcp
+        description: Mural's remote MCP server.
       - id: mural.co
         description: The Mural website.
 
@@ -15317,6 +15518,9 @@ services:
   - id: mux.com
     name: Mux
     paths:
+      - id: com.mux/mcp
+        type: mcp
+        description: Mux's remote MCP server.
       - id: mux.com
         description: The Mux website.
 
@@ -15654,6 +15858,9 @@ services:
   - id: newrelic.com
     name: New Relic
     paths:
+      - id: com.newrelic/mcp-server
+        type: mcp
+        description: New Relic's remote MCP server.
       - id: newrelic.com
         description: The New Relic website.
 
@@ -15669,6 +15876,9 @@ services:
   - id: newscatcherapi.com
     name: newscatcherapi.com
     paths:
+      - id: com.newscatcherapi/catchall
+        type: mcp
+        description: newscatcherapi.com's remote MCP server.
       - id: newscatcherapi.com
         description: The newscatcherapi.com website.
 
@@ -15739,6 +15949,9 @@ services:
   - id: nimble.com
     name: Nimble
     paths:
+      - id: com.nimble.app/nimble-crm
+        type: mcp
+        description: Nimble's remote MCP server.
       - id: nimble.com
         description: The Nimble website.
 
@@ -16058,6 +16271,9 @@ services:
   - id: nvidia.com
     name: Nvidia
     paths:
+      - id: com.nvidia.ngc.nsight.copilot.api/cuda-docs
+        type: mcp
+        description: Nvidia's remote MCP server.
       - id: nvidia.com
         description: The Nvidia website.
 
@@ -16240,6 +16456,9 @@ services:
   - id: omnara.com
     name: omnara.com
     paths:
+      - id: com.omnara/omnara
+        type: mcp
+        description: omnara.com's remote MCP server.
       - id: omnara.com
         description: The omnara.com website.
 
@@ -16366,6 +16585,9 @@ services:
   - id: oneschema.co
     name: oneschema.co
     paths:
+      - id: co.oneschema/mcp
+        type: mcp
+        description: oneschema.co's remote MCP server.
       - id: oneschema.co
         description: The oneschema.co website.
 
@@ -16585,11 +16807,17 @@ services:
     paths:
       - id: openweathermap.org
         description: The OpenWeather website.
+      - id: org.openweathermap/agents
+        type: mcp
+        description: OpenWeather's remote MCP server.
 
 
   - id: openworklabs.com
     name: openworklabs.com
     paths:
+      - id: com.openworklabs/openwork
+        type: mcp
+        description: openworklabs.com's remote MCP server.
       - id: openworklabs.com
         description: The openworklabs.com website.
 
@@ -16828,6 +17056,9 @@ services:
   - id: outlit.ai
     name: outlit.ai
     paths:
+      - id: ai.outlit/outlit
+        type: mcp
+        description: outlit.ai's remote MCP server.
       - id: outlit.ai
         description: The outlit.ai website.
 
@@ -16870,6 +17101,9 @@ services:
   - id: outset.ai
     name: outset.ai
     paths:
+      - id: ai.outset/mcp
+        type: mcp
+        description: outset.ai's remote MCP server.
       - id: outset.ai
         description: The outset.ai website.
 
@@ -16989,6 +17223,9 @@ services:
   - id: padlet.com
     name: padlet.com
     paths:
+      - id: com.padlet/padlet
+        type: mcp
+        description: padlet.com's remote MCP server.
       - id: padlet.com
         description: The padlet.com website.
 
@@ -17045,6 +17282,9 @@ services:
   - id: pally.com
     name: pally.com
     paths:
+      - id: com.pally/pally
+        type: mcp
+        description: pally.com's remote MCP server.
       - id: pally.com
         description: The pally.com website.
 
@@ -17087,6 +17327,9 @@ services:
   - id: pandadoc.com
     name: pandadoc.com
     paths:
+      - id: com.pandadoc.mcp/mcp
+        type: mcp
+        description: pandadoc.com's remote MCP server.
       - id: pandadoc.com
         description: The pandadoc.com website.
 
@@ -17185,6 +17428,12 @@ services:
   - id: parallel.ai
     name: Parallel
     paths:
+      - id: ai.parallel/search-mcp
+        type: mcp
+        description: Parallel's remote MCP server (search-mcp).
+      - id: ai.parallel/task-mcp
+        type: mcp
+        description: Parallel's remote MCP server (task-mcp).
       - id: parallel.ai
         description: The Parallel website.
 
@@ -17416,6 +17665,9 @@ services:
   - id: paypal.com
     name: PayPal
     paths:
+      - id: com.paypal.mcp/mcp
+        type: mcp
+        description: PayPal's remote MCP server.
       - id: paypal.com
         description: The PayPal website.
 
@@ -17423,6 +17675,9 @@ services:
   - id: paywithlocus.com
     name: paywithlocus.com
     paths:
+      - id: com.paywithlocus/locus
+        type: mcp
+        description: paywithlocus.com's remote MCP server.
       - id: paywithlocus.com
         description: The paywithlocus.com website.
 
@@ -17661,6 +17916,9 @@ services:
   - id: picsart.com
     name: picsart.com
     paths:
+      - id: com.picsart.api/gen-ai
+        type: mcp
+        description: picsart.com's remote MCP server.
       - id: picsart.com
         description: The picsart.com website.
 
@@ -17717,6 +17975,12 @@ services:
   - id: pilot.com
     name: Pilot
     paths:
+      - id: com.pilot.meridian/qbo-connector
+        type: mcp
+        description: Pilot's remote MCP server (qbo-connector).
+      - id: com.pilot.meridian/xero-connector
+        type: mcp
+        description: Pilot's remote MCP server (xero-connector).
       - id: pilot.com
         description: The Pilot website.
 
@@ -18253,6 +18517,9 @@ services:
   - id: postman.com
     name: Postman
     paths:
+      - id: com.postman/postman-mcp-server
+        type: mcp
+        description: Postman's remote MCP server.
       - id: postman.com
         description: The Postman website.
 
@@ -18352,6 +18619,9 @@ services:
   - id: predictleads.com
     name: predictleads.com
     paths:
+      - id: com.predictleads/mcp
+        type: mcp
+        description: predictleads.com's remote MCP server.
       - id: predictleads.com
         description: The predictleads.com website.
 
@@ -18457,6 +18727,9 @@ services:
   - id: primitive.dev
     name: Primitive
     paths:
+      - id: dev.primitive/email
+        type: mcp
+        description: Primitive's remote MCP server.
       - id: primitive.dev
         description: The Primitive website.
 
@@ -18478,6 +18751,9 @@ services:
   - id: prisma.io
     name: Prisma
     paths:
+      - id: io.prisma/mcp
+        type: mcp
+        description: Prisma's remote MCP server.
       - id: prisma.io
         description: The Prisma website.
 
@@ -18793,6 +19069,9 @@ services:
   - id: puzzle.io
     name: puzzle.io
     paths:
+      - id: io.puzzle/puzzle
+        type: mcp
+        description: puzzle.io's remote MCP server.
       - id: puzzle.io
         description: The puzzle.io website.
 
@@ -19396,6 +19675,9 @@ services:
   - id: redpanda.com
     name: redpanda.com
     paths:
+      - id: com.redpanda/docs-mcp
+        type: mcp
+        description: redpanda.com's remote MCP server.
       - id: redpanda.com
         description: The redpanda.com website.
 
@@ -19508,6 +19790,9 @@ services:
   - id: reka.ai
     name: Reka
     paths:
+      - id: ai.reka/mcp
+        type: mcp
+        description: Reka's remote MCP server.
       - id: reka.ai
         description: The Reka website.
 
@@ -19998,6 +20283,9 @@ services:
   - id: rivet.dev
     name: rivet.dev
     paths:
+      - id: dev.rivet/mcp
+        type: mcp
+        description: rivet.dev's remote MCP server.
       - id: rivet.dev
         description: The rivet.dev website.
 
@@ -20061,6 +20349,9 @@ services:
   - id: roboflow.com
     name: Roboflow
     paths:
+      - id: com.roboflow/roboflow-mcp
+        type: mcp
+        description: Roboflow's remote MCP server.
       - id: roboflow.com
         description: The Roboflow website.
 
@@ -20089,6 +20380,9 @@ services:
   - id: rocketreach.co
     name: rocketreach.co
     paths:
+      - id: co.rocketreach/mcp
+        type: mcp
+        description: rocketreach.co's remote MCP server.
       - id: rocketreach.co
         description: The rocketreach.co website.
 
@@ -20145,6 +20439,9 @@ services:
   - id: rootly.com
     name: rootly.com
     paths:
+      - id: com.rootly/mcp-server
+        type: mcp
+        description: rootly.com's remote MCP server.
       - id: rootly.com
         description: The rootly.com website.
 
@@ -20257,6 +20554,9 @@ services:
   - id: rulebase.co
     name: rulebase.co
     paths:
+      - id: co.rulebase/rulebase
+        type: mcp
+        description: rulebase.co's remote MCP server.
       - id: rulebase.co
         description: The rulebase.co website.
 
@@ -20614,6 +20914,9 @@ services:
   - id: sanity.io
     name: Sanity
     paths:
+      - id: io.sanity.www/mcp
+        type: mcp
+        description: Sanity's remote MCP server.
       - id: sanity.io
         description: The Sanity website.
 
@@ -20740,6 +21043,9 @@ services:
   - id: scispot.io
     name: scispot.io
     paths:
+      - id: io.scispot/mcp
+        type: mcp
+        description: scispot.io's remote MCP server.
       - id: scispot.io
         description: The scispot.io website.
 
@@ -20999,6 +21305,9 @@ services:
   - id: sendpulse.com
     name: sendpulse.com
     paths:
+      - id: com.sendpulse.mcp/mcp-server
+        type: mcp
+        description: sendpulse.com's remote MCP server.
       - id: sendpulse.com
         description: The sendpulse.com website.
 
@@ -21066,6 +21375,9 @@ services:
   - id: serpstat.com
     name: serpstat.com
     paths:
+      - id: com.serpstat/mcp
+        type: mcp
+        description: serpstat.com's remote MCP server.
       - id: serpstat.com
         description: The serpstat.com website.
 
@@ -21206,6 +21518,9 @@ services:
   - id: shippo.com
     name: shippo.com
     paths:
+      - id: com.shippo/shippo-mcp
+        type: mcp
+        description: shippo.com's remote MCP server.
       - id: shippo.com
         description: The shippo.com website.
 
@@ -21916,6 +22231,9 @@ services:
   - id: snov.io
     name: snov.io
     paths:
+      - id: io.snov/snov-mcp-server
+        type: mcp
+        description: snov.io's remote MCP server.
       - id: snov.io
         description: The snov.io website.
 
@@ -22028,6 +22346,9 @@ services:
   - id: sonatype.com
     name: Sonatype
     paths:
+      - id: com.sonatype/dependency-management-mcp-server
+        type: mcp
+        description: Sonatype's remote MCP server.
       - id: sonatype.com
         description: The Sonatype website.
 
@@ -22679,6 +23000,9 @@ services:
   - id: statsig.com
     name: statsig.com
     paths:
+      - id: com.statsig/statsig-mcp-server
+        type: mcp
+        description: statsig.com's remote MCP server.
       - id: statsig.com
         description: The statsig.com website.
 
@@ -23163,6 +23487,9 @@ services:
   - id: supernova.io
     name: supernova.io
     paths:
+      - id: io.supernova/mcp
+        type: mcp
+        description: supernova.io's remote MCP server.
       - id: supernova.io
         description: The supernova.io website.
 
@@ -23452,6 +23779,9 @@ services:
     paths:
       - id: tailor.tech
         description: The tailor.tech website.
+      - id: tech.tailor/mcp
+        type: mcp
+        description: tailor.tech's remote MCP server.
 
 
   - id: tailscale.com
@@ -23576,6 +23906,9 @@ services:
   - id: tapcart.com
     name: tapcart.com
     paths:
+      - id: com.tapcart/mcp
+        type: mcp
+        description: tapcart.com's remote MCP server.
       - id: tapcart.com
         description: The tapcart.com website.
 
@@ -23694,6 +24027,9 @@ services:
   - id: teamwork.com
     name: teamwork.com
     paths:
+      - id: com.teamwork/mcp
+        type: mcp
+        description: teamwork.com's remote MCP server.
       - id: teamwork.com
         description: The teamwork.com website.
 
@@ -23911,6 +24247,9 @@ services:
   - id: tesorio.com
     name: tesorio.com
     paths:
+      - id: com.tesorio/mcp
+        type: mcp
+        description: tesorio.com's remote MCP server.
       - id: tesorio.com
         description: The tesorio.com website.
 
@@ -23925,6 +24264,9 @@ services:
   - id: testrigor.com
     name: testrigor.com
     paths:
+      - id: com.testrigor/mcp-server
+        type: mcp
+        description: testrigor.com's remote MCP server.
       - id: testrigor.com
         description: The testrigor.com website.
 
@@ -24156,6 +24498,9 @@ services:
   - id: thousandeyes.com
     name: thousandeyes.com
     paths:
+      - id: com.thousandeyes/mcp
+        type: mcp
+        description: thousandeyes.com's remote MCP server.
       - id: thousandeyes.com
         description: The thousandeyes.com website.
 
@@ -24863,6 +25208,9 @@ services:
   - id: trychannel3.com
     name: trychannel3.com
     paths:
+      - id: com.trychannel3/shopping
+        type: mcp
+        description: trychannel3.com's remote MCP server.
       - id: trychannel3.com
         description: The trychannel3.com website.
 
@@ -25241,6 +25589,9 @@ services:
   - id: typeform.com
     name: Typeform
     paths:
+      - id: com.typeform/typeform
+        type: mcp
+        description: Typeform's remote MCP server.
       - id: typeform.com
         description: The Typeform website.
 
@@ -25248,6 +25599,9 @@ services:
   - id: typesense.org
     name: Typesense
     paths:
+      - id: org.typesense/typesense-cloud
+        type: mcp
+        description: Typesense's remote MCP server.
       - id: typesense.org
         description: The Typesense website.
 
@@ -25416,6 +25770,9 @@ services:
   - id: unlayer.com
     name: unlayer.com
     paths:
+      - id: com.unlayer/mcp
+        type: mcp
+        description: unlayer.com's remote MCP server.
       - id: unlayer.com
         description: The unlayer.com website.
 
@@ -25451,6 +25808,9 @@ services:
   - id: unstructured.io
     name: Unstructured
     paths:
+      - id: io.unstructured/transform
+        type: mcp
+        description: Unstructured's remote MCP server.
       - id: unstructured.io
         description: The Unstructured website.
 
@@ -25591,6 +25951,9 @@ services:
   - id: uptimerobot.com
     name: uptimerobot.com
     paths:
+      - id: com.uptimerobot/uptimerobot
+        type: mcp
+        description: uptimerobot.com's remote MCP server.
       - id: uptimerobot.com
         description: The uptimerobot.com website.
 
@@ -26866,6 +27229,9 @@ services:
   - id: webflow.com
     name: Webflow
     paths:
+      - id: com.webflow/mcp
+        type: mcp
+        description: Webflow's remote MCP server.
       - id: webflow.com
         description: The Webflow website.
 
@@ -26873,6 +27239,9 @@ services:
   - id: webhound.ai
     name: webhound.ai
     paths:
+      - id: ai.webhound/webhound
+        type: mcp
+        description: webhound.ai's remote MCP server.
       - id: webhound.ai
         description: The webhound.ai website.
 
@@ -26957,6 +27326,9 @@ services:
   - id: whalesync.com
     name: whalesync.com
     paths:
+      - id: com.whalesync/whalesync
+        type: mcp
+        description: whalesync.com's remote MCP server.
       - id: whalesync.com
         description: The whalesync.com website.
 
@@ -26999,6 +27371,9 @@ services:
   - id: whimsical.com
     name: whimsical.com
     paths:
+      - id: com.whimsical/mcp
+        type: mcp
+        description: whimsical.com's remote MCP server.
       - id: whimsical.com
         description: The whimsical.com website.
 
@@ -27223,6 +27598,9 @@ services:
   - id: wix.com
     name: Wix
     paths:
+      - id: com.wix/mcp
+        type: mcp
+        description: Wix's remote MCP server.
       - id: wix.com
         description: The Wix website.
 
@@ -27349,6 +27727,9 @@ services:
   - id: workos.com
     name: WorkOS
     paths:
+      - id: com.workos/mcp
+        type: mcp
+        description: WorkOS's remote MCP server.
       - id: workos.com
         description: The WorkOS website.
 
@@ -27641,6 +28022,9 @@ services:
   - id: youspot.com
     name: YouSpot
     paths:
+      - id: com.youspot/youspot
+        type: mcp
+        description: YouSpot's remote MCP server.
       - id: youspot.com
         description: The YouSpot website.
 
@@ -27801,6 +28185,9 @@ services:
   - id: zeroheight.com
     name: zeroheight.com
     paths:
+      - id: com.zeroheight/zeroheight
+        type: mcp
+        description: zeroheight.com's remote MCP server.
       - id: zeroheight.com
         description: The zeroheight.com website.
 
@@ -27815,6 +28202,9 @@ services:
   - id: zerosettle.io
     name: zerosettle.io
     paths:
+      - id: io.zerosettle/mcp
+        type: mcp
+        description: zerosettle.io's remote MCP server.
       - id: zerosettle.io
         description: The zerosettle.io website.
 
