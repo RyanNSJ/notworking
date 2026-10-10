@@ -1,6 +1,7 @@
 """The canary's pure parts (D51, D52): no network, no curl_cffi."""
 
 import datetime as dt
+import json
 import socket
 
 from agentdown import canary
@@ -82,3 +83,41 @@ def test_report_problems_flag_anything_but_accepted_or_rate_limited() -> None:
     assert canary.report_problems({"reported": None}) == {}  # a dry run
     assert canary.report_problems({"reported": {202: 9, 429: 1}}) == {}
     assert canary.report_problems({"reported": {"202": 3, "500": 2, "0": 1}}) == {500: 2, 0: 1}
+
+
+class FakeFetcher:
+    """Answers the canary's MCP check from a dict of (method, url) -> Fetched."""
+
+    def __init__(self, answers: dict[tuple[str, str], Fetched]) -> None:
+        self.answers = answers
+
+    def request(self, method: str, url: str, variant: str = "declared", **kw) -> Fetched:
+        return self.answers.get((method, url), Fetched(404))
+
+
+def registry_entry(remotes: list[dict]) -> Fetched:
+    return Fetched(
+        200, {}, json.dumps({"server": {"name": "com.x/mcp", "remotes": remotes}}).encode()
+    )
+
+
+def test_check_mcp_looks_the_server_up_by_name_and_initializes() -> None:
+    latest = f"{canary.REGISTRY}/com.x%2Fmcp/versions/latest"
+    remotes = [
+        {"type": "streamable-http", "url": "https://{tenant}.x.com/mcp"},  # per customer: skipped
+        {"type": "sse", "url": "https://mcp.x.com/sse"},
+        {"type": "streamable-http", "url": "https://mcp.x.com/mcp"},
+    ]
+
+    def check(answer: Fetched) -> tuple:
+        fx = FakeFetcher(
+            {("GET", latest): registry_entry(remotes), ("POST", "https://mcp.x.com/mcp"): answer}
+        )
+        return canary.check_mcp(fx, "com.x/mcp")[0][1:5]  # type: ignore[arg-type]
+
+    assert check(Fetched(200, {}, b'{"jsonrpc":"2.0","id":1,"result":{}}'))[:2] == (True, None)
+    assert check(Fetched(200, {"mcp-session-id": "abc"}, b""))[:2] == (True, None)  # streamed
+    assert check(Fetched(401))[:2] == (True, None)  # an API key or sign-in is required
+    assert check(Fetched(405))[:3] == (False, "mcp_error", 405)
+    fx = FakeFetcher({})
+    assert canary.check_mcp(fx, "com.x/mcp")[0][1:3] == (False, "mcp_error")  # type: ignore[arg-type]

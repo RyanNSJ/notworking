@@ -237,16 +237,14 @@ def check_site(fx: Fetcher, url: str, variants: Iterable[str]) -> list[tuple]:
 
 
 def mcp_remote(fx: Fetcher, name: str) -> str | None:
-    q = urllib.parse.urlencode({"search": name, "version": "latest"})
-    f = fx.request("GET", f"{REGISTRY}?{q}")
+    f = fx.request("GET", f"{REGISTRY}/{urllib.parse.quote(name, safe='')}/versions/latest")
     if f.status != 200:
         return None
-    for s in json.loads(f.body).get("servers", []):
-        if s["server"]["name"] == name:
-            remotes = s["server"].get("remotes", [])
-            http = [r for r in remotes if r.get("type") == "streamable-http"] or remotes
-            return http[0]["url"] if http else None
-    return None
+    remotes = [  # a {placeholder} URL is filled in per customer
+        r for r in json.loads(f.body)["server"].get("remotes", []) if "{" not in r.get("url", "{")
+    ]
+    http = [r for r in remotes if r.get("type") == "streamable-http"] or remotes
+    return http[0]["url"] if http else None
 
 
 def check_mcp(fx: Fetcher, name: str) -> list[tuple]:
@@ -272,9 +270,9 @@ def check_mcp(fx: Fetcher, name: str) -> list[tuple]:
         )
         if f.status is None:
             return False, "mcp_error", None, f.error
-        if f.status == 401 and "www-authenticate" in f.headers:
+        if f.status == 401:  # OAuth sign-in or an API key the Registry entry asks for
             return True, None, 401, "sign-in required (reachable)"
-        if f.status == 200 and b'"result"' in f.body:
+        if f.status == 200 and (b'"result"' in f.body or "mcp-session-id" in f.headers):
             return True, None, 200, "initialized"
         return False, "mcp_error", f.status, f"initialize returned {f.status}"
 
