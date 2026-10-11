@@ -32,7 +32,7 @@ MAX_REDIRECTS = 5
 MAX_BODY = 512 * 1024
 REAL_PAGE_BYTES = 100 * 1024  # challenge pages seen so far: 2-30 KB; real pages: far more
 HOST_GAP = 1.0  # seconds between requests to one host
-ROTATION_DAYS = 30  # each website-only service is checked once in this many days
+ROTATION_DAYS = 7  # each website-only service is checked once in this many days
 MAX_REPORTS = 90  # per run: at 72 s apart, that's under 2 hours and the job's time limit
 
 # Markers of a block or challenge page, by vendor. Checked on any response.

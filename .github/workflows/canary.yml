@@ -2,7 +2,7 @@ name: Canary
 
 on:
   schedule:
-    - cron: "17 3 * * *"  # daily: the daily set plus a thirtieth of the websites, reported
+    - cron: "17 3 * * *"  # daily: the daily set plus a seventh of the websites, reported
   workflow_dispatch:
     inputs:
       set:
@@ -24,7 +24,7 @@ permissions:
 jobs:
   canary:
     runs-on: ubuntu-24.04
-    timeout-minutes: 120
+    timeout-minutes: 150
     steps:
       - uses: actions/checkout@v5
       - uses: astral-sh/setup-uv@v10.2.0

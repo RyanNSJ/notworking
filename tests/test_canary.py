@@ -47,7 +47,10 @@ def test_select_splits_daily_and_websites_deterministically(catalog: Catalog) ->
 
 def test_scheduled_rotates_every_website_once_per_cycle(catalog: Catalog) -> None:
     start = dt.date(2026, 10, 1)
-    days = [canary.select(catalog, "scheduled", day=start + dt.timedelta(d)) for d in range(30)]
+    days = [
+        canary.select(catalog, "scheduled", day=start + dt.timedelta(d))
+        for d in range(canary.ROTATION_DAYS)
+    ]
     daily = {s.id for s in canary.select(catalog, "daily")}
     assert all(daily <= {s.id for s in day} for day in days)  # the daily set every day
     seen = [s.id for day in days for s in day if s.id not in daily]
