@@ -251,3 +251,24 @@ def test_service_page_is_findable_and_tells_agents_what_to_do(client: TestClient
     html = client.get("/service/xyz.com").text
     assert "<title>Is XYZ Booking down or blocking AI agents? · NotWorking</title>" in html
     assert f"{PUBLIC_URL}/v1/status?target=xyz.com" in html and f"{PUBLIC_URL}/mcp" in html
+    assert f"]({PUBLIC_URL}/service/xyz.com)" in html  # the badge snippet links back
+
+
+def test_pages_have_canonical_and_preview_tags_and_answer_head(client: TestClient) -> None:
+    html = client.get("/service/xyz.com", params={"utm": "x"}).text
+    assert f'<link rel="canonical" href="{PUBLIC_URL}/service/xyz.com">' in html
+    assert '<meta property="og:title" content="Is XYZ Booking down or blocking AI agents?' in html
+    head = client.head("/service/xyz.com")
+    assert head.status_code == 200 and head.content == b""
+    assert client.head("/service/nope.example").status_code == 404
+
+
+def test_service_page_shows_reports_per_day_for_7_days(
+    client: TestClient, client_from: Callable[[str], TestClient], clock: FixedClock
+) -> None:
+    client_from("192.0.2.1").post("/v1/report", json={"target": "xyz.com", **FAIL})
+    clock.advance(dt.timedelta(days=2))
+    client_from("192.0.2.2").post("/v1/report", json={"target": "clawhub:abc/xyz-booking", **FAIL})
+    week = client.get("/service/xyz.com").text.split('id="week-title"')[1].split("</section>")[0]
+    assert "2 failure reports in the last 7 days" in week
+    assert "04 Oct: 0 &middot; 05 Oct: 0" in week and "08 Oct: 1" in week and "10 Oct: 1" in week

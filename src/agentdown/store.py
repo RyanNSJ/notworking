@@ -328,6 +328,24 @@ def day_activity(conn: Connection, path_ids: list[str], now: dt.datetime) -> dic
     return out
 
 
+def daily_failures(
+    conn: Connection, path_ids: list[str], today: dt.date, days: int
+) -> list[tuple[dt.date, int]]:
+    """Failure reports across these paths per UTC day, the last `days` days (today included)."""
+    first = today - dt.timedelta(days=days - 1)
+    rows = conn.execute(
+        sa.select(reports.c.created_at)
+        .join(targets, targets.c.pk == reports.c.target_pk)
+        .where(
+            targets.c.target_id.in_(path_ids),
+            reports.c.outcome == "failed",
+            reports.c.created_at >= dt.datetime.combine(first, dt.time(), dt.UTC),
+        )
+    ).scalars()
+    per_day = Counter(utc(created).date() for created in rows)
+    return [(d, per_day[d]) for d in (first + dt.timedelta(days=i) for i in range(days))]
+
+
 def listed_reports(conn: Connection, before: dt.datetime) -> list[sa.Row]:
     """Every report on a listed target before `before`, for the daily dataset."""
     # shortcut: reads all history into memory; fine at our volume, aggregate in SQL

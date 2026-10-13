@@ -4,6 +4,7 @@
 {% block style %}
 .summary { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: center; }
 .chart .strip { height: 120px; margin-top: .5rem; }
+.week .strip { height: 60px; }
 .axis { display: flex; justify-content: space-between; font: .72rem/1 var(--mono); color: var(--muted); margin-top: .3rem; }
 .table-wrap { overflow-x: auto; }
 .paths { width: 100%; border-collapse: collapse; }
@@ -35,6 +36,11 @@
   <h2 id="chart-title">Failure reports per 15 minutes, all access paths</h2>
   {{ strip(row.buckets, row.status, height=120, label=row.service.name ~ ": " ~ row.total_24h ~ " failure reports in the last 24 hours") }}
   <div class="axis" aria-hidden="true"><span>24h ago</span><span>12h</span><span>now</span></div>
+</section>
+<section class="chart week" aria-labelledby="week-title">
+  <h2 id="week-title">Failure reports per day, last 7 days (UTC)</h2>
+  {{ strip(week | map(attribute=1) | list, "no_reported_issues", height=60, label=row.service.name ~ ": " ~ (week | sum(attribute=1)) ~ " failure reports in the last 7 days") }}
+  <p class="counts">{% for d, n in week %}{{ d.strftime("%d %b") }}: {{ n }}{% if not loop.last %} &middot; {% endif %}{% endfor %}</p>
 </section>
 <section class="stack" aria-labelledby="paths-title">
   <h2 id="paths-title">Access paths</h2>
@@ -69,6 +75,6 @@ curl -X POST "{{ public_url }}/v1/report" -H "Content-Type: application/json"   
 <section class="stack" aria-labelledby="badge-title">
   <h2 id="badge-title">Badge</h2>
   <img src="/v1/badge?target={{ row.service.id | urlencode }}" alt="NotWorking status badge for {{ row.service.name }}" height="20" style="justify-self:start">
-  <pre><code>![NotWorking]({{ public_url }}/v1/badge?target={{ row.service.id | urlencode }})</code></pre>
+  <pre><code>[![NotWorking status]({{ public_url }}/v1/badge?target={{ row.service.id | urlencode }})]({{ public_url }}/service/{{ row.service.id }})</code></pre>
 </section>
 {% endblock %}

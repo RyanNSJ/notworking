@@ -143,7 +143,7 @@ def _page(request: Request, name: str, **context: object) -> HTMLResponse:
     )
 
 
-@router.get("/")
+@router.api_route("/", methods=["GET", "HEAD"])
 def home(request: Request) -> HTMLResponse:
     state: AppState = request.app.state
     now = state.clock.now()
@@ -172,7 +172,7 @@ def matches(service: Service, q: str) -> bool:
     return any(q in w.lower() for w in words)
 
 
-@router.get("/services")
+@router.api_route("/services", methods=["GET", "HEAD"])
 def services(request: Request, q: str = "") -> HTMLResponse:
     """Search results and services with reports get charts; the rest are a compact A-Z list."""
     state: AppState = request.app.state
@@ -188,7 +188,7 @@ def services(request: Request, q: str = "") -> HTMLResponse:
     return _page(request, "services.html", rows=rows, q=q, total=len(by_name), rest=rest)
 
 
-@router.get("/service/{service_id}")
+@router.api_route("/service/{service_id}", methods=["GET", "HEAD"])
 def service_page(request: Request, service_id: str) -> HTMLResponse:
     state: AppState = request.app.state
     service = state.catalog.by_id.get(service_id)
@@ -197,30 +197,34 @@ def service_page(request: Request, service_id: str) -> HTMLResponse:
         response = _page(request, "not_found.html", asked=service_id)
         response.status_code = 404
         return response
-    return _page(request, "service.html", row=row)
+    with state.engine.connect() as conn:
+        week = store.daily_failures(
+            conn, [p.path.id for p in row.paths], state.clock.now().date(), LOOKUP_DAYS
+        )
+    return _page(request, "service.html", row=row, week=week)
 
 
-@router.get("/methodology")
+@router.api_route("/methodology", methods=["GET", "HEAD"])
 def methodology(request: Request) -> HTMLResponse:
     return _page(request, "methodology.html", d=detector)
 
 
-@router.get("/dataset")
+@router.api_route("/dataset", methods=["GET", "HEAD"])
 def dataset(request: Request) -> HTMLResponse:
     return _page(request, "dataset.html")
 
 
-@router.get("/privacy")
+@router.api_route("/privacy", methods=["GET", "HEAD"])
 def privacy(request: Request) -> HTMLResponse:
     return _page(request, "privacy.html")
 
 
-@router.get("/terms")
+@router.api_route("/terms", methods=["GET", "HEAD"])
 def terms(request: Request) -> HTMLResponse:
     return _page(request, "terms.html")
 
 
-@router.get("/robots.txt")
+@router.api_route("/robots.txt", methods=["GET", "HEAD"])
 def robots(request: Request) -> Response:
     """Crawl the pages, not the API: crawler lookups would inflate the lookup counts."""
     url = request.app.state.settings.public_url
@@ -232,7 +236,7 @@ def robots(request: Request) -> Response:
     )
 
 
-@router.get("/sitemap.xml")
+@router.api_route("/sitemap.xml", methods=["GET", "HEAD"])
 def sitemap(request: Request) -> Response:
     state: AppState = request.app.state
     url = state.settings.public_url
@@ -268,7 +272,7 @@ def _today(state: AppState) -> dt.datetime:
     return dt.datetime.combine(now.date(), dt.time(), tzinfo=dt.UTC)
 
 
-@router.get("/dataset/daily.csv")
+@router.api_route("/dataset/daily.csv", methods=["GET", "HEAD"])
 def daily_csv(request: Request) -> Response:
     """One row per listed path per completed UTC day. Aggregates only (CC BY 4.0)."""
     state: AppState = request.app.state
@@ -296,7 +300,7 @@ def daily_csv(request: Request) -> Response:
     return _csv(rows, header, "notworking-daily.csv")
 
 
-@router.get("/dataset/transitions.csv")
+@router.api_route("/dataset/transitions.csv", methods=["GET", "HEAD"])
 def transitions_csv(request: Request) -> Response:
     """Every status change on a listed path before today, with the detector's inputs."""
     state: AppState = request.app.state
