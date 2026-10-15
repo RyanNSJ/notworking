@@ -122,8 +122,10 @@ def test_check_mcp_looks_the_server_up_by_name_and_initializes() -> None:
     assert check(Fetched(200, {"mcp-session-id": "abc"}, b""))[:2] == (True, None)  # streamed
     assert check(Fetched(401))[:2] == (True, None)  # an API key or sign-in is required
     assert check(Fetched(405))[:3] == (False, "mcp_error", 405)
-    fx = FakeFetcher({})
-    assert canary.check_mcp(fx, "com.x/mcp")[0][1:3] == (False, "mcp_error")  # type: ignore[arg-type]
+    fx = FakeFetcher({})  # the Registry fails: skipped, never reported against the server
+    assert canary.check_mcp(fx, "com.x/mcp")[0][1:3] == (True, None)  # type: ignore[arg-type]
+    fx = FakeFetcher({("GET", latest): registry_entry(remotes[:1])})  # no usable remote URL
+    assert canary.check_mcp(fx, "com.x/mcp")[0][1:3] == (True, None)  # type: ignore[arg-type]
 
 
 def test_check_skill_reads_public_listing_pages() -> None:

@@ -236,22 +236,28 @@ def check_site(fx: Fetcher, url: str, variants: Iterable[str]) -> list[tuple]:
     return out
 
 
-def mcp_remote(fx: Fetcher, name: str) -> str | None:
+def mcp_remote(fx: Fetcher, name: str) -> tuple[str | None, int | None]:
+    """The server's remote URL from the MCP Registry, and the Registry's HTTP status."""
     f = fx.request("GET", f"{REGISTRY}/{urllib.parse.quote(name, safe='')}/versions/latest")
     if f.status != 200:
-        return None
+        return None, f.status
     remotes = [  # a {placeholder} URL is filled in per customer
         r for r in json.loads(f.body)["server"].get("remotes", []) if "{" not in r.get("url", "{")
     ]
     http = [r for r in remotes if r.get("type") == "streamable-http"] or remotes
-    return http[0]["url"] if http else None
+    return (http[0]["url"] if http else None), f.status
 
 
 def check_mcp(fx: Fetcher, name: str) -> list[tuple]:
     def run() -> tuple[bool, str | None, int | None, str]:
-        url = mcp_remote(fx, name)
-        if not url:
-            return False, "mcp_error", None, "no remote URL in the MCP Registry"
+        url, registry_status = mcp_remote(fx, name)
+        if not url:  # the Registry failed us, not the server: skipped, not reported
+            return (
+                True,
+                None,
+                None,
+                f"skipped: no remote URL from the MCP Registry ({registry_status})",
+            )
         body = {
             "jsonrpc": "2.0",
             "id": 1,

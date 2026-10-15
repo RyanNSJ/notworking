@@ -539,13 +539,6 @@ services:
         description: The agentdiscuss.com website.
 
 
-  - id: agenthublabs.com
-    name: agenthublabs.com
-    paths:
-      - id: agenthublabs.com
-        description: The agenthublabs.com website.
-
-
   - id: agenticfabriq.com
     name: agenticfabriq.com
     paths:
@@ -1734,13 +1727,6 @@ services:
         description: The askkyber.com website.
 
 
-  - id: asm.co
-    name: asm.co
-    paths:
-      - id: asm.co
-        description: The asm.co website.
-
-
   - id: aspect.inc
     name: aspect.inc
     paths:
@@ -2619,13 +2605,6 @@ services:
     paths:
       - id: bettermode.com
         description: The bettermode.com website.
-
-
-  - id: betteropinions.in
-    name: betteropinions.in
-    paths:
-      - id: betteropinions.in
-        description: The betteropinions.in website.
 
 
   - id: betterstack.com
@@ -4278,6 +4257,9 @@ services:
     paths:
       - id: circle.so
         description: The circle.so website.
+      - id: so.circle/circle
+        type: mcp
+        description: Circle's hosted MCP server for a Circle community's members, discussions, events, courses and payments.
 
 
   - id: circleback.ai
@@ -4618,13 +4600,6 @@ services:
         description: Skill published by Cloudflare on skills.sh for choosing and using Cloudflare products.
 
 
-  - id: cloudflare.stream
-    name: cloudflare.stream
-    paths:
-      - id: cloudflare.stream
-        description: The cloudflare.stream website.
-
-
   - id: cloudglue.dev
     name: cloudglue.dev
     paths:
@@ -4644,13 +4619,6 @@ services:
     paths:
       - id: cloudinary.com
         description: The Cloudinary website.
-
-
-  - id: cloudthread.io
-    name: cloudthread.io
-    paths:
-      - id: cloudthread.io
-        description: The cloudthread.io website.
 
 
   - id: clubhouse.io
@@ -5964,13 +5932,6 @@ services:
         description: The dabba.com website.
 
 
-  - id: daedalus.de
-    name: daedalus.de
-    paths:
-      - id: daedalus.de
-        description: The daedalus.de website.
-
-
   - id: daft.ai
     name: daft.ai
     paths:
@@ -6301,13 +6262,6 @@ services:
     paths:
       - id: degreed.com
         description: The degreed.com website.
-
-
-  - id: delee.co
-    name: delee.co
-    paths:
-      - id: delee.co
-        description: The delee.co website.
 
 
   - id: delfino.ai
@@ -7527,13 +7481,6 @@ services:
     paths:
       - id: env0.com
         description: The env0.com website.
-
-
-  - id: envkey.com
-    name: envkey.com
-    paths:
-      - id: envkey.com
-        description: The envkey.com website.
 
 
   - id: epic.com
@@ -9766,6 +9713,7 @@ services:
     paths:
       - id: globalpay.com
         description: The globalpay.com website.
+        url: https://www.globalpay.com/
 
 
   - id: globe.exchange
@@ -10411,13 +10359,6 @@ services:
     paths:
       - id: healthharbor.co
         description: The healthharbor.co website.
-
-
-  - id: healthie.com
-    name: healthie.com
-    paths:
-      - id: healthie.com
-        description: The healthie.com website.
 
 
   - id: healthsherpa.com
@@ -12795,13 +12736,6 @@ services:
         description: The kredi.mx website.
 
 
-  - id: kscale.dev
-    name: kscale.dev
-    paths:
-      - id: kscale.dev
-        description: The kscale.dev website.
-
-
   - id: kubecost.com
     name: kubecost.com
     paths:
@@ -14473,9 +14407,12 @@ services:
   - id: medusajs.com
     name: Medusa
     paths:
+      - id: com.medusajs/cloud
+        type: mcp
+        description: Medusa's hosted MCP server for Medusa Cloud projects' data and APIs, and documentation search.
       - id: com.medusajs/medusa-mcp
         type: mcp
-        description: Medusa's remote MCP server.
+        description: Medusa's hosted MCP server for searching the Medusa documentation.
       - id: medusajs.com
         description: The Medusa website.
 
@@ -14982,13 +14919,6 @@ services:
     paths:
       - id: miro.com
         description: The Miro website.
-
-
-  - id: mirror-ai.com
-    name: mirror-ai.com
-    paths:
-      - id: mirror-ai.com
-        description: The mirror-ai.com website.
 
 
   - id: mirurobotics.com
@@ -16468,13 +16398,6 @@ services:
     paths:
       - id: omnigraffle.com
         description: The omnigraffle.com website.
-
-
-  - id: omnipresent.com
-    name: omnipresent.com
-    paths:
-      - id: omnipresent.com
-        description: The omnipresent.com website.
 
 
   - id: omnisend.com
@@ -18237,13 +18160,6 @@ services:
         description: The Plivo website.
 
 
-  - id: ploomber.io
-    name: ploomber.io
-    paths:
-      - id: ploomber.io
-        description: The ploomber.io website.
-
-
   - id: plotdrive.com
     name: plotdrive.com
     paths:
@@ -19290,7 +19206,12 @@ services:
   - id: railway.app
     name: Railway
     paths:
+      - id: com.railway/mcp
+        type: mcp
+        description: Railway's hosted MCP server for Railway projects, services and deployments.
       - id: railway.app
+        description: Railway's former website domain; it redirects to railway.com.
+      - id: railway.com
         description: The Railway website.
 
 
@@ -22442,6 +22363,7 @@ services:
     paths:
       - id: soundkins.com
         description: The soundkins.com website.
+        url: https://www.soundkins.com/
 
 
   - id: soundry.ai
@@ -23283,6 +23205,9 @@ services:
   - id: studocu.com
     name: studocu.com
     paths:
+      - id: com.studocu/studocu
+        type: mcp
+        description: Studocu's hosted MCP server for study documents, courses, institutions, study projects and quizzes.
       - id: studocu.com
         description: The studocu.com website.
 
@@ -26224,13 +26149,6 @@ services:
         description: The useocular.com website.
 
 
-  - id: useodo.com
-    name: useodo.com
-    paths:
-      - id: useodo.com
-        description: The useodo.com website.
-
-
   - id: useparagon.com
     name: useparagon.com
     paths:
@@ -27565,13 +27483,6 @@ services:
     paths:
       - id: withsurface.com
         description: The withsurface.com website.
-
-
-  - id: withsynch.com
-    name: withsynch.com
-    paths:
-      - id: withsynch.com
-        description: The withsynch.com website.
 
 
   - id: withterminal.com
