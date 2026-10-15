@@ -13,6 +13,7 @@ EXPECTED_TABLES = {
     "salts",
     "usage_daily",
     "checks_hourly",
+    "lookups",
     "alembic_version",
 }
 

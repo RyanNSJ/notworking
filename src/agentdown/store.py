@@ -15,6 +15,7 @@ from sqlalchemy.engine import Connection
 from agentdown.catalog import Catalog
 from agentdown.db.schema import (
     checks_hourly,
+    lookups,
     reports,
     salts,
     status_current,
@@ -399,8 +400,29 @@ def bump_checks(conn: Connection, now: dt.datetime) -> None:
     )
 
 
+def log_lookup(
+    conn: Connection, now: dt.datetime, service_id: str | None, target: str, client: str
+) -> None:
+    conn.execute(
+        lookups.insert().values(
+            created_at=now, service_id=service_id, target=target[:512], client=client
+        )
+    )
+
+
+def recent_lookups(conn: Connection, limit: int, *, listed_only: bool) -> list[sa.Row]:
+    """(created_at, service_id, target, client), newest first."""
+    q = sa.select(lookups.c.created_at, lookups.c.service_id, lookups.c.target, lookups.c.client)
+    if listed_only:
+        q = q.where(lookups.c.service_id.is_not(None))
+    return list(
+        conn.execute(q.order_by(lookups.c.created_at.desc(), lookups.c.pk.desc()).limit(limit))
+    )
+
+
 def delete_old_checks(conn: Connection, now: dt.datetime) -> None:
     conn.execute(checks_hourly.delete().where(checks_hourly.c.hour < now - CHECKS_KEPT))
+    conn.execute(lookups.delete().where(lookups.c.created_at < now - CHECKS_KEPT))
 
 
 def site_counts(conn: Connection, now: dt.datetime, window: dt.timedelta) -> tuple[int, int]:

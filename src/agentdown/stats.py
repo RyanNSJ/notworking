@@ -6,7 +6,7 @@ import sqlalchemy as sa
 from sqlalchemy.engine import Connection
 
 from agentdown.db.schema import reports, targets, usage_daily
-from agentdown.store import OVER_CAP
+from agentdown.store import OVER_CAP, recent_lookups, utc
 
 LISTING_MIN_REPORTERS = 10  # D24
 LISTING_MIN_PREFIXES = 3
@@ -112,5 +112,14 @@ def render_stats(conn: Connection, now: dt.datetime, days: int = 7) -> str:
     found = listing_candidates(conn, now)
     lines.extend(f"  {r:>4} reporters, {p:>3} networks  {t}:{i}" for t, i, r, p in found)
     if not found:
+        lines.append("  (none)")
+
+    lines.extend(["", "Recent lookups, newest first (all targets, last 8 days)"])
+    recent = recent_lookups(conn, 50, listed_only=False)
+    lines.extend(
+        f"  {utc(at):%d %b %H:%M}  {client:<16}  {target}{'' if sid else '  (unlisted)'}"
+        for at, sid, target, client in recent
+    )
+    if not recent:
         lines.append("  (none)")
     return "\n".join(lines)

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Recent lookups · NotWorking{% endblock %}
+{% block description %}The most recent status lookups of listed services on NotWorking, newest first.{% endblock %}
+{% block style %}
+.recent { margin: 0; padding: 0; list-style: none; display: grid; gap: .35rem; font: .82rem/1.4 var(--mono); overflow-wrap: anywhere; }
+{% endblock %}
+{% block main %}
+<div class="stack">
+  <h1>Recent lookups</h1>
+  <p class="muted">The last {{ limit }} status lookups of listed services, newest first, from the last 8 days, with the kind of client that asked. Lookups of unlisted targets aren't shown.</p>
+  {% if rows %}
+  <ul class="recent">
+    {% for at, service_id, target, client in rows %}
+    {% set s = services.get(service_id) %}
+    <li><span class="muted">{{ at.strftime("%d %b %H:%M") }} UTC</span> {% if s %}<a href="/service/{{ s.id }}">{{ s.name }}</a>{% else %}{{ service_id }}{% endif %} <span class="row-sub">{{ target }} &middot; {{ client }}</span></li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted mono small">No lookups of listed services in the last 8 days.</p>
+  {% endif %}
+</div>
+{% endblock %}

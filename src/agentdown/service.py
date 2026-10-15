@@ -75,8 +75,9 @@ def problems_result(options: Options, problems: list[dict[str, str]]) -> Result:
     )
 
 
-def _view(state: AppState, res: Resolution, now, *, count: bool) -> Result:
-    """Build the response for a resolution. `count` records lookup counters (D64)."""
+def _view(state: AppState, res: Resolution, now, *, count: bool, client: str = "") -> Result:
+    """Build the response for a resolution. `count` records lookup counters (D64) and logs the
+    lookup with the client family."""
     options = load_options()
     url = state.settings.public_url
     with state.engine.begin() as conn:
@@ -88,22 +89,30 @@ def _view(state: AppState, res: Resolution, now, *, count: bool) -> Result:
                 cap = store.MISS_SUBJECTS_PER_DAY if event == "lookup_miss" else None
                 store.bump_usage(conn, now, event, subject, cap)
 
+        def log(service_id: str | None, target: str) -> None:
+            if count:
+                store.log_lookup(conn, now, service_id, target, client)
+
         if res.kind == "service":
             assert res.service is not None
             counts = store.path_counts(conn, [p.id for p in res.service.paths], now)
+            log(res.service.id, res.asked[1] if res.asked else res.service.id)
             bump("lookup_service", res.service.id)
             if res.asked:
                 bump("lookup_path", res.asked[1])
             return Result(200, service_view(res, counts, options, url, now))
         if res.kind == "ambiguous":
+            log(None, "(several services)")
             for s in res.candidates:
                 bump("lookup_service", s.id)
             return Result(200, candidates_view(res, url, now))
         if res.kind == "not_listed":
             assert res.asked is not None
+            log(None, res.asked[1])
             bump("lookup_miss", res.asked[1])
             counts = store.path_counts(conn, [res.asked[1]], now)[res.asked[1]]
             return Result(200, not_listed_view(res, counts, options, url, now))
+        log(None, "unparseable")
         bump("lookup_miss", "unparseable")
     return Result(
         404,
@@ -116,12 +125,14 @@ def _view(state: AppState, res: Resolution, now, *, count: bool) -> Result:
     )
 
 
-def check_status(state: AppState, target: str, type_: str | None = None) -> Result:
+def check_status(
+    state: AppState, target: str, type_: str | None = None, client: str = "none"
+) -> Result:
     options = load_options()
     if type_ is not None and type_ not in options.target_type:
         return problems_result(options, [{"field": "type", "message": "unknown type"}])
     now = state.clock.now()
-    result = _view(state, resolve(state.catalog, target, type_), now, count=True)
+    result = _view(state, resolve(state.catalog, target, type_), now, count=True, client=client)
     if result.code == 200:
         result.headers["Cache-Control"] = STATUS_CACHE
     return result

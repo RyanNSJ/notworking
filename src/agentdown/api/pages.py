@@ -31,6 +31,7 @@ BOARD_SIZE = 10
 RECENT_SIZE = 10
 SEARCH_LIMIT = 50
 LOOKUP_DAYS = 7
+LOOKUPS_SHOWN = 100
 
 STATUS_LABEL = {NONE: "no reported issues", ISSUES: "issues reported", MANY: "many issues reported"}
 STATUS_CLASS = {NONE: "ok", ISSUES: "warn", MANY: "bad"}
@@ -202,6 +203,16 @@ def service_page(request: Request, service_id: str) -> HTMLResponse:
             conn, [p.path.id for p in row.paths], state.clock.now().date(), LOOKUP_DAYS
         )
     return _page(request, "service.html", row=row, week=week)
+
+
+@router.api_route("/lookups", methods=["GET", "HEAD"])
+def recent_lookups(request: Request) -> HTMLResponse:
+    state: AppState = request.app.state
+    with state.engine.connect() as conn:
+        rows = store.recent_lookups(conn, LOOKUPS_SHOWN, listed_only=True)
+    rows = [(store.utc(at), *rest) for at, *rest in rows]
+    services = state.catalog.by_id
+    return _page(request, "lookups.html", rows=rows, services=services, limit=LOOKUPS_SHOWN)
 
 
 @router.api_route("/methodology", methods=["GET", "HEAD"])

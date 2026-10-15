@@ -339,6 +339,9 @@ def test_usage_counters_and_stats(
     assert "       10         10        10        0  site:popular-unlisted.com" in unlisted
     assert "        0          0         0        1  not-listed.com" in unlisted
     assert not any("unparseable" in line or line.endswith(" xyz.com") for line in unlisted)
+    recent = out.split("Recent lookups, newest first")[1].splitlines()[1:]
+    assert len(recent) == 4 and all(" 08 Oct 12:00 " in line for line in recent)
+    assert recent[1].endswith("not-listed.com  (unlisted)") and recent[3].endswith("  xyz.com")
 
 
 def test_an_mcp_endpoint_url_finds_its_service(client: TestClient) -> None:

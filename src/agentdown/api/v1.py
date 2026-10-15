@@ -4,6 +4,7 @@ from fastapi import APIRouter, Query, Request
 from fastapi.responses import JSONResponse, Response
 
 from agentdown import service
+from agentdown.core.privacy import ua_family
 from agentdown.service import ReportIn, Result
 
 router = APIRouter(prefix="/v1", tags=["agents"])
@@ -26,7 +27,8 @@ def get_status(
     target: str = Query(..., max_length=2048, description="URL, access-path id or service name"),
     type: str | None = Query(None, description="Optional: site, route, mcp or skill"),
 ) -> JSONResponse:
-    return _send(service.check_status(request.app.state, target, type))
+    client = ua_family(request.headers.get("user-agent"))
+    return _send(service.check_status(request.app.state, target, type, client))
 
 
 @router.post(

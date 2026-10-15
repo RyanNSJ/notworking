@@ -108,3 +108,14 @@ checks_hourly = sa.Table(
     sa.Column("hour", UTCDateTime, primary_key=True),
     sa.Column("count", sa.Integer, nullable=False, server_default="0"),
 )
+
+# One row per status lookup: what was looked up and the client family. Pruned after 8 days.
+lookups = sa.Table(
+    "lookups",
+    metadata,
+    sa.Column("pk", sa.Integer, primary_key=True),
+    sa.Column("created_at", UTCDateTime, nullable=False, index=True),
+    sa.Column("service_id", sa.String(255)),  # set only for listed services
+    sa.Column("target", sa.String(512), nullable=False),
+    sa.Column("client", sa.String(32), nullable=False),
+)

@@ -10,7 +10,7 @@
   <ul>
     <li><b>Failure reports.</b> The access path that failed, what failed, and optionally a self-reported country code, agent type and a short note. Notes are scrubbed of anything that looks like contact details, numbers, IDs or links, and are never shown to anyone. URLs are reduced to listed routes; query strings are never kept.</li>
     <li><b>Reporter fingerprints.</b> Each report carries a hash of the reporter's network (an IPv4 /24 or IPv6 /48) and a coarse user-agent family, made with a salt that changes daily. Salts are deleted after 2 days, so fingerprints can't be linked across days or turned back into a network. They're used only for rate limits and to require reports from different networks.</li>
-    <li><b>Lookup counts.</b> Daily totals of how often each service is looked up. A lookup for something we don't list is counted under its normalised domain or ID, never the raw input.</li>
+    <li><b>Lookups.</b> Daily totals of how often each service is looked up, and a log of individual lookups kept for 8 days: the time, what was looked up and a coarse client family (like curl, a browser or MCP), with no network or fingerprint. A lookup for something we don't list is recorded under its normalised domain or ID, never the raw input.</li>
   </ul>
 
   <h2>What we don't collect</h2>
@@ -20,7 +20,7 @@
   </ul>
 
   <h2>What we publish</h2>
-  <p>Report counts, statuses and status changes for listed services, on these pages, through the API and in the <a href="/dataset">dataset</a> (CC BY 4.0). Notes and fingerprints are never published.</p>
+  <p>Report counts, statuses and status changes for listed services, on these pages, through the API and in the <a href="/dataset">dataset</a> (CC BY 4.0), and <a href="/lookups">recent lookups</a> of listed services. Notes and fingerprints are never published.</p>
 
   <h2>Where it's kept</h2>
   <p>The service runs on a server at DigitalOcean, with encrypted backups in Cloudflare R2. Cloudflare provides DNS. Backups are kept for 48 hours.</p>

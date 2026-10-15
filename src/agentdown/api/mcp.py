@@ -100,7 +100,7 @@ def build_mcp(state: AppState) -> tuple[MCPServer, Starlette]:
             Field(description="Optional, to disambiguate: site, route, mcp or skill"),
         ] = None,
     ) -> dict[str, Any]:
-        return service.check_status(state, target, type).body
+        return service.check_status(state, target, type, "mcp").body
 
     @server.tool(
         name="report",

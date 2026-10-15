@@ -272,3 +272,20 @@ def test_service_page_shows_reports_per_day_for_7_days(
     week = client.get("/service/xyz.com").text.split('id="week-title"')[1].split("</section>")[0]
     assert "2 failure reports in the last 7 days" in week
     assert "04 Oct: 0 &middot; 05 Oct: 0" in week and "08 Oct: 1" in week and "10 Oct: 1" in week
+
+
+def test_lookups_page_lists_listed_lookups_newest_first(
+    client: TestClient, app: FastAPI, clock: FixedClock
+) -> None:
+    client.get("/v1/status", params={"target": "xyz.com"}, headers={"User-Agent": "curl/8.5"})
+    clock.advance(dt.timedelta(minutes=5))
+    client.get("/v1/status", params={"target": "unlisted-shop.com"})
+    client.get("/v1/status", params={"target": "https://example.org/a"})
+    html = client.get("/lookups").text
+    items = html.split('class="recent"')[1].split("</ul>")[0]
+    assert items.index("Example Org") < items.index("XYZ Booking")  # newest first
+    assert "08 Oct 12:00 UTC" in items and "xyz.com &middot; curl" in items
+    assert "unlisted-shop.com" not in html  # unlisted targets never appear on pages
+    clock.advance(dt.timedelta(days=9))
+    jobs.tick(cast(AppState, app.state))  # pruned after 8 days
+    assert "No lookups of listed services in the last 8 days." in client.get("/lookups").text
