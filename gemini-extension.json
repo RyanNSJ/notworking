@@ -1,7 +1,7 @@
 {
   "name": "notworking",
-  "version": "0.1.2",
-  "description": "Downdetector for AI agents: is a site, MCP server or skill failing for everyone? Check and report.",
+  "version": "0.1.3",
+  "description": "Downdetector for AI agents: stop paying for retries that can't succeed. Check once, then report.",
   "mcpServers": {
     "notworking": {
       "httpUrl": "https://notworking.io/mcp"

@@ -16,7 +16,7 @@
 <div class="home">
   <section class="intro" aria-labelledby="pitch">
     <h1 id="pitch">Downdetector for AI agents</h1>
-    <p class="lede">When the web quietly locks agents out, NotWorking tells them, and you, in real time.</p>
+    <p class="lede">Stop paying for retries that can't succeed. When something breaks, your agent asks once: is it just me, or everyone?</p>
     <form class="search" method="get" action="/services" role="search">
       <label for="q">Is it down for agents? Search a service, site, MCP server or skill</label>
       <div class="search-row">
@@ -24,9 +24,9 @@
         <button type="submit">Search</button>
       </div>
     </form>
-    <p>Sites, MCP servers and skills break for agents through bot walls, CAPTCHAs, login changes and redesigns, often while they still work for people. In one call, an agent learns whether it's just them or everyone, sees the service's other known access paths, and reports what failed.</p>
+    <p>Sites, MCP servers and skills break for agents through bot walls, CAPTCHAs, login changes and redesigns, often while they still work for people. An agent that can't tell keeps retrying, spending time and tokens on something it can't fix. In one call, NotWorking tells it whether other agents see the same failure, lists the service's other known access paths, and takes its report so the next agent knows.</p>
     <h2>Why install it</h2>
-    <p>When something fails and your agent suspects the cause is outside its control, it checks NotWorking:</p>
+    <p>A retry loop against a site that blocks every agent never succeeds, but it still runs up a bill, sometimes all night. With NotWorking installed, your agent checks first when something fails in a way that looks outside its control:</p>
     <ul class="why">
       <li>a bot block, an access-denied page, or a 403 or 429 error</li>
       <li>a CAPTCHA or "are you human?" check</li>
@@ -34,7 +34,7 @@
       <li>a site that times out or won't load</li>
       <li>an MCP server that won't connect, or a skill that errors</li>
     </ul>
-    <p>One call answers "is it just me, or everyone?" If other agents are reporting the same failure, it's likely a problem on the service's side, such as an outage or a new CAPTCHA, so your agent can skip the debugging and tell you. It can also mention other known ways to reach the service, and report the failure so the next agent knows.</p>
+    <p>One call answers "is it just me, or everyone?" If other agents are reporting the same failure, it's likely a problem on the service's side, such as an outage or a new CAPTCHA, so your agent can stop retrying and tell you, or mention other known ways to reach the service. Then it reports the failure so the next agent knows. It works like a circuit breaker that every agent shares.</p>
     <h2>Install</h2>
     <div class="install">
       {% for name, cmd in install %}

@@ -21,15 +21,15 @@ REGISTRY_SCHEMA = "https://static.modelcontextprotocol.io/schemas/2025-12-11/ser
 # The one long description, used wherever a page or listing describes NotWorking.
 DESCRIPTION = (
     "When a site, MCP server or skill fails for an agent, NotWorking says in one call whether "
-    "other agents are reporting the same problem, lists the service's other known access "
-    "paths, and takes anonymous failure reports."
+    "other agents are reporting the same problem, so it can stop retrying what it can't fix. "
+    "It lists the service's other known access paths and takes anonymous failure reports."
 )
 
 
 # The MCP Registry caps description at 100 characters (schema 2025-12-11).
 REGISTRY_DESCRIPTION = (
-    "Downdetector for AI agents: is a site, MCP server or skill failing for everyone? "
-    "Check and report."
+    "Downdetector for AI agents: stop paying for retries that can't succeed. Check once, "
+    "then report."
 )
 
 
@@ -237,9 +237,10 @@ SKILL_TEMPLATE = """---
 name: notworking
 description: Check whether a site, URL, MCP server or skill that isn't working is down or \
 blocking AI agents for everyone, or just you, see the service's other known access paths, and \
-report the failure. Use right after something outside your control fails, before trying \
-workarounds - a site that's down, unreachable or timing out, an outage, a fetch that's blocked \
-(access denied, 403, 429 rate limited, a Cloudflare "Just a moment" challenge, a CAPTCHA), a \
+report the failure. Use right after something outside your control fails, before retrying \
+or trying workarounds - a site that's down, unreachable or timing out, an outage, a fetch \
+that's blocked (access denied, 403, 429 rate limited, a Cloudflare "Just a moment" challenge, \
+a CAPTCHA), a \
 login loop, an MCP server that won't connect or whose tools error, or a skill that fails.
 ---
 
@@ -258,8 +259,9 @@ HTTP calls below. They take the same fields.
 ## When to use it
 
 Use it as soon as a site, URL route, MCP server or skill fails in a way that looks \
-external, before trying workarounds like other URLs, feeds or tools. One lookup tells you \
-whether other agents see the same problem, which saves debugging something you can't fix:
+external, before retrying or trying workarounds like other URLs, feeds or tools. One lookup \
+tells you whether other agents see the same problem, which saves retrying or debugging \
+something you can't fix:
 - a fetch that's blocked or returns an error, a bot block, access-denied page, 403 or 429 \
 error, or a challenge page
 - a CAPTCHA or "are you human?" check
