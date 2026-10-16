@@ -28,7 +28,8 @@ def get_status(
     type: str | None = Query(None, description="Optional: site, route, mcp or skill"),
 ) -> JSONResponse:
     client = ua_family(request.headers.get("user-agent"))
-    return _send(service.check_status(request.app.state, target, type, client))
+    ip = request.client.host if request.client else None
+    return _send(service.check_status(request.app.state, target, type, client, ip))
 
 
 @router.post(

@@ -75,9 +75,11 @@ def problems_result(options: Options, problems: list[dict[str, str]]) -> Result:
     )
 
 
-def _view(state: AppState, res: Resolution, now, *, count: bool, client: str = "") -> Result:
+def _view(
+    state: AppState, res: Resolution, now, *, count: bool, client: str = "", ip: str | None = None
+) -> Result:
     """Build the response for a resolution. `count` records lookup counters (D64) and logs the
-    lookup with the client family."""
+    lookup with the client family and a daily-salted network fingerprint (D21)."""
     options = load_options()
     url = state.settings.public_url
     with state.engine.begin() as conn:
@@ -91,7 +93,8 @@ def _view(state: AppState, res: Resolution, now, *, count: bool, client: str = "
 
         def log(service_id: str | None, target: str) -> None:
             if count:
-                store.log_lookup(conn, now, service_id, target, client)
+                network = fingerprint(store.daily_salt(conn, now), network_prefix(ip))
+                store.log_lookup(conn, now, service_id, target, client, network)
 
         if res.kind == "service":
             assert res.service is not None
@@ -126,13 +129,19 @@ def _view(state: AppState, res: Resolution, now, *, count: bool, client: str = "
 
 
 def check_status(
-    state: AppState, target: str, type_: str | None = None, client: str = "none"
+    state: AppState,
+    target: str,
+    type_: str | None = None,
+    client: str = "none",
+    ip: str | None = None,
 ) -> Result:
+    """The client IP is used in memory only, for the lookup log's network fingerprint."""
     options = load_options()
     if type_ is not None and type_ not in options.target_type:
         return problems_result(options, [{"field": "type", "message": "unknown type"}])
     now = state.clock.now()
-    result = _view(state, resolve(state.catalog, target, type_), now, count=True, client=client)
+    res = resolve(state.catalog, target, type_)
+    result = _view(state, res, now, count=True, client=client, ip=ip)
     if result.code == 200:
         result.headers["Cache-Control"] = STATUS_CACHE
     return result

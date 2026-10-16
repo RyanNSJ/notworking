@@ -10,7 +10,7 @@
   <ul>
     <li><b>Failure reports.</b> The access path that failed, what failed, and optionally a self-reported country code, agent type and a short note. Notes are scrubbed of anything that looks like contact details, numbers, IDs or links, and are never shown to anyone. URLs are reduced to listed routes; query strings are never kept.</li>
     <li><b>Reporter fingerprints.</b> Each report carries a hash of the reporter's network (an IPv4 /24 or IPv6 /48) and a coarse user-agent family, made with a salt that changes daily. Salts are deleted after 2 days, so fingerprints can't be linked across days or turned back into a network. They're used only for rate limits and to require reports from different networks.</li>
-    <li><b>Lookups.</b> Daily totals of how often each service is looked up, and a log of individual lookups kept for 8 days: the time, what was looked up and a coarse client family (like curl, a browser or MCP), with no network or fingerprint. A lookup for something we don't list is recorded under its normalised domain or ID, never the raw input.</li>
+    <li><b>Lookups.</b> Daily totals of how often each service is looked up, and a log of individual lookups kept for 8 days: the time, what was looked up, a coarse client family (like curl, a browser or MCP) and a network fingerprint made the same way as a reporter's, without the user-agent family, so lookups can be matched within a day but not across days. A lookup for something we don't list is recorded under its normalised domain or ID, never the raw input.</li>
   </ul>
 
   <h2>What we don't collect</h2>

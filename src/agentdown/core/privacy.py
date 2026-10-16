@@ -41,11 +41,12 @@ def network_prefix(ip: str | None) -> str:
 
 _UA_FAMILIES = [  # first match wins
     ("notworking-canary", "notworking_canary"),
+    ("chatgpt", "openai"),  # ChatGPT-User's UA links openai.com/bot; GPTBot stays crawler
     ("bot", "crawler"),  # ClaudeBot, GPTBot, Googlebot, Bingbot; Claude-User stays claude
     ("crawler", "crawler"),
     ("spider", "crawler"),
     ("claude", "claude"),
-    ("chatgpt", "openai"),
+    ("perplexity", "perplexity"),  # Perplexity-User; PerplexityBot is crawler
     ("openai", "openai"),
     ("python-httpx", "python_httpx"),
     ("python-requests", "python_requests"),

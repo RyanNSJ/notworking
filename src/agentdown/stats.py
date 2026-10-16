@@ -115,10 +115,12 @@ def render_stats(conn: Connection, now: dt.datetime, days: int = 7) -> str:
         lines.append("  (none)")
 
     lines.extend(["", "Recent lookups, newest first (all targets, last 8 days)"])
+    lines.append("  when          client            net     target  (net matches within a UTC day)")
     recent = recent_lookups(conn, 50, listed_only=False)
     lines.extend(
-        f"  {utc(at):%d %b %H:%M}  {client:<16}  {target}{'' if sid else '  (unlisted)'}"
-        for at, sid, target, client in recent
+        f"  {utc(at):%d %b %H:%M}  {client:<16}  {(net or '-')[:6]:<6}  "
+        f"{target}{'' if sid else '  (unlisted)'}"
+        for at, sid, target, client, net in recent
     )
     if not recent:
         lines.append("  (none)")

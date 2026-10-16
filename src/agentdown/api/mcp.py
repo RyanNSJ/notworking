@@ -93,6 +93,7 @@ def build_mcp(state: AppState) -> tuple[MCPServer, Starlette]:
         ),
     )
     def check_status(
+        ctx: Context,
         target: Annotated[
             str, Field(description="The URL, access-path id or service name", max_length=2048)
         ],
@@ -101,7 +102,8 @@ def build_mcp(state: AppState) -> tuple[MCPServer, Starlette]:
             Field(description="Optional, to disambiguate: site, route, mcp or skill"),
         ] = None,
     ) -> dict[str, Any]:
-        return service.check_status(state, target, type, "mcp").body
+        ip, _ = _client(ctx)
+        return service.check_status(state, target, type, "mcp", ip).body
 
     @server.tool(
         name="report",

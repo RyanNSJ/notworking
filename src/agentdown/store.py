@@ -401,18 +401,33 @@ def bump_checks(conn: Connection, now: dt.datetime) -> None:
 
 
 def log_lookup(
-    conn: Connection, now: dt.datetime, service_id: str | None, target: str, client: str
+    conn: Connection,
+    now: dt.datetime,
+    service_id: str | None,
+    target: str,
+    client: str,
+    network: str | None,
 ) -> None:
     conn.execute(
         lookups.insert().values(
-            created_at=now, service_id=service_id, target=target[:512], client=client
+            created_at=now,
+            service_id=service_id,
+            target=target[:512],
+            client=client,
+            network=network,
         )
     )
 
 
 def recent_lookups(conn: Connection, limit: int, *, listed_only: bool) -> list[sa.Row]:
-    """(created_at, service_id, target, client), newest first."""
-    q = sa.select(lookups.c.created_at, lookups.c.service_id, lookups.c.target, lookups.c.client)
+    """(created_at, service_id, target, client, network), newest first."""
+    q = sa.select(
+        lookups.c.created_at,
+        lookups.c.service_id,
+        lookups.c.target,
+        lookups.c.client,
+        lookups.c.network,
+    )
     if listed_only:
         q = q.where(lookups.c.service_id.is_not(None))
     return list(

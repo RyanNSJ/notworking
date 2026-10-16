@@ -210,7 +210,7 @@ def recent_lookups(request: Request) -> HTMLResponse:
     state: AppState = request.app.state
     with state.engine.connect() as conn:
         rows = store.recent_lookups(conn, LOOKUPS_SHOWN, listed_only=True)
-    rows = [(store.utc(at), *rest) for at, *rest in rows]
+    rows = [(store.utc(at), sid, target, client) for at, sid, target, client, _ in rows]
     services = state.catalog.by_id
     return _page(request, "lookups.html", rows=rows, services=services, limit=LOOKUPS_SHOWN)
 

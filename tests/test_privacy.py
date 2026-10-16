@@ -57,6 +57,14 @@ def test_ua_family() -> None:
     )
     assert ua_family("Mozilla/5.0 AppleWebKit/537.36; compatible; ClaudeBot/1.0") == "crawler"
     assert ua_family("Mozilla/5.0 AppleWebKit/537.36; compatible; Claude-User/1.0") == "claude"
+    openai = (
+        "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; {}; +https://openai.com/{}"
+    )
+    assert ua_family(openai.format("ChatGPT-User/1.0", "bot")) == "openai"
+    assert ua_family(openai.format("GPTBot/1.1", "gptbot")) == "crawler"
+    pplx = "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; {}/1.0; +https://perplexity.ai/{})"
+    assert ua_family(pplx.format("Perplexity-User", "perplexity-user")) == "perplexity"
+    assert ua_family(pplx.format("PerplexityBot", "perplexitybot")) == "crawler"
     assert ua_family("python-httpx/0.28") == "python_httpx"
     assert ua_family("something-new") == "other"
     assert ua_family(None) == "none"

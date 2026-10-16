@@ -118,4 +118,5 @@ lookups = sa.Table(
     sa.Column("service_id", sa.String(255)),  # set only for listed services
     sa.Column("target", sa.String(512), nullable=False),
     sa.Column("client", sa.String(32), nullable=False),
+    sa.Column("network", sa.String(32)),  # daily-salted network fingerprint (D21)
 )

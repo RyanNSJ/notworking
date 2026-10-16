@@ -339,9 +339,22 @@ def test_usage_counters_and_stats(
     assert "       10         10        10        0  site:popular-unlisted.com" in unlisted
     assert "        0          0         0        1  not-listed.com" in unlisted
     assert not any("unparseable" in line or line.endswith(" xyz.com") for line in unlisted)
-    recent = out.split("Recent lookups, newest first")[1].splitlines()[1:]
+    recent = out.split("Recent lookups, newest first")[1].splitlines()[2:]
     assert len(recent) == 4 and all(" 08 Oct 12:00 " in line for line in recent)
     assert recent[1].endswith("not-listed.com  (unlisted)") and recent[3].endswith("  xyz.com")
+
+
+def test_lookup_log_keeps_a_network_fingerprint_not_the_ip(
+    client: TestClient, client_from: Callable[[str], TestClient], app: FastAPI
+) -> None:
+    for ip in ("203.0.113.5", "203.0.113.9", "198.51.100.1"):
+        status(client_from(ip), "xyz.com")
+    with app.state.engine.connect() as conn:
+        rows = conn.execute(sa.text("SELECT * FROM lookups ORDER BY pk")).all()
+    nets = [r.network for r in rows]
+    assert nets[0] == nets[1] != nets[2] and len(nets[0]) == 32  # same /24, same network
+    assert not any("203.0.113" in str(r) or "198.51.100" in str(r) for r in rows)
+    assert nets[0] not in client.get("/lookups").text  # fingerprints are never published
 
 
 def test_an_mcp_endpoint_url_finds_its_service(client: TestClient) -> None:

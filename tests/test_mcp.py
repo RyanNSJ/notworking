@@ -57,11 +57,14 @@ def test_tools_are_described_from_options(client: TestClient) -> None:
     assert '"outcome"' not in schema and '"notworking_canary"' in schema
 
 
-def test_check_status_matches_http(client: TestClient) -> None:
+def test_check_status_matches_http(client: TestClient, app: FastAPI) -> None:
     via_mcp = call(client, "check_status", target="https://www.xyz.com/booking/1?x=y")
     via_http = client.get("/v1/status", params={"target": "https://www.xyz.com/booking/1?x=y"})
     assert via_mcp["structuredContent"] == via_http.json()
     assert via_mcp["structuredContent"]["you_asked_about"]["id"] == "xyz.com/booking"
+    with app.state.engine.connect() as conn:
+        logged = conn.execute(sa.text("SELECT client, network FROM lookups ORDER BY pk")).all()
+    assert [c for c, _ in logged] == ["mcp", "other"] and logged[0][1] == logged[1][1]
 
 
 def test_report_via_mcp(client: TestClient, migrated_db_url: str, app: FastAPI) -> None:
