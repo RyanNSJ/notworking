@@ -4,7 +4,13 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 
-from agentdown.core.privacy import fingerprint, network_prefix, scrub_note, ua_family
+from agentdown.core.privacy import (
+    fingerprint,
+    network_prefix,
+    scrub_note,
+    signature_agent,
+    ua_family,
+)
 
 
 @pytest.mark.parametrize(
@@ -68,6 +74,14 @@ def test_ua_family() -> None:
     assert ua_family("python-httpx/0.28") == "python_httpx"
     assert ua_family("something-new") == "other"
     assert ua_family(None) == "none"
+
+
+def test_signature_agent_host() -> None:
+    assert signature_agent('"https://chatgpt.com"') == "chatgpt.com"
+    assert signature_agent('sig1="https://Agent.Example.com/x"') == "agent.example.com"
+    assert signature_agent("chatgpt.com") == "chatgpt.com"
+    assert signature_agent('"<script>alert(1)</script>"') == "invalid"
+    assert signature_agent(None) is None
 
 
 def test_fingerprint_is_salted_and_stable() -> None:

@@ -405,8 +405,11 @@ def log_lookup(
     now: dt.datetime,
     service_id: str | None,
     target: str,
+    *,
     client: str,
     network: str | None,
+    owner: str | None,
+    signature_agent: str | None,
 ) -> None:
     conn.execute(
         lookups.insert().values(
@@ -415,18 +418,22 @@ def log_lookup(
             target=target[:512],
             client=client,
             network=network,
+            owner=owner,
+            signature_agent=signature_agent,
         )
     )
 
 
 def recent_lookups(conn: Connection, limit: int, *, listed_only: bool) -> list[sa.Row]:
-    """(created_at, service_id, target, client, network), newest first."""
+    """(created_at, service_id, target, client, network, owner, signature_agent), newest first."""
     q = sa.select(
         lookups.c.created_at,
         lookups.c.service_id,
         lookups.c.target,
         lookups.c.client,
         lookups.c.network,
+        lookups.c.owner,
+        lookups.c.signature_agent,
     )
     if listed_only:
         q = q.where(lookups.c.service_id.is_not(None))

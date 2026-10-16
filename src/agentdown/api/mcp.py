@@ -15,6 +15,7 @@ from starlette.applications import Starlette
 
 from agentdown import __version__, publish, service
 from agentdown.core.options import load_options
+from agentdown.core.privacy import signature_agent
 from agentdown.service import AppState, ReportIn
 
 INSTRUCTIONS = (
@@ -103,7 +104,8 @@ def build_mcp(state: AppState) -> tuple[MCPServer, Starlette]:
         ] = None,
     ) -> dict[str, Any]:
         ip, _ = _client(ctx)
-        return service.check_status(state, target, type, "mcp", ip).body
+        sig = signature_agent((ctx.headers or {}).get("signature-agent"))
+        return service.check_status(state, target, type, "mcp", ip, sig).body
 
     @server.tool(
         name="report",

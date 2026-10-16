@@ -12,6 +12,7 @@ from agentdown.catalog import parse_catalog
 from agentdown.core.clock import FixedClock
 from agentdown.db import engine as db
 from agentdown.lookup import NOTICE, PLEASE_REPORT, resolve
+from agentdown.networks import SOURCES, Owners
 from agentdown.service import AppState
 from agentdown.stats import render_stats
 from tests.conftest import PUBLIC_URL
@@ -355,6 +356,22 @@ def test_lookup_log_keeps_a_network_fingerprint_not_the_ip(
     assert nets[0] == nets[1] != nets[2] and len(nets[0]) == 32  # same /24, same network
     assert not any("203.0.113" in str(r) or "198.51.100" in str(r) for r in rows)
     assert nets[0] not in client.get("/lookups").text  # fingerprints are never published
+
+
+def test_lookup_log_records_network_owner_and_signature_agent(
+    client: TestClient, client_from: Callable[[str], TestClient], app: FastAPI
+) -> None:
+    app.state.owners = Owners(
+        {**{label: [] for label in SOURCES}, "openai": ["203.0.113.0/24"]}, missing=set()
+    )
+    signed = {"Signature-Agent": '"https://chatgpt.com"'}
+    client_from("203.0.113.5").get("/v1/status", params={"target": "xyz.com"}, headers=signed)
+    status(client_from("198.51.100.1"), "xyz.com")
+    with app.state.engine.connect() as conn:
+        rows = conn.execute(sa.text("SELECT owner, signature_agent FROM lookups ORDER BY pk"))
+        assert [tuple(r) for r in rows] == [("openai", "chatgpt.com"), ("other", None)]
+        out = render_stats(conn, app.state.clock.now())
+    assert "openai        chatgpt.com" in out
 
 
 def test_an_mcp_endpoint_url_finds_its_service(client: TestClient) -> None:

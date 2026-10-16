@@ -1,6 +1,7 @@
 """Background jobs, run in-process by the app (one process, so no scheduler library).
 
 Every 5 minutes: the detector (M4), salt pruning (D21) and hourly check pruning.
+Every 6 hours: the published IP range lists behind the lookup log's network owner.
 """
 
 import asyncio
@@ -11,6 +12,7 @@ from agentdown import detector, store
 from agentdown.service import AppState
 
 INTERVAL = dt.timedelta(minutes=5)
+OWNERS_EVERY = dt.timedelta(hours=6)
 STALE_AFTER = 3 * INTERVAL  # /healthz fails after this long without a successful run
 log = logging.getLogger(__name__)
 
@@ -44,3 +46,12 @@ async def run_forever(state: AppState) -> None:
         except Exception:  # keep the loop alive; the next run retries
             log.exception("detector run failed")
         await asyncio.sleep(INTERVAL.total_seconds())
+
+
+async def refresh_owners_forever(state: AppState) -> None:
+    while True:
+        try:
+            state.owners = await asyncio.to_thread(state.owners.refreshed)
+        except Exception:  # keep the loop alive; the previous lists stay in use
+            log.exception("network owner refresh failed")
+        await asyncio.sleep(OWNERS_EVERY.total_seconds())

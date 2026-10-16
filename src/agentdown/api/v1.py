@@ -4,7 +4,7 @@ from fastapi import APIRouter, Query, Request
 from fastapi.responses import JSONResponse, Response
 
 from agentdown import service
-from agentdown.core.privacy import ua_family
+from agentdown.core.privacy import signature_agent, ua_family
 from agentdown.service import ReportIn, Result
 
 router = APIRouter(prefix="/v1", tags=["agents"])
@@ -29,7 +29,8 @@ def get_status(
 ) -> JSONResponse:
     client = ua_family(request.headers.get("user-agent"))
     ip = request.client.host if request.client else None
-    return _send(service.check_status(request.app.state, target, type, client, ip))
+    sig = signature_agent(request.headers.get("signature-agent"))
+    return _send(service.check_status(request.app.state, target, type, client, ip, sig))
 
 
 @router.post(

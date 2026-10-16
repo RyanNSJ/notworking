@@ -18,6 +18,7 @@ from agentdown.catalog import Catalog, load_catalog
 from agentdown.core.clock import Clock, SystemClock
 from agentdown.core.options import load_options
 from agentdown.db.engine import make_engine
+from agentdown.networks import Owners
 from agentdown.service import AppState, problems_result
 from agentdown.settings import Settings, get_settings
 
@@ -37,16 +38,20 @@ def create_app(
     async def lifespan(_app: FastAPI):
         with engine.begin() as conn:
             store.sync_listed(conn, catalog, clock.now())
-        jobs_task = (
-            asyncio.create_task(jobs.run_forever(cast(AppState, app.state)))
+        state = cast(AppState, app.state)
+        tasks = (
+            [
+                asyncio.create_task(jobs.run_forever(state)),
+                asyncio.create_task(jobs.refresh_owners_forever(state)),
+            ]
             if settings.run_jobs
-            else None
+            else []
         )
         # A mounted app's own lifespan never runs, so the MCP session manager runs here.
         async with mcp_server.session_manager.run():
             yield
-        if jobs_task:
-            jobs_task.cancel()
+        for task in tasks:
+            task.cancel()
         engine.dispose()
 
     app = FastAPI(
@@ -59,6 +64,7 @@ def create_app(
     app.state.clock = clock
     app.state.catalog = catalog
     app.state.engine = engine
+    app.state.owners = Owners()  # filled by jobs.refresh_owners_forever
     app.include_router(v1_router)
     app.include_router(pages_router)
     mcp_server, mcp_app = build_mcp(cast(AppState, app.state))  # attributes set just above

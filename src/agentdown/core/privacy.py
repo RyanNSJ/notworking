@@ -4,6 +4,7 @@ store or log the raw IP or User-Agent, only the outputs of these functions."""
 import hashlib
 import ipaddress
 import re
+from urllib.parse import urlsplit
 
 MAX_NOTE = 280
 
@@ -59,6 +60,17 @@ _UA_FAMILIES = [  # first match wins
     ("headless", "headless"),  # HeadlessChrome: an automated browser
     ("mozilla", "browser"),
 ]
+
+
+def signature_agent(value: str | None) -> str | None:
+    """The host a Signature-Agent header (Web Bot Auth) names, unverified; "invalid" if it
+    isn't a plain hostname. Accepts `"https://x"` and the dictionary form `a="https://x"`."""
+    if not value:
+        return None
+    quoted = re.search(r'"([^"]*)"', value)
+    raw = (quoted.group(1) if quoted else value).strip()
+    host = urlsplit(raw).hostname or raw.lower()
+    return host if re.fullmatch(r"[a-z0-9][a-z0-9.-]{0,62}", host) else "invalid"
 
 
 def ua_family(user_agent: str | None) -> str:

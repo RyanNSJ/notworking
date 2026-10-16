@@ -25,6 +25,7 @@ from agentdown.lookup import (
     resolve,
     service_view,
 )
+from agentdown.networks import Owners
 from agentdown.settings import Settings
 
 STATUS_CACHE = "public, max-age=60"
@@ -35,6 +36,7 @@ class AppState(Protocol):
     catalog: Catalog
     clock: Clock
     settings: Settings
+    owners: Owners
 
 
 @dataclass
@@ -76,10 +78,18 @@ def problems_result(options: Options, problems: list[dict[str, str]]) -> Result:
 
 
 def _view(
-    state: AppState, res: Resolution, now, *, count: bool, client: str = "", ip: str | None = None
+    state: AppState,
+    res: Resolution,
+    now,
+    *,
+    count: bool,
+    client: str = "",
+    ip: str | None = None,
+    signature: str | None = None,
 ) -> Result:
     """Build the response for a resolution. `count` records lookup counters (D64) and logs the
-    lookup with the client family and a daily-salted network fingerprint (D21)."""
+    lookup with the client family, a daily-salted network fingerprint (D21), the network's
+    owner and the Signature-Agent host."""
     options = load_options()
     url = state.settings.public_url
     with state.engine.begin() as conn:
@@ -93,8 +103,16 @@ def _view(
 
         def log(service_id: str | None, target: str) -> None:
             if count:
-                network = fingerprint(store.daily_salt(conn, now), network_prefix(ip))
-                store.log_lookup(conn, now, service_id, target, client, network)
+                store.log_lookup(
+                    conn,
+                    now,
+                    service_id,
+                    target,
+                    client=client,
+                    network=fingerprint(store.daily_salt(conn, now), network_prefix(ip)),
+                    owner=state.owners.label(ip),
+                    signature_agent=signature,
+                )
 
         if res.kind == "service":
             assert res.service is not None
@@ -134,14 +152,16 @@ def check_status(
     type_: str | None = None,
     client: str = "none",
     ip: str | None = None,
+    signature: str | None = None,
 ) -> Result:
-    """The client IP is used in memory only, for the lookup log's network fingerprint."""
+    """The client IP is used in memory only, for the lookup log's network fingerprint and
+    owner."""
     options = load_options()
     if type_ is not None and type_ not in options.target_type:
         return problems_result(options, [{"field": "type", "message": "unknown type"}])
     now = state.clock.now()
     res = resolve(state.catalog, target, type_)
-    result = _view(state, res, now, count=True, client=client, ip=ip)
+    result = _view(state, res, now, count=True, client=client, ip=ip, signature=signature)
     if result.code == 200:
         result.headers["Cache-Control"] = STATUS_CACHE
     return result
