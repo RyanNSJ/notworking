@@ -39,8 +39,11 @@ def network_prefix(ip: str | None) -> str:
     return str(ipaddress.ip_network(f"{addr}/{bits}", strict=False))
 
 
-_UA_FAMILIES = [
+_UA_FAMILIES = [  # first match wins
     ("notworking-canary", "notworking_canary"),
+    ("bot", "crawler"),  # ClaudeBot, GPTBot, Googlebot, Bingbot; Claude-User stays claude
+    ("crawler", "crawler"),
+    ("spider", "crawler"),
     ("claude", "claude"),
     ("chatgpt", "openai"),
     ("openai", "openai"),
@@ -52,6 +55,7 @@ _UA_FAMILIES = [
     ("node", "node"),
     ("axios", "node"),
     ("go-http-client", "go"),
+    ("headless", "headless"),  # HeadlessChrome: an automated browser
     ("mozilla", "browser"),
 ]
 

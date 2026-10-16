@@ -50,6 +50,13 @@ def test_network_prefix() -> None:
 def test_ua_family() -> None:
     assert ua_family("notworking-canary/0.1 (+https://x)") == "notworking_canary"
     assert ua_family("Mozilla/5.0 (Windows NT 10.0) Chrome/130") == "browser"
+    assert ua_family("Mozilla/5.0 (X11; Linux x86_64) HeadlessChrome/130") == "headless"
+    assert (
+        ua_family("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)")
+        == "crawler"
+    )
+    assert ua_family("Mozilla/5.0 AppleWebKit/537.36; compatible; ClaudeBot/1.0") == "crawler"
+    assert ua_family("Mozilla/5.0 AppleWebKit/537.36; compatible; Claude-User/1.0") == "claude"
     assert ua_family("python-httpx/0.28") == "python_httpx"
     assert ua_family("something-new") == "other"
     assert ua_family(None) == "none"
