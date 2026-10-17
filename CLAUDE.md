@@ -57,6 +57,7 @@ Nothing else goes into the MVP. Searching across services by task ("book a table
 
 **Privacy**
 - No raw IPs anywhere, logs included. Reporters are identified only by salted, daily-rotating fingerprints.
+- The lookup log's network fingerprint uses `privacy.lookup_salt`, which is never stored. Never derive it from the stored salt.
 - No personal data and no query strings. Routes map to listed route prefixes only (a route can name a subdomain, D67). Country is ISO-3166 alpha-2 only. Notes are scrubbed before storage.
 
 **Canary safety**

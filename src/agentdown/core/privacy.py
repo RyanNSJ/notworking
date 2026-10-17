@@ -1,9 +1,12 @@
 """Privacy helpers (docs/design.md D21, D27). Nothing here stores anything; callers must never
 store or log the raw IP or User-Agent, only the outputs of these functions."""
 
+import datetime as dt
+import functools
 import hashlib
 import ipaddress
 import re
+import secrets
 from urllib.parse import urlsplit
 
 MAX_NOTE = 280
@@ -84,3 +87,10 @@ def ua_family(user_agent: str | None) -> str:
 
 def fingerprint(salt: str, *parts: str) -> str:
     return hashlib.sha256("\x1f".join((salt, *parts)).encode()).hexdigest()[:32]
+
+
+@functools.lru_cache(maxsize=1)
+def lookup_salt(day: dt.date) -> str:
+    """The lookup log's salt for `day`, kept only in memory (D21): nothing stored can reverse
+    a lookup fingerprint. A new day or a restart starts a new one."""
+    return secrets.token_hex(32)

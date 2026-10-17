@@ -40,7 +40,7 @@ Pushes to `main` deploy automatically after CI passes. See `CLAUDE.md` for the c
 | D16 | Status ladder per access path: `no_reported_issues`, `issues_reported`, `many_issues_reported`, all from reports. |
 | D19 | A raised status steps down only after 6 calm 5-minute checks in a row (30 minutes). |
 | D20 | `issues_reported`: at least 3 distinct reporters in the last hour, and a Poisson chance under 1 in 1,000 against the path's 7-day baseline (floor 0.5 per hour). |
-| D21 | Reporter and network fingerprints are salted hashes of the IPv4 /24 or IPv6 /48 and a coarse user-agent family. Salts rotate daily and are deleted after 2 days. The client IP is trusted only from our own proxy. |
+| D21 | Reporter and network fingerprints are salted hashes of the IPv4 /24 or IPv6 /48 and a coarse user-agent family. Salts rotate daily and are deleted after 2 days. The lookup log's network fingerprint uses its own salt, kept only in memory. The client IP is trusted only from our own proxy. |
 | D24 | Reports on unlisted targets are stored and counted. |
 | D25 | A report `signature` field is accepted but carries no weight until verification exists. |
 | D27 | Report notes are scrubbed and stored, and never shown to agents or on pages. |

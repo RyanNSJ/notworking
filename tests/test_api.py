@@ -355,6 +355,8 @@ def test_lookup_log_keeps_a_network_fingerprint_not_the_ip(
     nets = [r.network for r in rows]
     assert nets[0] == nets[1] != nets[2] and len(nets[0]) == 32  # same /24, same network
     assert not any("203.0.113" in str(r) or "198.51.100" in str(r) for r in rows)
+    with app.state.engine.connect() as conn:  # the lookup salt is memory-only
+        assert conn.execute(sa.text("SELECT count(*) FROM salts")).scalar() == 0
     assert nets[0] not in client.get("/lookups").text  # fingerprints are never published
 
 

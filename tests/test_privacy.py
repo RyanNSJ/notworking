@@ -1,3 +1,4 @@
+import datetime as dt
 import re
 
 import pytest
@@ -6,6 +7,7 @@ from hypothesis import strategies as st
 
 from agentdown.core.privacy import (
     fingerprint,
+    lookup_salt,
     network_prefix,
     scrub_note,
     signature_agent,
@@ -43,6 +45,11 @@ emails = st.from_regex(r"[a-z]{1,8}(\.[a-z]{1,5})?@[a-z]{1,8}\.(com|sg|org)", fu
 def test_scrubber_never_lets_an_email_through(before: str, email: str, after: str) -> None:
     out = scrub_note(f"{before} {email} {after}") or ""
     assert not re.search(r"[\w.+-]+@[\w-]+\.[a-z]+", out)
+
+
+def test_lookup_salt_is_per_day() -> None:
+    day = dt.date(2026, 10, 17)
+    assert lookup_salt(day) == lookup_salt(day) != lookup_salt(day + dt.timedelta(days=1))
 
 
 def test_network_prefix() -> None:

@@ -15,7 +15,14 @@ from agentdown.catalog import Catalog
 from agentdown.core.clock import Clock
 from agentdown.core.countries import COUNTRY_CODES
 from agentdown.core.options import Options, load_options
-from agentdown.core.privacy import MAX_NOTE, fingerprint, network_prefix, scrub_note, ua_family
+from agentdown.core.privacy import (
+    MAX_NOTE,
+    fingerprint,
+    lookup_salt,
+    network_prefix,
+    scrub_note,
+    ua_family,
+)
 from agentdown.core.targets import TargetError
 from agentdown.detector import LEVELS
 from agentdown.lookup import (
@@ -88,8 +95,8 @@ def _view(
     signature: str | None = None,
 ) -> Result:
     """Build the response for a resolution. `count` records lookup counters (D64) and logs the
-    lookup with the client family, a daily-salted network fingerprint (D21), the network's
-    owner and the Signature-Agent host."""
+    lookup with the client family, a network fingerprint with a memory-only daily salt (D21),
+    the network's owner and the Signature-Agent host."""
     options = load_options()
     url = state.settings.public_url
     with state.engine.begin() as conn:
@@ -109,7 +116,7 @@ def _view(
                     service_id,
                     target,
                     client=client,
-                    network=fingerprint(store.daily_salt(conn, now), network_prefix(ip)),
+                    network=fingerprint(lookup_salt(now.date()), network_prefix(ip)),
                     owner=state.owners.label(ip),
                     signature_agent=signature,
                 )

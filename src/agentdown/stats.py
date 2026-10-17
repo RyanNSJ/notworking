@@ -117,7 +117,7 @@ def render_stats(conn: Connection, now: dt.datetime, days: int = 7) -> str:
     lines.extend(["", "Recent lookups, newest first (all targets, last 8 days)"])
     lines.append(
         f"  {'when':<12}  {'client':<16}  {'net':<6}  {'owner':<12}  {'signed by':<16}  target"
-        "  (net matches within a UTC day)"
+        "  (net matches within a UTC day, until a restart)"
     )
     recent = recent_lookups(conn, 50, listed_only=False)
     lines.extend(

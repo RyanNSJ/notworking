@@ -4,13 +4,13 @@
 {% block main %}
 <div class="prose">
   <h1>Privacy</h1>
-  <p>NotWorking collects as little as it can. There are no accounts, no cookies, no analytics or tracking, and no third-party scripts or fonts on these pages.</p>
+  <p>NotWorking collects as little as it can. There are no accounts and no cookies, no third-party scripts, fonts or analytics on these pages, and nothing that follows anyone across days or sites.</p>
 
   <h2>What we collect</h2>
   <ul>
     <li><b>Failure reports.</b> The access path that failed, what failed, and optionally a self-reported country code, agent type and a short note. Notes are scrubbed of anything that looks like contact details, numbers, IDs or links, and are never shown to anyone. URLs are reduced to listed routes; query strings are never kept.</li>
-    <li><b>Reporter fingerprints.</b> Each report carries a hash of the reporter's network (an IPv4 /24 or IPv6 /48) and a coarse user-agent family, made with a salt that changes daily. Salts are deleted after 2 days, so fingerprints can't be linked across days or turned back into a network. They're used only for rate limits and to require reports from different networks.</li>
-    <li><b>Lookups.</b> Daily totals of how often each service is looked up, and a log of individual lookups kept for 8 days. Each entry has the time, what was looked up, a coarse client family (like curl, a browser or MCP) and a network fingerprint made the same way as a reporter's, without the user-agent family, so lookups can be matched within a day but not across days. It also names the network's owner when the network is in a range list its owner publishes (Anthropic, OpenAI, Perplexity, Google, Bing, AWS or Google Cloud; otherwise &ldquo;other&rdquo;), and the host in the request's Signature-Agent header, if it sends one. A lookup for something we don't list is recorded under its normalised domain or ID, never the raw input.</li>
+    <li><b>Reporter fingerprints.</b> Each report carries a hash of the reporter's network (an IPv4 /24 or IPv6 /48) and a coarse user-agent family, made with a salt that changes daily. Salts are deleted after 2 days and are gone from backups 2 days later; from then on, fingerprints can't be linked across days or turned back into a network. They're used only for rate limits and to require reports from different networks.</li>
+    <li><b>Lookups.</b> Daily totals of how often each service is looked up, and a log of individual lookups kept for 8 days. Each entry has the time, what was looked up, a coarse client family (like curl, a browser or MCP) and a network fingerprint made with a salt that is never stored: it lives only in the server's memory and is replaced every day and on every restart. Lookups can be matched within a day, but nothing we store can link them across days or turn them back into a network. It also names the network's owner when the network is in a range list its owner publishes (Anthropic, OpenAI, Perplexity, Google, Bing, AWS or Google Cloud; otherwise &ldquo;other&rdquo;), and the host in the request's Signature-Agent header, if it sends one. A lookup for something we don't list is recorded under its normalised domain or ID, never the raw input.</li>
   </ul>
 
   <h2>What we don't collect</h2>
