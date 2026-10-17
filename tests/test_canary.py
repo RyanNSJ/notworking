@@ -107,6 +107,19 @@ def test_report_problems_flag_anything_but_accepted_or_rate_limited() -> None:
     assert canary.report_problems({"reported": {"202": 3, "500": 2, "0": 1}}) == {500: 2, 0: 1}
 
 
+def test_report_retries_a_server_error_once(monkeypatch) -> None:
+    monkeypatch.setattr(canary.time, "sleep", lambda s: None)
+    answers = iter([Fetched(502), Fetched(202), Fetched(502), Fetched(502)])
+
+    class Flaky:
+        def request(self, method: str, url: str, **kw) -> Fetched:
+            return next(answers)
+
+    failed = {"a.com": ["bot_block"], "b.com": ["captcha"]}
+    codes = canary.report(Flaky(), "https://api", failed, gap=0)  # type: ignore[arg-type]
+    assert codes == {202: 1, 502: 1}
+
+
 class FakeFetcher:
     """Answers the canary's MCP check from a dict of (method, url) -> Fetched."""
 

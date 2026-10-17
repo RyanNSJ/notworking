@@ -35,6 +35,7 @@ jobs:
           SAMPLE: ${{ inputs.sample }}
           REPORT: ${{ github.event_name == 'schedule' || inputs.report }}
         run: |
+          set -o pipefail  # so a failed canary fails the step despite tee
           args=(--set "$SET" --out canary-results.jsonl)
           if [ -n "$SAMPLE" ]; then args+=(--sample "$SAMPLE"); fi
           if [ "$REPORT" = "true" ]; then args+=(--report); fi

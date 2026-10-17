@@ -346,6 +346,9 @@ def report(fx: Fetcher, api: str, failed: dict[str, list[str]], gap: float) -> C
             time.sleep(gap)
         body = {"target": path_id, "what_failed": what, "agent_type": "notworking_canary"}
         f = fx.request("POST", f"{api}/v1/report", json=body)
+        if f.status is None or f.status >= 500:  # a deploy restarts the app: retry once
+            time.sleep(30)
+            f = fx.request("POST", f"{api}/v1/report", json=body)
         codes[f.status or 0] += 1
     return codes
 
