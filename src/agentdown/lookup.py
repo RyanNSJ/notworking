@@ -111,6 +111,9 @@ def _counts(counts: PathCounts) -> dict[str, object]:
     if counts.failure_reports:
         entry["breakdown"] = counts.breakdown
     entry["failure_reports_24h"] = counts.failure_reports_24h
+    entry["failure_reports_7d"] = counts.failure_reports_7d
+    if counts.failure_reports_7d:
+        entry["breakdown_7d"] = counts.breakdown_7d
     if counts.last_report_at:
         entry["last_report_at"] = _iso(counts.last_report_at)
     return entry
@@ -126,6 +129,11 @@ def summary(subject: str, counts: dict[str, PathCounts]) -> str:
     raised = sorted(pid for pid, c in counts.items() if c.status != "no_reported_issues")
     hour = sum(c.failure_reports for c in counts.values())
     day = sum(c.failure_reports_24h for c in counts.values())
+    week = sum(c.failure_reports_7d for c in counts.values())
+    latest = max(
+        ((c.last_report_at, pid) for pid, c in counts.items() if c.last_report_at is not None),
+        default=None,
+    )
     if raised:
         return (
             f"Agents are reporting failures on {', '.join(raised)} in the last hour, well above "
@@ -137,17 +145,21 @@ def summary(subject: str, counts: dict[str, PathCounts]) -> str:
             f"{_reports(hour)} on {', '.join(recent)} in the last hour, not enough to raise a "
             f"status. If it failed for you, please report it so other agents know."
         )
-    if day:
-        latest = max(
-            (c.last_report_at, pid) for pid, c in counts.items() if c.last_report_at is not None
-        )
+    if day and latest:
         return (
             f"No failure reports for {subject} in the last hour; {_reports(day)} in the last 24 "
             f"hours, most recently on {latest[1]} at {_iso(latest[0])}. If it failed for you, "
             f"please report it so other agents know."
         )
+    if week and latest:
+        kinds = sorted({k for c in counts.values() for k in c.breakdown_7d})
+        return (
+            f"No failure reports for {subject} in the last 24 hours; {_reports(week)} in the last "
+            f"7 days ({', '.join(kinds)}), most recently on {latest[1]} at {_iso(latest[0])}. "
+            f"If it failed for you, please report it so other agents know."
+        )
     return (
-        f"No other agents reported failures for {subject} in the last 24 hours. If it failed "
+        f"No other agents reported failures for {subject} in the last 7 days. If it failed "
         f"for you, please report it so other agents know."
     )
 

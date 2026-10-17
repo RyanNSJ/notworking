@@ -123,7 +123,11 @@ def test_llms_txt_example_matches_the_real_response(client: TestClient) -> None:
     example = json.loads(re.findall(r"```json\n(.*?)```", text, re.S)[0])
     real = client.get("/v1/status", params={"target": "xyz.com"}).json()
     assert set(example) - {"...": 0}.keys() <= set(real)
-    real_path_keys = {k for p in real["access_paths"] for k in p} | {"breakdown", "last_report_at"}
+    real_path_keys = {k for p in real["access_paths"] for k in p} | {
+        "breakdown",
+        "breakdown_7d",
+        "last_report_at",
+    }
     assert {k for p in example["access_paths"] for k in p} <= real_path_keys
     assert set(example["please_report"]) - {"..."} <= set(real["please_report"])
 

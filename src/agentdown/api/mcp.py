@@ -42,8 +42,8 @@ CHECK_STATUS = (
     "Look up a service by the URL you used, an access-path id (clawhub:<owner>/<slug>, "
     "skills.sh:<owner>/<repo>/<skill>, an MCP Registry name like io.github.<owner>/<server>) "
     "or a service name. Returns a one-sentence summary, the service, every listed access path "
-    "with a description and failure reports from the last hour (and the last 24 hours as "
-    "context), the what_failed values and how to report. Unlisted "
+    "with a description and failure reports from the last hour (and the last 24 hours and 7 "
+    "days as context), the what_failed values and how to report. Unlisted "
     "targets return their own counts and status, with listed: false."
 )
 

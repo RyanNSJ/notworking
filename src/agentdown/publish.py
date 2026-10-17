@@ -135,7 +135,8 @@ or a service name. Example response, trimmed:
     {"type": "site", "id": "example.com", "url": "https://www.example.com/",
      "description": "The Example website.", "status": "issues_reported",
      "failure_reports": 7, "unique_reporters": 6, "breakdown": {"captcha": 5, "bot_block": 2},
-     "failure_reports_24h": 9, "last_report_at": "2026-10-09T08:40:00Z"}
+     "failure_reports_24h": 9, "failure_reports_7d": 9,
+     "breakdown_7d": {"captcha": 6, "bot_block": 3}, "last_report_at": "2026-10-09T08:40:00Z"}
   ],
   "please_report": {"method": "POST", "url": "{base_url}/v1/report", "...": "..."},
   "what_failed_options": [{"value": "captcha", "description": "..."}]
@@ -148,8 +149,10 @@ Each access path's `status` is one of:
 - `issues_reported`: well above that path's usual level
 - `many_issues_reported`: many reports from many independent agents and networks
 
-`failure_reports` and `unique_reporters` cover the last hour. `failure_reports_24h` and \
-`last_report_at` cover the last 24 hours, as context only. `summary` says it in one sentence.
+`failure_reports` and `unique_reporters` cover the last hour. `failure_reports_24h`, \
+`failure_reports_7d` and `breakdown_7d` cover the last 24 hours and 7 days, and \
+`last_report_at` is the latest report in the last 7 days, all as context only. `summary` says \
+it in one sentence.
 
 A target that isn't in the catalogue comes back with `listed: false`, a `summary` and its own \
 `status` and counts, but no `service` or `access_paths`.

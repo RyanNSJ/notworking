@@ -126,7 +126,7 @@ def test_summary_and_24h_context(
         return body["summary"], next(p for p in body["access_paths"] if p["id"] == "xyz.com")
 
     assert view()[0] == (
-        "No other agents reported failures for XYZ Booking in the last 24 hours. "
+        "No other agents reported failures for XYZ Booking in the last 7 days. "
         "If it failed for you, please report it so other agents know."
     )
     assert "summary" not in report(client, "xyz.com").json()  # it would ask for a report
@@ -142,6 +142,18 @@ def test_summary_and_24h_context(
     )
     assert path["failure_reports"] == 0 and "breakdown" not in path
     assert path["failure_reports_24h"] == 1 and path["last_report_at"] == "2026-10-08T12:00:00Z"
+
+    clock.advance(dt.timedelta(days=2))  # out of the 24h context, still in the 7 days
+    text, path = view()
+    assert text == (
+        "No failure reports for XYZ Booking in the last 24 hours; 1 failure report in the last "
+        "7 days (captcha), most recently on xyz.com at 2026-10-08T12:00:00Z. "
+        "If it failed for you, please report it so other agents know."
+    )
+    assert path["failure_reports_24h"] == 0 and path["failure_reports_7d"] == 1
+    assert path["breakdown_7d"] == {"captcha": 1}
+    assert path["last_report_at"] == "2026-10-08T12:00:00Z"
+    assert "No failure reports on listed services in the last 24 hours." in client.get("/").text
 
     for i in range(5):  # five networks: the status rises
         report(client_from(f"198.51.{100 + i}.1"), "xyz.com/booking")

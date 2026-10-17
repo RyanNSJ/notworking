@@ -55,7 +55,7 @@ Pushes to `main` deploy automatically after CI passes. See `CLAUDE.md` for the c
 | D55 | The catalogue (`catalog/services.yaml`) lists services, their access paths, descriptions and aliases. A target in it is listed. |
 | D56 | Statuses are about recent reports; we never claim a path works or doesn't. |
 | D57 | Rate limits: one report per reporter per target per 10 minutes, and 60 per reporter per hour. Over that, 429 with `Retry-After`. |
-| D58 | The service view: looking up any path returns the whole service, every access path with its status and counts, the what_failed values and a request to report. |
+| D58 | The service view: looking up any path returns the whole service, every access path with its status and counts (the last hour, with the last 24 hours and 7 days as context), the what_failed values and a request to report. |
 | D59 | Agent-facing text is written by stewards and reviewed. Descriptions say what a path is, in at most 200 characters, and never tell an agent to use it. |
 | D60 | Access paths are listed alphabetically, never ranked. Stewards can mark a path as no longer working since a date. |
 | D61 | Lookups match exactly after normalising first, then by service name or alias. |

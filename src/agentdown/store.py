@@ -26,6 +26,7 @@ from agentdown.db.schema import (
 
 WINDOW = dt.timedelta(hours=1)
 CONTEXT_WINDOW = dt.timedelta(hours=24)
+WEEK = dt.timedelta(days=7)
 PER_TARGET_GAP = dt.timedelta(minutes=10)  # D57
 PER_REPORTER_HOURLY = 60  # D57
 MISS_SUBJECTS_PER_DAY = 1000  # beyond this, lookup misses count under one subject
@@ -135,13 +136,15 @@ class PathCounts:
     unique_reporters: int = 0
     breakdown: dict[str, int] = field(default_factory=dict)
     failure_reports_24h: int = 0  # context only, never a status
-    last_report_at: dt.datetime | None = None  # the latest in the last 24 hours
+    failure_reports_7d: int = 0  # context only: sparse paths are checked about weekly
+    breakdown_7d: dict[str, int] = field(default_factory=dict)
+    last_report_at: dt.datetime | None = None  # the latest in the last 7 days
     status: str = "no_reported_issues"  # set by the detector (M4)
 
 
 def path_counts(conn: Connection, path_ids: list[str], now: dt.datetime) -> dict[str, PathCounts]:
     """Failure counts per path id over the last hour (the status window), plus the last 24
-    hours' count and latest report time as context."""
+    hours' and 7 days' counts and the latest report time as context."""
     rows = conn.execute(
         sa.select(
             targets.c.target_id,
@@ -153,15 +156,19 @@ def path_counts(conn: Connection, path_ids: list[str], now: dt.datetime) -> dict
         .where(
             targets.c.target_id.in_(path_ids),
             reports.c.outcome == "failed",
-            reports.c.created_at > now - CONTEXT_WINDOW,
+            reports.c.created_at > now - WEEK,
         )
     ).all()
     out = {pid: PathCounts() for pid in path_ids}
     reporters: dict[str, set[str]] = {pid: set() for pid in path_ids}
     breakdowns: dict[str, Counter[str]] = {pid: Counter() for pid in path_ids}
+    weeks: dict[str, Counter[str]] = {pid: Counter() for pid in path_ids}
     for tid, fp, what_failed, created in rows:
         c, created = out[tid], utc(created)
-        c.failure_reports_24h += 1
+        c.failure_reports_7d += 1
+        weeks[tid].update(what_failed or [])
+        if created > now - CONTEXT_WINDOW:
+            c.failure_reports_24h += 1
         if c.last_report_at is None or created > c.last_report_at:
             c.last_report_at = created
         if created > now - WINDOW:
@@ -171,6 +178,7 @@ def path_counts(conn: Connection, path_ids: list[str], now: dt.datetime) -> dict
     for pid, c in out.items():
         c.unique_reporters = len(reporters[pid])
         c.breakdown = dict(sorted(breakdowns[pid].items()))
+        c.breakdown_7d = dict(sorted(weeks[pid].items()))
     statuses = conn.execute(
         sa.select(targets.c.target_id, status_current.c.status)
         .join(targets, targets.c.pk == status_current.c.target_pk)

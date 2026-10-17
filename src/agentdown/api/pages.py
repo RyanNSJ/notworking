@@ -153,7 +153,7 @@ def home(request: Request) -> HTMLResponse:
         lookups = store.service_lookups(conn, now.date() - dt.timedelta(days=LOOKUP_DAYS - 1))
     for r in rows:
         r.lookups_7d = lookups.get(r.service.id, 0)
-    reported = [(r, p) for r in rows for p in r.paths if p.counts.last_report_at]
+    reported = [(r, p) for r in rows for p in r.paths if p.counts.failure_reports_24h]
     recent = sorted(reported, key=lambda rp: rp[1].counts.last_report_at or now, reverse=True)
     rows = ranked(rows)
     return _page(
