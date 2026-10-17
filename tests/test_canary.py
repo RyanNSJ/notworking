@@ -4,9 +4,11 @@ import datetime as dt
 import json
 import socket
 
+import pytest
+
 from agentdown import canary
 from agentdown.canary import Fetched, Result
-from agentdown.catalog import Catalog
+from agentdown.catalog import Catalog, CatalogError, parse_catalog
 
 
 def test_classify_site_maps_responses_to_what_failed() -> None:
@@ -43,6 +45,23 @@ def test_select_splits_daily_and_websites_deterministically(catalog: Catalog) ->
     assert all(canary.is_daily(s) for s in daily)
     assert canary.select(catalog, "daily") == daily  # same order every run
     assert len(canary.select(catalog, "daily", sample=1)) == 1
+
+
+def test_a_website_marked_daily_is_checked_every_day_without_the_chrome_variant() -> None:
+    catalog = parse_catalog(
+        "version: 1\nservices:\n"
+        "  - id: a.com\n    name: A\n    daily: true\n    paths:\n"
+        "      - id: a.com\n        description: The A website.\n"
+        "  - id: b.com\n    name: B\n    paths:\n"
+        "      - id: b.com\n        description: The B website.\n"
+    )
+    assert [s.id for s in canary.select(catalog, "daily")] == ["a.com"]
+    assert not canary.has_agent_paths(catalog.by_id["a.com"])  # so no Chrome variant
+    with pytest.raises(CatalogError, match="daily must be true or false"):
+        parse_catalog(
+            "version: 1\nservices:\n  - id: a.com\n    name: A\n    daily: yes please\n"
+            "    paths:\n      - id: a.com\n        description: The A website.\n"
+        )
 
 
 def test_scheduled_rotates_every_website_once_per_cycle(catalog: Catalog) -> None:
@@ -102,6 +121,22 @@ def registry_entry(remotes: list[dict]) -> Fetched:
     return Fetched(
         200, {}, json.dumps({"server": {"name": "com.x/mcp", "remotes": remotes}}).encode()
     )
+
+
+def test_a_robots_disallow_is_honoured_and_reported() -> None:
+    fetched: list[str] = []
+
+    class Recording(FakeFetcher):
+        def request(self, method: str, url: str, variant: str = "declared", **kw) -> Fetched:
+            fetched.append(url)
+            return super().request(method, url, variant, **kw)
+
+    robots = Fetched(200, {}, b"User-agent: *\nDisallow: /private\n")
+    fx = Recording({("GET", "https://x.com/robots.txt"): robots})
+    url = "https://x.com/private/a"
+    [(_, ok, what, _, detail, _)] = canary.check_site(fx, url, ["declared"])  # type: ignore[arg-type]
+    assert (ok, what) == (False, "robots_disallow") and "robots.txt" in detail
+    assert fetched == ["https://x.com/robots.txt"]  # the page itself is never fetched
 
 
 def test_check_mcp_looks_the_server_up_by_name_and_initializes() -> None:

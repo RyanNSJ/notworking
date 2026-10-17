@@ -67,3 +67,4 @@ Pushes to `main` deploy automatically after CI passes. See `CLAUDE.md` for the c
 | D68 | The product is NotWorking at notworking.io. Internal code names stay `agentdown`. |
 | D71 | Any parseable target can be reported and checked. An unlisted target returns its own counts and status with `listed: false`, and stays off the pages and dataset. |
 | D72 | The catalogue is curated by stewards: service grouping, descriptions and alternative access paths. A service may have only its website as a known path, or MCP servers and skills too. |
+| D75 | The canary honours robots.txt: it never fetches a disallowed page, and reports the disallow as `robots_disallow`. |

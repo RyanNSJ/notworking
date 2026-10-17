@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "what_failed": [
     {
       "value": "site_unreachable",
@@ -8,6 +8,10 @@
     {
       "value": "bot_block",
       "description": "The service refused the agent: an access-denied page, a 403 or 429 error, a bot wall or a challenge page."
+    },
+    {
+      "value": "robots_disallow",
+      "description": "The site's robots.txt asks automated agents not to fetch this page."
     },
     {
       "value": "captcha",

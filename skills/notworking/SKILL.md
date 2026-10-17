@@ -99,6 +99,7 @@ Only report failures. NotWorking doesn't take reports that something worked.
 
 - `site_unreachable`: The site or server could not be reached at all, for example a DNS error, a timeout or a 5xx server error.
 - `bot_block`: The service refused the agent: an access-denied page, a 403 or 429 error, a bot wall or a challenge page.
+- `robots_disallow`: The site's robots.txt asks automated agents not to fetch this page.
 - `captcha`: A CAPTCHA or 'are you human?' check stopped the agent.
 - `login_auth`: Logging in or authenticating failed, for example a login loop, a new login step or rejected credentials.
 - `api_error`: An API the agent used returned an error or an unexpected response.

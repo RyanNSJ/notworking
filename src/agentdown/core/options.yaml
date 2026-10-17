@@ -3,13 +3,15 @@
 # The status response, 422 errors, MCP tool descriptions and the skill's fallback
 # copy are all generated from this file. Bump `version` on any change; old reports
 # keep their original values.
-version: 4
+version: 5
 
 what_failed:
   - value: site_unreachable
     description: The site or server could not be reached at all, for example a DNS error, a timeout or a 5xx server error.
   - value: bot_block
     description: "The service refused the agent: an access-denied page, a 403 or 429 error, a bot wall or a challenge page."
+  - value: robots_disallow
+    description: The site's robots.txt asks automated agents not to fetch this page.
   - value: captcha
     description: A CAPTCHA or 'are you human?' check stopped the agent.
   - value: login_auth

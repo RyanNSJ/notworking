@@ -33,7 +33,7 @@ MAX_BODY = 512 * 1024
 REAL_PAGE_BYTES = 100 * 1024  # challenge pages seen so far: 2-30 KB; real pages: far more
 HOST_GAP = 1.0  # seconds between requests to one host
 ROTATION_DAYS = 7  # each website-only service is checked once in this many days
-MAX_REPORTS = 90  # per run: at 72 s apart, that's under 2 hours and the job's time limit
+MAX_REPORTS = 150  # per run: at 65 s apart, under 2 h 45 min, inside the job's time limit
 
 # Markers of a block or challenge page, by vendor. Checked on any response.
 CHALLENGE_MARKERS = [
@@ -82,9 +82,14 @@ def _order(service_id: str) -> int:
     return int.from_bytes(hashlib.sha256(service_id.encode()).digest()[:8], "big")
 
 
-def is_daily(service: Service) -> bool:
-    """Services with MCP servers or skills are checked every day; the rest in rotation."""
+def has_agent_paths(service: Service) -> bool:
     return any(p.type in ("mcp", "skill") for p in service.paths)
+
+
+def is_daily(service: Service) -> bool:
+    """Services with MCP servers or skills, and those marked `daily`, are checked every day;
+    the rest in rotation."""
+    return service.daily or has_agent_paths(service)
 
 
 def select(
@@ -226,8 +231,8 @@ def check_site(fx: Fetcher, url: str, variants: Iterable[str]) -> list[tuple]:
                     rp = urllib.robotparser.RobotFileParser()
                     rp.parse(robots.body.decode("utf-8", "replace").splitlines())
                     if not rp.can_fetch(USER_AGENT, url):
-                        # Honoured, not reported: an agent wouldn't be stopped by it (D75).
-                        return True, None, 200, "skipped: robots.txt disallows our user-agent"
+                        # Honoured (never fetched) and reported (D75).
+                        return False, "robots_disallow", 200, "robots.txt disallows our user-agent"
             f = fx.request("GET", url, variant)
             ok, what, detail = classify_site(f)
             return ok, what, f.status, detail
@@ -361,7 +366,7 @@ def run(
     start = time.monotonic()
     with ThreadPoolExecutor(workers) as pool:
         # The Chrome variant only for services with MCP servers or skills (politeness).
-        nested = pool.map(lambda sp: check_path(fx, sp[0], sp[1], is_daily(sp[0])), jobs)
+        nested = pool.map(lambda sp: check_path(fx, sp[0], sp[1], has_agent_paths(sp[0])), jobs)
         results = [r for rs in nested for r in rs]
     elapsed = time.monotonic() - start
     with open(out_path, "w", encoding="utf-8", newline="\n") as fh:
@@ -380,7 +385,7 @@ def run(
         "reported": None,
     }
     if do_report:
-        summary["reported"] = dict(report(fx, api, failed, gap=72.0))  # about 50 an hour
+        summary["reported"] = dict(report(fx, api, failed, gap=65.0))  # 55 an hour (limit 60, D57)
     return summary
 
 

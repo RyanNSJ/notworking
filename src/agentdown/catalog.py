@@ -47,6 +47,7 @@ class Service:
     name: str
     aliases: tuple[str, ...]
     paths: tuple[AccessPath, ...]  # sorted alphabetically by id (D60)
+    daily: bool = False  # the canary checks it every day
 
 
 @dataclass
@@ -176,7 +177,7 @@ def _service(raw: object) -> Service:
     if not isinstance(sid, str) or not _SERVICE_ID.match(sid):
         raise _fail("services", f"bad service id {sid!r} (lowercase letters, digits, . and -)")
     where = f"service {sid}"
-    unknown = set(raw) - {"id", "name", "aliases", "paths", "source", "country_focus"}
+    unknown = set(raw) - {"id", "name", "aliases", "daily", "paths", "source", "country_focus"}
     if unknown:
         raise _fail(where, f"unknown fields: {', '.join(sorted(unknown))}")
     name = raw.get("name")
@@ -185,6 +186,9 @@ def _service(raw: object) -> Service:
     aliases = raw.get("aliases") or []
     if not isinstance(aliases, list) or not all(isinstance(a, str) and a.strip() for a in aliases):
         raise _fail(where, "aliases must be a list of strings")
+    daily = raw.get("daily", False)
+    if not isinstance(daily, bool):
+        raise _fail(where, "daily must be true or false")
     paths = raw.get("paths")
     if not isinstance(paths, list) or not paths:
         raise _fail(where, "needs at least one path")
@@ -196,6 +200,7 @@ def _service(raw: object) -> Service:
         name=" ".join(name.split()),
         aliases=tuple(sorted({" ".join(a.lower().split()) for a in aliases})),
         paths=tuple(sorted(parsed, key=lambda p: p.id)),
+        daily=daily,
     )
 
 

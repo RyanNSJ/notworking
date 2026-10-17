@@ -14,6 +14,7 @@
 #   - id: example.com                  # service id (usually its primary domain)
 #     name: Example                    # display name
 #     aliases: [example]               # extra names agents might search for
+#     daily: true                      # optional; the canary checks it every day
 #     paths:                           # listed alphabetically by id in responses
 #       - id: example.com              # site (registrable domain)
 #         url: https://www.example.com/   # optional; defaults to https://<id>/
@@ -94,6 +95,7 @@ services:
 
   - id: 1password.com
     name: 1Password
+    daily: true
     paths:
       - id: 1password.com
         description: The 1Password website.
@@ -244,6 +246,7 @@ services:
 
   - id: abtasty.com
     name: abtasty.com
+    daily: true
     paths:
       - id: abtasty.com
         description: The abtasty.com website.
@@ -279,6 +282,7 @@ services:
 
   - id: accuweather.com
     name: AccuWeather
+    daily: true
     paths:
       - id: accuweather.com
         description: The AccuWeather website.
@@ -405,6 +409,7 @@ services:
 
   - id: adp.com
     name: adp.com
+    daily: true
     paths:
       - id: adp.com
         description: The adp.com website.
@@ -426,6 +431,7 @@ services:
 
   - id: adyen.com
     name: Adyen
+    daily: true
     paths:
       - id: adyen.com
         description: The Adyen website.
@@ -475,6 +481,7 @@ services:
 
   - id: affirm.com
     name: Affirm
+    daily: true
     paths:
       - id: affirm.com
         description: The Affirm website.
@@ -586,6 +593,7 @@ services:
 
   - id: agoda.com
     name: Agoda
+    daily: true
     paths:
       - id: agoda.com
         description: The Agoda website.
@@ -593,6 +601,7 @@ services:
 
   - id: agora.io
     name: Agora
+    daily: true
     paths:
       - id: agora.io
         description: The Agora website.
@@ -614,6 +623,7 @@ services:
 
   - id: ahrefs.com
     name: ahrefs.com
+    daily: true
     paths:
       - id: ahrefs.com
         description: The ahrefs.com website.
@@ -656,6 +666,7 @@ services:
 
   - id: airbnb.com
     name: Airbnb
+    daily: true
     paths:
       - id: airbnb.com
         description: The Airbnb website.
@@ -778,6 +789,7 @@ services:
 
   - id: akamai.com
     name: Akamai
+    daily: true
     paths:
       - id: akamai.com
         description: The Akamai website.
@@ -928,6 +940,7 @@ services:
 
   - id: alibaba.com
     name: alibaba.com
+    daily: true
     paths:
       - id: alibaba.com
         description: The alibaba.com website.
@@ -1040,6 +1053,7 @@ services:
 
   - id: amazon.com
     name: Amazon
+    daily: true
     paths:
       - id: amazon.com
         description: The Amazon website.
@@ -1068,6 +1082,7 @@ services:
 
   - id: amd.com
     name: amd.com
+    daily: true
     paths:
       - id: amd.com
         description: The amd.com website.
@@ -1266,6 +1281,7 @@ services:
 
   - id: anthropic.com
     name: Anthropic
+    daily: true
     paths:
       - id: anthropic.com
         description: The Anthropic website.
@@ -1403,6 +1419,7 @@ services:
 
   - id: apple.com
     name: apple.com
+    daily: true
     paths:
       - id: apple.com
         description: The apple.com website.
@@ -1620,6 +1637,7 @@ services:
 
   - id: arstechnica.com
     name: Ars Technica
+    daily: true
     paths:
       - id: arstechnica.com
         description: The Ars Technica website.
@@ -1813,6 +1831,7 @@ services:
 
   - id: asus.com
     name: asus.com
+    daily: true
     paths:
       - id: asus.com
         description: The asus.com website.
@@ -2010,6 +2029,7 @@ services:
 
   - id: auth0.com
     name: Auth0
+    daily: true
     paths:
       - id: auth0.com
         description: The Auth0 website.
@@ -2045,6 +2065,7 @@ services:
 
   - id: autodesk.com
     name: autodesk.com
+    daily: true
     paths:
       - id: autodesk.com
         description: The autodesk.com website.
@@ -2052,6 +2073,7 @@ services:
 
   - id: automattic.com
     name: automattic.com
+    daily: true
     paths:
       - id: automattic.com
         description: The automattic.com website.
@@ -2108,6 +2130,7 @@ services:
 
   - id: auvik.com
     name: auvik.com
+    daily: true
     paths:
       - id: auvik.com
         description: The auvik.com website.
@@ -2207,6 +2230,7 @@ services:
 
   - id: axios.com
     name: Axios
+    daily: true
     paths:
       - id: axios.com
         description: The Axios website.
@@ -2270,6 +2294,7 @@ services:
 
   - id: azure.com
     name: azure.com
+    daily: true
     paths:
       - id: azure.com
         description: The azure.com website.
@@ -2334,6 +2359,7 @@ services:
 
   - id: baidu.com
     name: baidu.com
+    daily: true
     paths:
       - id: baidu.com
         description: The baidu.com website.
@@ -2369,6 +2395,7 @@ services:
 
   - id: bandcamp.com
     name: bandcamp.com
+    daily: true
     paths:
       - id: bandcamp.com
         description: The bandcamp.com website.
@@ -2449,6 +2476,7 @@ services:
 
   - id: bbc.com
     name: BBC
+    daily: true
     paths:
       - id: bbc.com
         description: The BBC website.
@@ -2511,6 +2539,7 @@ services:
 
   - id: behance.net
     name: behance.net
+    daily: true
     paths:
       - id: behance.net
         description: The behance.net website.
@@ -2567,6 +2596,7 @@ services:
 
   - id: bentley.com
     name: bentley.com
+    daily: true
     paths:
       - id: bentley.com
         description: The bentley.com website.
@@ -2644,6 +2674,7 @@ services:
 
   - id: bigcommerce.com
     name: BigCommerce
+    daily: true
     paths:
       - id: bigcommerce.com
         description: The BigCommerce website.
@@ -2738,6 +2769,7 @@ services:
 
   - id: bitbucket.org
     name: bitbucket.org
+    daily: true
     paths:
       - id: bitbucket.org
         description: The bitbucket.org website.
@@ -2745,6 +2777,7 @@ services:
 
   - id: bitdefender.com
     name: bitdefender.com
+    daily: true
     paths:
       - id: bitdefender.com
         description: The bitdefender.com website.
@@ -2783,6 +2816,7 @@ services:
 
   - id: bitwarden.com
     name: Bitwarden
+    daily: true
     paths:
       - id: bitwarden.com
         description: The Bitwarden website.
@@ -2790,6 +2824,7 @@ services:
 
   - id: blackboard.com
     name: blackboard.com
+    daily: true
     paths:
       - id: blackboard.com
         description: The blackboard.com website.
@@ -2891,6 +2926,7 @@ services:
 
   - id: bloomberg.com
     name: Bloomberg
+    daily: true
     paths:
       - id: bloomberg.com
         description: The Bloomberg website.
@@ -3031,6 +3067,7 @@ services:
 
   - id: booking.com
     name: Booking
+    daily: true
     paths:
       - id: booking.com
         description: The Booking website.
@@ -3087,6 +3124,7 @@ services:
 
   - id: box.com
     name: Box
+    daily: true
     paths:
       - id: box.com
         description: The Box website.
@@ -3205,6 +3243,7 @@ services:
 
   - id: brevo.com
     name: Brevo
+    daily: true
     paths:
       - id: brevo.com
         description: The Brevo website.
@@ -3226,6 +3265,7 @@ services:
 
   - id: brightcove.com
     name: brightcove.com
+    daily: true
     paths:
       - id: brightcove.com
         description: The brightcove.com website.
@@ -3254,6 +3294,7 @@ services:
 
   - id: britannica.com
     name: Britannica
+    daily: true
     paths:
       - id: britannica.com
         description: The Britannica website.
@@ -3261,6 +3302,7 @@ services:
 
   - id: britishairways.com
     name: britishairways.com
+    daily: true
     paths:
       - id: britishairways.com
         description: The britishairways.com website.
@@ -3268,6 +3310,7 @@ services:
 
   - id: broadcom.com
     name: broadcom.com
+    daily: true
     paths:
       - id: broadcom.com
         description: The broadcom.com website.
@@ -3352,6 +3395,7 @@ services:
 
   - id: buffer.com
     name: buffer.com
+    daily: true
     paths:
       - id: buffer.com
         description: The buffer.com website.
@@ -3359,6 +3403,7 @@ services:
 
   - id: bugsnag.com
     name: bugsnag.com
+    daily: true
     paths:
       - id: bugsnag.com
         description: The bugsnag.com website.
@@ -3479,6 +3524,7 @@ services:
 
   - id: businessinsider.com
     name: Business Insider
+    daily: true
     paths:
       - id: businessinsider.com
         description: The Business Insider website.
@@ -3528,6 +3574,7 @@ services:
 
   - id: buymeacoffee.com
     name: buymeacoffee.com
+    daily: true
     paths:
       - id: buymeacoffee.com
         description: The buymeacoffee.com website.
@@ -3549,6 +3596,7 @@ services:
 
   - id: bytedance.com
     name: bytedance.com
+    daily: true
     paths:
       - id: bytedance.com
         description: The bytedance.com website.
@@ -3570,6 +3618,7 @@ services:
 
   - id: calendly.com
     name: Calendly
+    daily: true
     paths:
       - id: calendly.com
         description: The Calendly website.
@@ -3786,6 +3835,7 @@ services:
 
   - id: carrd.co
     name: carrd.co
+    daily: true
     paths:
       - id: carrd.co
         description: The carrd.co website.
@@ -4027,6 +4077,7 @@ services:
 
   - id: character.ai
     name: Character.ai
+    daily: true
     paths:
       - id: character.ai
         description: The Character.ai website.
@@ -4048,6 +4099,7 @@ services:
 
   - id: chase.com
     name: chase.com
+    daily: true
     paths:
       - id: chase.com
         description: The chase.com website.
@@ -4062,6 +4114,7 @@ services:
 
   - id: chatgpt.com
     name: ChatGPT
+    daily: true
     paths:
       - id: chatgpt.com
         description: The ChatGPT website.
@@ -4104,6 +4157,7 @@ services:
 
   - id: checkpoint.com
     name: checkpoint.com
+    daily: true
     paths:
       - id: checkpoint.com
         description: The checkpoint.com website.
@@ -4309,6 +4363,7 @@ services:
 
   - id: cisco.com
     name: Cisco
+    daily: true
     paths:
       - id: cisco.com
         description: The Cisco website.
@@ -4470,6 +4525,7 @@ services:
 
   - id: clickup.com
     name: ClickUp
+    daily: true
     paths:
       - id: clickup.com
         description: The ClickUp website.
@@ -4616,6 +4672,7 @@ services:
 
   - id: cloudinary.com
     name: Cloudinary
+    daily: true
     paths:
       - id: cloudinary.com
         description: The Cloudinary website.
@@ -4647,6 +4704,7 @@ services:
 
   - id: cnbc.com
     name: CNBC
+    daily: true
     paths:
       - id: cnbc.com
         description: The CNBC website.
@@ -4654,6 +4712,7 @@ services:
 
   - id: cnn.com
     name: CNN
+    daily: true
     paths:
       - id: cnn.com
         description: The CNN website.
@@ -4738,6 +4797,7 @@ services:
 
   - id: codeberg.org
     name: codeberg.org
+    daily: true
     paths:
       - id: codeberg.org
         description: The codeberg.org website.
@@ -4909,6 +4969,7 @@ services:
 
   - id: coinbase.com
     name: Coinbase
+    daily: true
     paths:
       - id: coinbase.com
         description: The Coinbase website.
@@ -5045,6 +5106,7 @@ services:
 
   - id: compass.com
     name: compass.com
+    daily: true
     paths:
       - id: compass.com
         description: The compass.com website.
@@ -5192,6 +5254,7 @@ services:
 
   - id: constantcontact.com
     name: Constant Contact
+    daily: true
     paths:
       - id: constantcontact.com
         description: The Constant Contact website.
@@ -5547,6 +5610,7 @@ services:
 
   - id: coursera.org
     name: coursera.org
+    daily: true
     paths:
       - id: coursera.org
         description: The coursera.org website.
@@ -5641,6 +5705,7 @@ services:
 
   - id: crazyegg.com
     name: crazyegg.com
+    daily: true
     paths:
       - id: crazyegg.com
         description: The crazyegg.com website.
@@ -5718,6 +5783,7 @@ services:
 
   - id: crowdstrike.com
     name: crowdstrike.com
+    daily: true
     paths:
       - id: crowdstrike.com
         description: The crowdstrike.com website.
@@ -5732,6 +5798,7 @@ services:
 
   - id: crunchbase.com
     name: Crunchbase
+    daily: true
     paths:
       - id: crunchbase.com
         description: The Crunchbase website.
@@ -5840,6 +5907,7 @@ services:
 
   - id: cursor.com
     name: Cursor
+    daily: true
     paths:
       - id: cursor.com
         description: The Cursor website.
@@ -5861,6 +5929,7 @@ services:
 
   - id: customer.io
     name: Customer.io
+    daily: true
     paths:
       - id: customer.io
         description: The Customer.io website.
@@ -5875,6 +5944,7 @@ services:
 
   - id: cyberark.com
     name: CyberArk
+    daily: true
     paths:
       - id: cyberark.com
         description: The CyberArk website.
@@ -6007,6 +6077,7 @@ services:
 
   - id: dashlane.com
     name: Dashlane
+    daily: true
     paths:
       - id: dashlane.com
         description: The Dashlane website.
@@ -6014,6 +6085,7 @@ services:
 
   - id: databricks.com
     name: Databricks
+    daily: true
     paths:
       - id: databricks.com
         description: The Databricks website.
@@ -6021,6 +6093,7 @@ services:
 
   - id: datadoghq.com
     name: Datadog
+    daily: true
     paths:
       - id: datadoghq.com
         description: The Datadog website.
@@ -6224,6 +6297,7 @@ services:
 
   - id: deepl.com
     name: DeepL
+    daily: true
     paths:
       - id: deepl.com
         description: The DeepL website.
@@ -6245,6 +6319,7 @@ services:
 
   - id: deepseek.com
     name: DeepSeek
+    daily: true
     paths:
       - id: deepseek.com
         description: The DeepSeek website.
@@ -6273,6 +6348,7 @@ services:
 
   - id: dell.com
     name: dell.com
+    daily: true
     paths:
       - id: dell.com
         description: The dell.com website.
@@ -6280,6 +6356,7 @@ services:
 
   - id: demandbase.com
     name: demandbase.com
+    daily: true
     paths:
       - id: demandbase.com
         description: The demandbase.com website.
@@ -6517,6 +6594,7 @@ services:
 
   - id: digitalocean.com
     name: DigitalOcean
+    daily: true
     paths:
       - id: digitalocean.com
         description: The DigitalOcean website.
@@ -6587,6 +6665,7 @@ services:
 
   - id: discord.com
     name: Discord
+    daily: true
     paths:
       - id: discord.com
         description: The Discord website.
@@ -6664,6 +6743,7 @@ services:
 
   - id: docker.com
     name: Docker
+    daily: true
     paths:
       - id: docker.com
         description: The Docker website.
@@ -6685,6 +6765,7 @@ services:
 
   - id: docusign.com
     name: DocuSign
+    daily: true
     paths:
       - id: docusign.com
         description: The DocuSign website.
@@ -6748,6 +6829,7 @@ services:
 
   - id: doordash.com
     name: doordash.com
+    daily: true
     paths:
       - id: doordash.com
         description: The doordash.com website.
@@ -6898,6 +6980,7 @@ services:
 
   - id: dribbble.com
     name: dribbble.com
+    daily: true
     paths:
       - id: dribbble.com
         description: The dribbble.com website.
@@ -6947,6 +7030,7 @@ services:
 
   - id: dropbox.com
     name: Dropbox
+    daily: true
     paths:
       - id: dropbox.com
         description: The Dropbox website.
@@ -6968,6 +7052,7 @@ services:
 
   - id: duckduckgo.com
     name: duckduckgo.com
+    daily: true
     paths:
       - id: duckduckgo.com
         description: The duckduckgo.com website.
@@ -6989,6 +7074,7 @@ services:
 
   - id: duolingo.com
     name: duolingo.com
+    daily: true
     paths:
       - id: duolingo.com
         description: The duolingo.com website.
@@ -7024,6 +7110,7 @@ services:
 
   - id: dynatrace.com
     name: dynatrace.com
+    daily: true
     paths:
       - id: dynatrace.com
         description: The dynatrace.com website.
@@ -7052,6 +7139,7 @@ services:
 
   - id: ea.com
     name: ea.com
+    daily: true
     paths:
       - id: ea.com
         description: The ea.com website.
@@ -7090,6 +7178,7 @@ services:
 
   - id: ebay.com
     name: eBay
+    daily: true
     paths:
       - id: ebay.com
         description: The eBay website.
@@ -7118,6 +7207,7 @@ services:
 
   - id: economist.com
     name: The Economist
+    daily: true
     paths:
       - id: economist.com
         description: The The Economist website.
@@ -7125,6 +7215,7 @@ services:
 
   - id: ecwid.com
     name: Ecwid
+    daily: true
     paths:
       - id: ecwid.com
         description: The Ecwid website.
@@ -7160,6 +7251,7 @@ services:
 
   - id: edx.org
     name: edx.org
+    daily: true
     paths:
       - id: edx.org
         description: The edx.org website.
@@ -7195,6 +7287,7 @@ services:
 
   - id: elastic.co
     name: Elastic
+    daily: true
     paths:
       - id: elastic.co
         description: The Elastic website.
@@ -7551,6 +7644,7 @@ services:
 
   - id: eset.com
     name: eset.com
+    daily: true
     paths:
       - id: eset.com
         description: The eset.com website.
@@ -7558,6 +7652,7 @@ services:
 
   - id: espn.com
     name: ESPN
+    daily: true
     paths:
       - id: espn.com
         description: The ESPN website.
@@ -7586,6 +7681,7 @@ services:
 
   - id: etsy.com
     name: Etsy
+    daily: true
     paths:
       - id: etsy.com
         description: The Etsy website.
@@ -7593,6 +7689,7 @@ services:
 
   - id: eventbrite.com
     name: eventbrite.com
+    daily: true
     paths:
       - id: eventbrite.com
         description: The eventbrite.com website.
@@ -7621,6 +7718,7 @@ services:
 
   - id: evernote.com
     name: Evernote
+    daily: true
     paths:
       - id: evernote.com
         description: The Evernote website.
@@ -7711,6 +7809,7 @@ services:
 
   - id: expedia.com
     name: Expedia
+    daily: true
     paths:
       - id: expedia.com
         description: The Expedia website.
@@ -8287,6 +8386,7 @@ services:
 
   - id: flaticon.com
     name: flaticon.com
+    daily: true
     paths:
       - id: flaticon.com
         description: The flaticon.com website.
@@ -8584,6 +8684,7 @@ services:
 
   - id: fontawesome.com
     name: fontawesome.com
+    daily: true
     paths:
       - id: fontawesome.com
         description: The fontawesome.com website.
@@ -8591,6 +8692,7 @@ services:
 
   - id: forbes.com
     name: Forbes
+    daily: true
     paths:
       - id: forbes.com
         description: The Forbes website.
@@ -8619,6 +8721,7 @@ services:
 
   - id: forter.com
     name: Forter
+    daily: true
     paths:
       - id: forter.com
         description: The Forter website.
@@ -8626,6 +8729,7 @@ services:
 
   - id: fortune.com
     name: Fortune
+    daily: true
     paths:
       - id: fortune.com
         description: The Fortune website.
@@ -8685,6 +8789,7 @@ services:
 
   - id: freshdesk.com
     name: Freshdesk
+    daily: true
     paths:
       - id: freshdesk.com
         description: The Freshdesk website.
@@ -8692,6 +8797,7 @@ services:
 
   - id: freshworks.com
     name: Freshworks
+    daily: true
     paths:
       - id: freshworks.com
         description: The Freshworks website.
@@ -8720,6 +8826,7 @@ services:
 
   - id: ft.com
     name: Financial Times
+    daily: true
     paths:
       - id: ft.com
         description: The Financial Times website.
@@ -8727,6 +8834,7 @@ services:
 
   - id: fullstory.com
     name: FullStory
+    daily: true
     paths:
       - id: fullstory.com
         description: The FullStory website.
@@ -8758,6 +8866,7 @@ services:
 
   - id: gamma.app
     name: Gamma
+    daily: true
     paths:
       - id: gamma.app
         description: The Gamma website.
@@ -9399,6 +9508,7 @@ services:
 
   - id: gettyimages.com
     name: gettyimages.com
+    daily: true
     paths:
       - id: gettyimages.com
         description: The gettyimages.com website.
@@ -9444,6 +9554,7 @@ services:
 
   - id: getyourguide.com
     name: GetYourGuide
+    daily: true
     paths:
       - id: getyourguide.com
         description: The GetYourGuide website.
@@ -9479,6 +9590,7 @@ services:
 
   - id: ghcr.io
     name: ghcr.io
+    daily: true
     paths:
       - id: ghcr.io
         description: The ghcr.io website.
@@ -9486,6 +9598,7 @@ services:
 
   - id: ghost.org
     name: Ghost
+    daily: true
     paths:
       - id: ghost.org
         description: The Ghost website.
@@ -9577,6 +9690,7 @@ services:
 
   - id: gitea.com
     name: gitea.com
+    daily: true
     paths:
       - id: gitea.com
         description: The gitea.com website.
@@ -9861,6 +9975,7 @@ services:
 
   - id: google.com
     name: google.com
+    daily: true
     paths:
       - id: google.com
         description: The google.com website.
@@ -9938,6 +10053,7 @@ services:
 
   - id: gotowebinar.com
     name: gotowebinar.com
+    daily: true
     paths:
       - id: gotowebinar.com
         description: The gotowebinar.com website.
@@ -9993,6 +10109,7 @@ services:
 
   - id: grammarly.com
     name: Grammarly
+    daily: true
     paths:
       - id: grammarly.com
         description: The Grammarly website.
@@ -10028,6 +10145,7 @@ services:
 
   - id: greenhouse.io
     name: greenhouse.io
+    daily: true
     paths:
       - id: greenhouse.io
         description: The greenhouse.io website.
@@ -10084,6 +10202,7 @@ services:
 
   - id: growthbook.io
     name: growthbook.io
+    daily: true
     paths:
       - id: growthbook.io
         description: The growthbook.io website.
@@ -10126,6 +10245,7 @@ services:
 
   - id: gumroad.com
     name: Gumroad
+    daily: true
     paths:
       - id: gumroad.com
         description: The Gumroad website.
@@ -10307,6 +10427,7 @@ services:
 
   - id: hashicorp.com
     name: HashiCorp
+    daily: true
     paths:
       - id: hashicorp.com
         description: The HashiCorp website.
@@ -10489,6 +10610,7 @@ services:
 
   - id: heroku.com
     name: Heroku
+    daily: true
     paths:
       - id: heroku.com
         description: The Heroku website.
@@ -10524,6 +10646,7 @@ services:
 
   - id: hetzner.com
     name: Hetzner
+    daily: true
     paths:
       - id: hetzner.com
         description: The Hetzner website.
@@ -10772,6 +10895,7 @@ services:
 
   - id: honeywell.com
     name: honeywell.com
+    daily: true
     paths:
       - id: honeywell.com
         description: The honeywell.com website.
@@ -10786,6 +10910,7 @@ services:
 
   - id: hootsuite.com
     name: hootsuite.com
+    daily: true
     paths:
       - id: hootsuite.com
         description: The hootsuite.com website.
@@ -10821,6 +10946,7 @@ services:
 
   - id: hotjar.com
     name: Hotjar
+    daily: true
     paths:
       - id: hotjar.com
         description: The Hotjar website.
@@ -10849,6 +10975,7 @@ services:
 
   - id: hp.com
     name: hp.com
+    daily: true
     paths:
       - id: hp.com
         description: The hp.com website.
@@ -11026,6 +11153,7 @@ services:
 
   - id: hyatt.com
     name: Hyatt
+    daily: true
     paths:
       - id: hyatt.com
         description: The Hyatt website.
@@ -11096,6 +11224,7 @@ services:
 
   - id: ibm.com
     name: IBM
+    daily: true
     paths:
       - id: ibm.com
         description: The IBM website.
@@ -11141,6 +11270,7 @@ services:
 
   - id: ihg.com
     name: IHG
+    daily: true
     paths:
       - id: ihg.com
         description: The IHG website.
@@ -11463,6 +11593,7 @@ services:
 
   - id: instacart.com
     name: instacart.com
+    daily: true
     paths:
       - id: instacart.com
         description: The instacart.com website.
@@ -11519,6 +11650,7 @@ services:
 
   - id: instructure.com
     name: instructure.com
+    daily: true
     paths:
       - id: instructure.com
         description: The instructure.com website.
@@ -11547,6 +11679,7 @@ services:
 
   - id: intercom.com
     name: Intercom
+    daily: true
     paths:
       - id: intercom.com
         description: The Intercom website.
@@ -11582,6 +11715,7 @@ services:
 
   - id: intuit.com
     name: intuit.com
+    daily: true
     paths:
       - id: intuit.com
         description: The intuit.com website.
@@ -11827,6 +11961,7 @@ services:
 
   - id: jetbrains.com
     name: JetBrains
+    daily: true
     paths:
       - id: jetbrains.com
         description: The JetBrains website.
@@ -12134,6 +12269,7 @@ services:
 
   - id: jwplayer.com
     name: jwplayer.com
+    daily: true
     paths:
       - id: jwplayer.com
         description: The jwplayer.com website.
@@ -12221,6 +12357,7 @@ services:
 
   - id: kaltura.com
     name: kaltura.com
+    daily: true
     paths:
       - id: kaltura.com
         description: The kaltura.com website.
@@ -12319,6 +12456,7 @@ services:
 
   - id: kayak.com
     name: Kayak
+    daily: true
     paths:
       - id: kayak.com
         description: The Kayak website.
@@ -12410,6 +12548,7 @@ services:
 
   - id: khanacademy.org
     name: khanacademy.org
+    daily: true
     paths:
       - id: khanacademy.org
         description: The khanacademy.org website.
@@ -12501,6 +12640,7 @@ services:
 
   - id: kit.com
     name: Kit
+    daily: true
     paths:
       - id: kit.com
         description: The Kit website.
@@ -12557,6 +12697,7 @@ services:
 
   - id: klarna.com
     name: Klarna
+    daily: true
     paths:
       - id: klarna.com
         description: The Klarna website.
@@ -12581,6 +12722,7 @@ services:
 
   - id: klaviyo.com
     name: Klaviyo
+    daily: true
     paths:
       - id: klaviyo.com
         description: The Klaviyo website.
@@ -12927,6 +13069,7 @@ services:
 
   - id: lastpass.com
     name: LastPass
+    daily: true
     paths:
       - id: lastpass.com
         description: The LastPass website.
@@ -12969,6 +13112,7 @@ services:
 
   - id: launchdarkly.com
     name: LaunchDarkly
+    daily: true
     paths:
       - id: launchdarkly.com
         description: The LaunchDarkly website.
@@ -13130,6 +13274,7 @@ services:
 
   - id: lenovo.com
     name: lenovo.com
+    daily: true
     paths:
       - id: lenovo.com
         description: The lenovo.com website.
@@ -13379,6 +13524,7 @@ services:
 
   - id: linktr.ee
     name: Linktree
+    daily: true
     paths:
       - id: linktr.ee
         description: The Linktree website.
@@ -13396,6 +13542,7 @@ services:
 
   - id: linode.com
     name: Linode
+    daily: true
     paths:
       - id: linode.com
         description: The Linode website.
@@ -13466,6 +13613,7 @@ services:
 
   - id: livechat.com
     name: LiveChat
+    daily: true
     paths:
       - id: livechat.com
         description: The LiveChat website.
@@ -13536,6 +13684,7 @@ services:
 
   - id: lnkd.in
     name: lnkd.in
+    daily: true
     paths:
       - id: lnkd.in
         description: The lnkd.in website.
@@ -13634,6 +13783,7 @@ services:
 
   - id: loom.com
     name: Loom
+    daily: true
     paths:
       - id: loom.com
         description: The Loom website.
@@ -13784,6 +13934,7 @@ services:
 
   - id: lufthansa.com
     name: lufthansa.com
+    daily: true
     paths:
       - id: lufthansa.com
         description: The lufthansa.com website.
@@ -13980,6 +14131,7 @@ services:
 
   - id: mailchimp.com
     name: Mailchimp
+    daily: true
     paths:
       - id: mailchimp.com
         description: The Mailchimp website.
@@ -13987,6 +14139,7 @@ services:
 
   - id: mailerlite.com
     name: mailerlite.com
+    daily: true
     paths:
       - id: mailerlite.com
         description: The mailerlite.com website.
@@ -14193,6 +14346,7 @@ services:
 
   - id: marriott.com
     name: Marriott
+    daily: true
     paths:
       - id: marriott.com
         description: The Marriott website.
@@ -14270,6 +14424,7 @@ services:
 
   - id: matterport.com
     name: matterport.com
+    daily: true
     paths:
       - id: matterport.com
         description: The matterport.com website.
@@ -14419,6 +14574,7 @@ services:
 
   - id: meesho.com
     name: meesho.com
+    daily: true
     paths:
       - id: meesho.com
         description: The meesho.com website.
@@ -14637,6 +14793,7 @@ services:
 
   - id: meta.com
     name: meta.com
+    daily: true
     paths:
       - id: meta.com
         description: The meta.com website.
@@ -14755,6 +14912,7 @@ services:
 
   - id: microsoft365.com
     name: Microsoft 365
+    daily: true
     paths:
       - id: microsoft365.com
         description: The Microsoft 365 website.
@@ -14818,6 +14976,7 @@ services:
 
   - id: mimecast.com
     name: mimecast.com
+    daily: true
     paths:
       - id: mimecast.com
         description: The mimecast.com website.
@@ -14916,6 +15075,7 @@ services:
 
   - id: miro.com
     name: Miro
+    daily: true
     paths:
       - id: miro.com
         description: The Miro website.
@@ -14986,6 +15146,7 @@ services:
 
   - id: mixpanel.com
     name: Mixpanel
+    daily: true
     paths:
       - id: mixpanel.com
         description: The Mixpanel website.
@@ -15150,6 +15311,7 @@ services:
 
   - id: mongodb.com
     name: MongoDB
+    daily: true
     paths:
       - id: mongodb.com
         description: The MongoDB website.
@@ -15234,6 +15396,7 @@ services:
 
   - id: morningstar.com
     name: Morningstar
+    daily: true
     paths:
       - id: morningstar.com
         description: The Morningstar website.
@@ -15332,6 +15495,7 @@ services:
 
   - id: moz.com
     name: moz.com
+    daily: true
     paths:
       - id: moz.com
         description: The moz.com website.
@@ -15632,6 +15796,7 @@ services:
 
   - id: naver.com
     name: naver.com
+    daily: true
     paths:
       - id: naver.com
         description: The naver.com website.
@@ -15674,6 +15839,7 @@ services:
 
   - id: neilpatel.com
     name: neilpatel.com
+    daily: true
     paths:
       - id: neilpatel.com
         description: The neilpatel.com website.
@@ -15738,6 +15904,7 @@ services:
 
   - id: netlify.com
     name: Netlify
+    daily: true
     paths:
       - id: netlify.com
         description: The Netlify website.
@@ -15766,6 +15933,7 @@ services:
 
   - id: netsuite.com
     name: netsuite.com
+    daily: true
     paths:
       - id: netsuite.com
         description: The netsuite.com website.
@@ -15850,6 +16018,7 @@ services:
 
   - id: nginx.com
     name: Nginx
+    daily: true
     paths:
       - id: nginx.com
         description: The Nginx website.
@@ -15888,6 +16057,7 @@ services:
 
   - id: nintendo.com
     name: nintendo.com
+    daily: true
     paths:
       - id: nintendo.com
         description: The nintendo.com website.
@@ -16102,6 +16272,7 @@ services:
 
   - id: npmjs.com
     name: npm
+    daily: true
     paths:
       - id: npmjs.com
         description: The npm website.
@@ -16109,6 +16280,7 @@ services:
 
   - id: npr.org
     name: NPR
+    daily: true
     paths:
       - id: npr.org
         description: The NPR website.
@@ -16224,6 +16396,7 @@ services:
 
   - id: nytimes.com
     name: The New York Times
+    daily: true
     paths:
       - id: nytimes.com
         description: The The New York Times website.
@@ -16301,6 +16474,7 @@ services:
 
   - id: odoo.com
     name: odoo.com
+    daily: true
     paths:
       - id: odoo.com
         description: The odoo.com website.
@@ -16350,6 +16524,7 @@ services:
 
   - id: okta.com
     name: Okta
+    daily: true
     paths:
       - id: okta.com
         description: The Okta website.
@@ -16378,6 +16553,7 @@ services:
 
   - id: ollama.com
     name: ollama.com
+    daily: true
     paths:
       - id: ollama.com
         description: The ollama.com website.
@@ -16517,6 +16693,7 @@ services:
 
   - id: onesignal.com
     name: OneSignal
+    daily: true
     paths:
       - id: onesignal.com
         description: The OneSignal website.
@@ -16594,6 +16771,7 @@ services:
 
   - id: openai.com
     name: OpenAI
+    daily: true
     paths:
       - id: openai.com
         description: The OpenAI website.
@@ -16685,6 +16863,7 @@ services:
 
   - id: openrouter.ai
     name: OpenRouter
+    daily: true
     paths:
       - id: openrouter.ai
         description: The OpenRouter website.
@@ -16692,6 +16871,7 @@ services:
 
   - id: opensea.io
     name: opensea.io
+    daily: true
     paths:
       - id: opensea.io
         description: The opensea.io website.
@@ -16761,6 +16941,7 @@ services:
 
   - id: oppo.com
     name: oppo.com
+    daily: true
     paths:
       - id: oppo.com
         description: The oppo.com website.
@@ -16768,6 +16949,7 @@ services:
 
   - id: opsgenie.com
     name: opsgenie.com
+    daily: true
     paths:
       - id: opsgenie.com
         description: The opsgenie.com website.
@@ -16803,6 +16985,7 @@ services:
 
   - id: optimizely.com
     name: Optimizely
+    daily: true
     paths:
       - id: optimizely.com
         description: The Optimizely website.
@@ -16831,6 +17014,7 @@ services:
 
   - id: oracle.com
     name: Oracle
+    daily: true
     paths:
       - id: oracle.com
         description: The Oracle website.
@@ -16971,6 +17155,7 @@ services:
 
   - id: ourworldindata.org
     name: ourworldindata.org
+    daily: true
     paths:
       - id: ourworldindata.org
         description: The ourworldindata.org website.
@@ -16988,6 +17173,7 @@ services:
 
   - id: outlook.com
     name: Outlook
+    daily: true
     paths:
       - id: outlook.com
         description: The Outlook website.
@@ -17089,6 +17275,7 @@ services:
 
   - id: ovhcloud.com
     name: OVHcloud
+    daily: true
     paths:
       - id: ovhcloud.com
         description: The OVHcloud website.
@@ -17221,6 +17408,7 @@ services:
 
   - id: paloaltonetworks.com
     name: paloaltonetworks.com
+    daily: true
     paths:
       - id: paloaltonetworks.com
         description: The paloaltonetworks.com website.
@@ -17566,6 +17754,7 @@ services:
 
   - id: paylocity.com
     name: paylocity.com
+    daily: true
     paths:
       - id: paylocity.com
         description: The paylocity.com website.
@@ -17621,6 +17810,7 @@ services:
 
   - id: pcloud.com
     name: pcloud.com
+    daily: true
     paths:
       - id: pcloud.com
         description: The pcloud.com website.
@@ -17649,6 +17839,7 @@ services:
 
   - id: pendo.io
     name: Pendo
+    daily: true
     paths:
       - id: pendo.io
         description: The Pendo website.
@@ -17726,6 +17917,7 @@ services:
 
   - id: permutive.com
     name: permutive.com
+    daily: true
     paths:
       - id: permutive.com
         description: The permutive.com website.
@@ -17733,6 +17925,7 @@ services:
 
   - id: perplexity.ai
     name: Perplexity
+    daily: true
     paths:
       - id: perplexity.ai
         description: The Perplexity website.
@@ -18092,6 +18285,7 @@ services:
 
   - id: platform.sh
     name: Platform.sh
+    daily: true
     paths:
       - id: platform.sh
         description: The Platform.sh website.
@@ -18295,6 +18489,7 @@ services:
 
   - id: politico.com
     name: Politico
+    daily: true
     paths:
       - id: politico.com
         description: The Politico website.
@@ -18572,6 +18767,7 @@ services:
 
   - id: preply.com
     name: preply.com
+    daily: true
     paths:
       - id: preply.com
         description: The preply.com website.
@@ -18593,6 +18789,7 @@ services:
 
   - id: prestashop.com
     name: PrestaShop
+    daily: true
     paths:
       - id: prestashop.com
         description: The PrestaShop website.
@@ -18628,6 +18825,7 @@ services:
 
   - id: priceline.com
     name: Priceline
+    daily: true
     paths:
       - id: priceline.com
         description: The Priceline website.
@@ -18823,6 +19021,7 @@ services:
 
   - id: proofpoint.com
     name: proofpoint.com
+    daily: true
     paths:
       - id: proofpoint.com
         description: The proofpoint.com website.
@@ -18886,6 +19085,7 @@ services:
 
   - id: proton.me
     name: proton.me
+    daily: true
     paths:
       - id: proton.me
         description: The proton.me website.
@@ -19043,6 +19243,7 @@ services:
 
   - id: qualcomm.com
     name: qualcomm.com
+    daily: true
     paths:
       - id: qualcomm.com
         description: The qualcomm.com website.
@@ -19057,6 +19258,7 @@ services:
 
   - id: qualys.com
     name: qualys.com
+    daily: true
     paths:
       - id: qualys.com
         description: The qualys.com website.
@@ -19078,6 +19280,7 @@ services:
 
   - id: quantummetric.com
     name: quantummetric.com
+    daily: true
     paths:
       - id: quantummetric.com
         description: The quantummetric.com website.
@@ -19184,6 +19387,7 @@ services:
 
   - id: quizlet.com
     name: quizlet.com
+    daily: true
     paths:
       - id: quizlet.com
         description: The quizlet.com website.
@@ -19238,6 +19442,7 @@ services:
 
   - id: rakuten.com
     name: rakuten.com
+    daily: true
     paths:
       - id: rakuten.com
         description: The rakuten.com website.
@@ -19315,6 +19520,7 @@ services:
 
   - id: rapid7.com
     name: rapid7.com
+    daily: true
     paths:
       - id: rapid7.com
         description: The rapid7.com website.
@@ -19385,6 +19591,7 @@ services:
 
   - id: razorpay.com
     name: Razorpay
+    daily: true
     paths:
       - id: razorpay.com
         description: The Razorpay website.
@@ -19560,6 +19767,7 @@ services:
 
   - id: reddit.com
     name: Reddit
+    daily: true
     paths:
       - id: reddit.com
         description: The Reddit website.
@@ -19567,6 +19775,7 @@ services:
 
   - id: redfin.com
     name: redfin.com
+    daily: true
     paths:
       - id: redfin.com
         description: The redfin.com website.
@@ -19574,6 +19783,7 @@ services:
 
   - id: redis.io
     name: Redis
+    daily: true
     paths:
       - id: redis.io
         description: The Redis website.
@@ -19846,6 +20056,7 @@ services:
 
   - id: replit.com
     name: Replit
+    daily: true
     paths:
       - id: replit.com
         description: The Replit website.
@@ -19965,6 +20176,7 @@ services:
 
   - id: reuters.com
     name: Reuters
+    daily: true
     paths:
       - id: reuters.com
         description: The Reuters website.
@@ -19979,6 +20191,7 @@ services:
 
   - id: revenuecat.com
     name: RevenueCat
+    daily: true
     paths:
       - id: revenuecat.com
         description: The RevenueCat website.
@@ -20133,6 +20346,7 @@ services:
 
   - id: ringcentral.com
     name: RingCentral
+    daily: true
     paths:
       - id: ringcentral.com
         description: The RingCentral website.
@@ -20248,6 +20462,7 @@ services:
 
   - id: robinhood.com
     name: Robinhood
+    daily: true
     paths:
       - id: robinhood.com
         description: The Robinhood website.
@@ -20255,6 +20470,7 @@ services:
 
   - id: roblox.com
     name: roblox.com
+    daily: true
     paths:
       - id: roblox.com
         description: The roblox.com website.
@@ -20467,6 +20683,7 @@ services:
 
   - id: rudderstack.com
     name: RudderStack
+    daily: true
     paths:
       - id: rudderstack.com
         description: The RudderStack website.
@@ -20624,6 +20841,7 @@ services:
 
   - id: ryanair.com
     name: Ryanair
+    daily: true
     paths:
       - id: ryanair.com
         description: The Ryanair website.
@@ -20743,6 +20961,7 @@ services:
 
   - id: salesforce.com
     name: Salesforce
+    daily: true
     paths:
       - id: salesforce.com
         description: The Salesforce website.
@@ -20813,6 +21032,7 @@ services:
 
   - id: samsung.com
     name: samsung.com
+    daily: true
     paths:
       - id: samsung.com
         description: The samsung.com website.
@@ -20844,6 +21064,7 @@ services:
 
   - id: sap.com
     name: SAP
+    daily: true
     paths:
       - id: sap.com
         description: The SAP website.
@@ -21015,6 +21236,7 @@ services:
 
   - id: scribd.com
     name: scribd.com
+    daily: true
     paths:
       - id: scribd.com
         description: The scribd.com website.
@@ -21106,6 +21328,7 @@ services:
 
   - id: segment.com
     name: Segment
+    daily: true
     paths:
       - id: segment.com
         description: The Segment website.
@@ -21176,6 +21399,7 @@ services:
 
   - id: semrush.com
     name: semrush.com
+    daily: true
     paths:
       - id: semrush.com
         description: The semrush.com website.
@@ -21490,6 +21714,7 @@ services:
 
   - id: shop.app
     name: shop.app
+    daily: true
     paths:
       - id: shop.app
         description: The shop.app website.
@@ -21566,6 +21791,7 @@ services:
 
   - id: shutterstock.com
     name: shutterstock.com
+    daily: true
     paths:
       - id: shutterstock.com
         description: The shutterstock.com website.
@@ -21587,6 +21813,7 @@ services:
 
   - id: siemens.com
     name: siemens.com
+    daily: true
     paths:
       - id: siemens.com
         description: The siemens.com website.
@@ -21727,6 +21954,7 @@ services:
 
   - id: similarweb.com
     name: SimilarWeb
+    daily: true
     paths:
       - id: similarweb.com
         description: The SimilarWeb website.
@@ -21923,6 +22151,7 @@ services:
 
   - id: skyscanner.net
     name: Skyscanner
+    daily: true
     paths:
       - id: skyscanner.net
         description: The Skyscanner website.
@@ -22039,6 +22268,7 @@ services:
 
   - id: smartsheet.com
     name: Smartsheet
+    daily: true
     paths:
       - id: smartsheet.com
         description: The Smartsheet website.
@@ -22161,6 +22391,7 @@ services:
 
   - id: snowflake.com
     name: Snowflake
+    daily: true
     paths:
       - id: snowflake.com
         description: The Snowflake website.
@@ -22283,6 +22514,7 @@ services:
 
   - id: sony.com
     name: sony.com
+    daily: true
     paths:
       - id: sony.com
         description: The sony.com website.
@@ -22297,6 +22529,7 @@ services:
 
   - id: sophos.com
     name: sophos.com
+    daily: true
     paths:
       - id: sophos.com
         description: The sophos.com website.
@@ -22353,6 +22586,7 @@ services:
 
   - id: soundcloud.com
     name: soundcloud.com
+    daily: true
     paths:
       - id: soundcloud.com
         description: The soundcloud.com website.
@@ -22389,6 +22623,7 @@ services:
 
   - id: sourceforge.net
     name: sourceforge.net
+    daily: true
     paths:
       - id: sourceforge.net
         description: The sourceforge.net website.
@@ -22417,6 +22652,7 @@ services:
 
   - id: southwest.com
     name: southwest.com
+    daily: true
     paths:
       - id: southwest.com
         description: The southwest.com website.
@@ -22508,6 +22744,7 @@ services:
 
   - id: spglobal.com
     name: S&P Global
+    daily: true
     paths:
       - id: spglobal.com
         description: The S&P Global website.
@@ -22578,6 +22815,7 @@ services:
 
   - id: split.io
     name: split.io
+    daily: true
     paths:
       - id: split.io
         description: The split.io website.
@@ -22606,6 +22844,7 @@ services:
 
   - id: spotify.com
     name: Spotify
+    daily: true
     paths:
       - id: spotify.com
         description: The Spotify website.
@@ -22634,6 +22873,7 @@ services:
 
   - id: sprinklr.com
     name: sprinklr.com
+    daily: true
     paths:
       - id: sprinklr.com
         description: The sprinklr.com website.
@@ -22648,6 +22888,7 @@ services:
 
   - id: sproutsocial.com
     name: sproutsocial.com
+    daily: true
     paths:
       - id: sproutsocial.com
         description: The sproutsocial.com website.
@@ -22683,6 +22924,7 @@ services:
 
   - id: squarespace.com
     name: Squarespace
+    daily: true
     paths:
       - id: squarespace.com
         description: The Squarespace website.
@@ -22690,6 +22932,7 @@ services:
 
   - id: squareup.com
     name: Square
+    daily: true
     paths:
       - id: squareup.com
         description: The Square website.
@@ -22914,6 +23157,7 @@ services:
 
   - id: statista.com
     name: Statista
+    daily: true
     paths:
       - id: statista.com
         description: The Statista website.
@@ -22952,6 +23196,7 @@ services:
 
   - id: statuspage.io
     name: statuspage.io
+    daily: true
     paths:
       - id: statuspage.io
         description: The statuspage.io website.
@@ -22966,6 +23211,7 @@ services:
 
   - id: steampowered.com
     name: steampowered.com
+    daily: true
     paths:
       - id: steampowered.com
         description: The steampowered.com website.
@@ -23249,6 +23495,7 @@ services:
 
   - id: substack.com
     name: Substack
+    daily: true
     paths:
       - id: substack.com
         description: The Substack website.
@@ -23319,6 +23566,7 @@ services:
 
   - id: suno.com
     name: Suno
+    daily: true
     paths:
       - id: suno.com
         description: The Suno website.
@@ -23526,6 +23774,7 @@ services:
 
   - id: surveymonkey.com
     name: SurveyMonkey
+    daily: true
     paths:
       - id: surveymonkey.com
         description: The SurveyMonkey website.
@@ -23666,6 +23915,7 @@ services:
 
   - id: tableau.com
     name: Tableau
+    daily: true
     paths:
       - id: tableau.com
         description: The Tableau website.
@@ -23711,6 +23961,7 @@ services:
 
   - id: tailscale.com
     name: Tailscale
+    daily: true
     paths:
       - id: tailscale.com
         description: The Tailscale website.
@@ -23847,6 +24098,7 @@ services:
 
   - id: target.com
     name: Target
+    daily: true
     paths:
       - id: target.com
         description: The Target website.
@@ -23887,6 +24139,7 @@ services:
 
   - id: tawk.to
     name: Tawk.to
+    daily: true
     paths:
       - id: tawk.to
         description: The Tawk.to website.
@@ -23968,6 +24221,7 @@ services:
 
   - id: techcrunch.com
     name: TechCrunch
+    daily: true
     paths:
       - id: techcrunch.com
         description: The TechCrunch website.
@@ -23989,6 +24243,7 @@ services:
 
   - id: telegram.org
     name: Telegram
+    daily: true
     paths:
       - id: telegram.org
         description: The Telegram website.
@@ -24052,6 +24307,7 @@ services:
 
   - id: tenable.com
     name: tenable.com
+    daily: true
     paths:
       - id: tenable.com
         description: The tenable.com website.
@@ -24059,6 +24315,7 @@ services:
 
   - id: tencent.com
     name: tencent.com
+    daily: true
     paths:
       - id: tencent.com
         description: The tencent.com website.
@@ -24240,6 +24497,7 @@ services:
 
   - id: theatlantic.com
     name: The Atlantic
+    daily: true
     paths:
       - id: theatlantic.com
         description: The The Atlantic website.
@@ -24268,6 +24526,7 @@ services:
 
   - id: theguardian.com
     name: The Guardian
+    daily: true
     paths:
       - id: theguardian.com
         description: The The Guardian website.
@@ -24373,6 +24632,7 @@ services:
 
   - id: theverge.com
     name: The Verge
+    daily: true
     paths:
       - id: theverge.com
         description: The The Verge website.
@@ -24408,6 +24668,7 @@ services:
 
   - id: thomsonreuters.com
     name: thomsonreuters.com
+    daily: true
     paths:
       - id: thomsonreuters.com
         description: The thomsonreuters.com website.
@@ -24495,6 +24756,7 @@ services:
 
   - id: tiktok.com
     name: tiktok.com
+    daily: true
     paths:
       - id: tiktok.com
         description: The tiktok.com website.
@@ -24614,6 +24876,7 @@ services:
 
   - id: todoist.com
     name: Todoist
+    daily: true
     paths:
       - id: todoist.com
         description: The Todoist website.
@@ -24901,6 +25164,7 @@ services:
 
   - id: trellix.com
     name: trellix.com
+    daily: true
     paths:
       - id: trellix.com
         description: The trellix.com website.
@@ -24908,6 +25172,7 @@ services:
 
   - id: trello.com
     name: Trello
+    daily: true
     paths:
       - id: trello.com
         description: The Trello website.
@@ -24936,6 +25201,7 @@ services:
 
   - id: trendmicro.com
     name: trendmicro.com
+    daily: true
     paths:
       - id: trendmicro.com
         description: The trendmicro.com website.
@@ -24978,6 +25244,7 @@ services:
 
   - id: trimble.com
     name: trimble.com
+    daily: true
     paths:
       - id: trimble.com
         description: The trimble.com website.
@@ -24999,6 +25266,7 @@ services:
 
   - id: trip.com
     name: Trip.com
+    daily: true
     paths:
       - id: trip.com
         description: The Trip.com website.
@@ -25006,6 +25274,7 @@ services:
 
   - id: tripadvisor.com
     name: Tripadvisor
+    daily: true
     paths:
       - id: tripadvisor.com
         description: The Tripadvisor website.
@@ -25457,6 +25726,7 @@ services:
 
   - id: twilio.com
     name: Twilio
+    daily: true
     paths:
       - id: twilio.com
         description: The Twilio website.
@@ -25464,6 +25734,7 @@ services:
 
   - id: twingate.com
     name: twingate.com
+    daily: true
     paths:
       - id: twingate.com
         description: The twingate.com website.
@@ -25471,6 +25742,7 @@ services:
 
   - id: twitch.tv
     name: Twitch
+    daily: true
     paths:
       - id: twitch.tv
         description: The Twitch website.
@@ -25554,6 +25826,7 @@ services:
 
   - id: ubisoft.com
     name: ubisoft.com
+    daily: true
     paths:
       - id: ubisoft.com
         description: The ubisoft.com website.
@@ -25575,6 +25848,7 @@ services:
 
   - id: udemy.com
     name: udemy.com
+    daily: true
     paths:
       - id: udemy.com
         description: The udemy.com website.
@@ -25687,6 +25961,7 @@ services:
 
   - id: unity.com
     name: unity.com
+    daily: true
     paths:
       - id: unity.com
         description: The unity.com website.
@@ -25725,6 +26000,7 @@ services:
 
   - id: unsplash.com
     name: unsplash.com
+    daily: true
     paths:
       - id: unsplash.com
         description: The unsplash.com website.
@@ -25892,6 +26168,7 @@ services:
 
   - id: usatoday.com
     name: USA Today
+    daily: true
     paths:
       - id: usatoday.com
         description: The USA Today website.
@@ -26494,6 +26771,7 @@ services:
 
   - id: venmo.com
     name: Venmo
+    daily: true
     paths:
       - id: venmo.com
         description: The Venmo website.
@@ -26684,6 +26962,7 @@ services:
 
   - id: viator.com
     name: Viator
+    daily: true
     paths:
       - id: viator.com
         description: The Viator website.
@@ -26740,6 +27019,7 @@ services:
 
   - id: vimeo.com
     name: vimeo.com
+    daily: true
     paths:
       - id: vimeo.com
         description: The vimeo.com website.
@@ -26754,6 +27034,7 @@ services:
 
   - id: virtualmin.com
     name: virtualmin.com
+    daily: true
     paths:
       - id: virtualmin.com
         description: The virtualmin.com website.
@@ -26985,6 +27266,7 @@ services:
 
   - id: walmart.com
     name: Walmart
+    daily: true
     paths:
       - id: walmart.com
         description: The Walmart website.
@@ -27048,6 +27330,7 @@ services:
 
   - id: washingtonpost.com
     name: Washington Post
+    daily: true
     paths:
       - id: washingtonpost.com
         description: The Washington Post website.
@@ -27125,6 +27408,7 @@ services:
 
   - id: weather.com
     name: The Weather Channel
+    daily: true
     paths:
       - id: weather.com
         description: The The Weather Channel website.
@@ -27139,6 +27423,7 @@ services:
 
   - id: webex.com
     name: webex.com
+    daily: true
     paths:
       - id: webex.com
         description: The webex.com website.
@@ -27208,6 +27493,7 @@ services:
 
   - id: wellsfargo.com
     name: wellsfargo.com
+    daily: true
     paths:
       - id: wellsfargo.com
         description: The wellsfargo.com website.
@@ -27222,6 +27508,7 @@ services:
 
   - id: wetransfer.com
     name: wetransfer.com
+    daily: true
     paths:
       - id: wetransfer.com
         description: The wetransfer.com website.
@@ -27319,6 +27606,7 @@ services:
 
   - id: wikipedia.org
     name: Wikipedia
+    daily: true
     paths:
       - id: wikipedia.org
         description: The Wikipedia website.
@@ -27375,6 +27663,7 @@ services:
 
   - id: wired.com
     name: Wired
+    daily: true
     paths:
       - id: wired.com
         description: The Wired website.
@@ -27389,6 +27678,7 @@ services:
 
   - id: wise.com
     name: Wise
+    daily: true
     paths:
       - id: wise.com
         description: The Wise website.
@@ -27396,6 +27686,7 @@ services:
 
   - id: wistia.com
     name: wistia.com
+    daily: true
     paths:
       - id: wistia.com
         description: The wistia.com website.
@@ -27560,6 +27851,7 @@ services:
 
   - id: woocommerce.com
     name: WooCommerce
+    daily: true
     paths:
       - id: woocommerce.com
         description: The WooCommerce website.
@@ -27701,6 +27993,7 @@ services:
 
   - id: wp.com
     name: wp.com
+    daily: true
     paths:
       - id: wp.com
         description: The wp.com website.
@@ -27708,6 +28001,7 @@ services:
 
   - id: wpengine.com
     name: WP Engine
+    daily: true
     paths:
       - id: wpengine.com
         description: The WP Engine website.
@@ -27743,6 +28037,7 @@ services:
 
   - id: wsj.com
     name: The Wall Street Journal
+    daily: true
     paths:
       - id: wsj.com
         description: The The Wall Street Journal website.
@@ -27771,6 +28066,7 @@ services:
 
   - id: x.ai
     name: xAI
+    daily: true
     paths:
       - id: x.ai
         description: The xAI website.
@@ -27799,6 +28095,7 @@ services:
 
   - id: xero.com
     name: Xero
+    daily: true
     paths:
       - id: xero.com
         description: The Xero website.
@@ -27806,6 +28103,7 @@ services:
 
   - id: xiaomi.com
     name: xiaomi.com
+    daily: true
     paths:
       - id: xiaomi.com
         description: The xiaomi.com website.
@@ -27827,6 +28125,7 @@ services:
 
   - id: yandex.com
     name: yandex.com
+    daily: true
     paths:
       - id: yandex.com
         description: The yandex.com website.
@@ -27855,6 +28154,7 @@ services:
 
   - id: ycombinator.com
     name: ycombinator.com
+    daily: true
     paths:
       - id: ycombinator.com
         description: The ycombinator.com website.
@@ -27911,6 +28211,7 @@ services:
 
   - id: yotpo.com
     name: Yotpo
+    daily: true
     paths:
       - id: yotpo.com
         description: The Yotpo website.
@@ -28039,6 +28340,7 @@ services:
 
   - id: zendesk.com
     name: Zendesk
+    daily: true
     paths:
       - id: zendesk.com
         description: The Zendesk website.
@@ -28150,6 +28452,7 @@ services:
 
   - id: zillow.com
     name: zillow.com
+    daily: true
     paths:
       - id: zillow.com
         description: The zillow.com website.
@@ -28178,6 +28481,7 @@ services:
 
   - id: zoho.com
     name: Zoho
+    daily: true
     paths:
       - id: zoho.com
         description: The Zoho website.
@@ -28213,6 +28517,7 @@ services:
 
   - id: zoom.us
     name: Zoom
+    daily: true
     paths:
       - id: zoom.us
         description: The Zoom website.
@@ -28220,6 +28525,7 @@ services:
 
   - id: zoominfo.com
     name: ZoomInfo
+    daily: true
     paths:
       - id: zoominfo.com
         description: The ZoomInfo website.
@@ -28227,6 +28533,7 @@ services:
 
   - id: zscaler.com
     name: zscaler.com
+    daily: true
     paths:
       - id: zscaler.com
         description: The zscaler.com website.
