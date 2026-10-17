@@ -241,11 +241,11 @@ def check_site(fx: Fetcher, url: str, variants: Iterable[str]) -> list[tuple]:
     return out
 
 
-def mcp_remote(fx: Fetcher, name: str) -> tuple[str | None, int | None]:
-    """The server's remote URL from the MCP Registry, and the Registry's HTTP status."""
+def mcp_remote(fx: Fetcher, name: str) -> tuple[str | None, int | str | None]:
+    """The server's remote URL from the MCP Registry, and the Registry's HTTP status or error."""
     f = fx.request("GET", f"{REGISTRY}/{urllib.parse.quote(name, safe='')}/versions/latest")
     if f.status != 200:
-        return None, f.status
+        return None, f.status or f.error
     remotes = [  # a {placeholder} URL is filled in per customer
         r for r in json.loads(f.body)["server"].get("remotes", []) if "{" not in r.get("url", "{")
     ]

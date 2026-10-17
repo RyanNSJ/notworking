@@ -159,6 +159,8 @@ def test_check_mcp_looks_the_server_up_by_name_and_initializes() -> None:
     assert check(Fetched(405))[:3] == (False, "mcp_error", 405)
     fx = FakeFetcher({})  # the Registry fails: skipped, never reported against the server
     assert canary.check_mcp(fx, "com.x/mcp")[0][1:3] == (True, None)  # type: ignore[arg-type]
+    fx = FakeFetcher({("GET", latest): Fetched(None, error="Timeout: 20 s")})
+    assert "(Timeout: 20 s)" in canary.check_mcp(fx, "com.x/mcp")[0][4]  # type: ignore[arg-type]
     fx = FakeFetcher({("GET", latest): registry_entry(remotes[:1])})  # no usable remote URL
     assert canary.check_mcp(fx, "com.x/mcp")[0][1:3] == (True, None)  # type: ignore[arg-type]
 

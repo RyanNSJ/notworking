@@ -1861,6 +1861,9 @@ services:
   - id: athenahq.ai
     name: athenahq.ai
     paths:
+      - id: ai.athenahq/mcp
+        type: mcp
+        description: athenahq.ai's remote MCP server.
       - id: athenahq.ai
         description: The athenahq.ai website.
 
@@ -3356,6 +3359,9 @@ services:
     paths:
       - id: browserless.io
         description: The Browserless website.
+      - id: io.browserless/mcp
+        type: mcp
+        description: Browserless's remote MCP server.
 
 
   - id: browseros.com
@@ -4319,6 +4325,9 @@ services:
   - id: circleback.ai
     name: circleback.ai
     paths:
+      - id: ai.circleback/circleback
+        type: mcp
+        description: circleback.ai's remote MCP server.
       - id: circleback.ai
         description: The circleback.ai website.
 
@@ -9868,13 +9877,6 @@ services:
         description: The GoCardless website.
 
 
-  - id: gocheetah.com
-    name: gocheetah.com
-    paths:
-      - id: gocheetah.com
-        description: The gocheetah.com website.
-
-
   - id: goclicks.ai
     name: goclicks.ai
     paths:
@@ -15062,6 +15064,12 @@ services:
   - id: mintlify.com
     name: Mintlify
     paths:
+      - id: com.mintlify/adminmcp
+        type: mcp
+        description: Mintlify's remote MCP server (adminmcp).
+      - id: com.mintlify/searchmcp
+        type: mcp
+        description: Mintlify's remote MCP server (searchmcp).
       - id: mintlify.com
         description: The Mintlify website.
 
@@ -19604,13 +19612,6 @@ services:
         description: The rct.ai website.
 
 
-  - id: rdash.io
-    name: rdash.io
-    paths:
-      - id: rdash.io
-        description: The rdash.io website.
-
-
   - id: re2.ai
     name: re2.ai
     paths:
@@ -21970,6 +21971,9 @@ services:
   - id: simplepdf.com
     name: SimplePDF
     paths:
+      - id: com.simplepdf/mcp
+        type: mcp
+        description: SimplePDF's remote MCP server.
       - id: simplepdf.com
         description: The SimplePDF website.
 
@@ -24574,13 +24578,6 @@ services:
         description: The theneo.io website.
 
 
-  - id: theopenbuilder.com
-    name: theopenbuilder.com
-    paths:
-      - id: theopenbuilder.com
-        description: The theopenbuilder.com website.
-
-
   - id: theorahq.com
     name: theorahq.com
     paths:
@@ -26601,13 +26598,6 @@ services:
         description: The vajro.com website.
 
 
-  - id: valence.trade
-    name: valence.trade
-    paths:
-      - id: valence.trade
-        description: The valence.trade website.
-
-
   - id: validere.com
     name: validere.com
     paths:
@@ -27468,13 +27458,6 @@ services:
     paths:
       - id: weekend.com
         description: The weekend.com website.
-
-
-  - id: weel.live
-    name: weel.live
-    paths:
-      - id: weel.live
-        description: The weel.live website.
 
 
   - id: wefunder.com
