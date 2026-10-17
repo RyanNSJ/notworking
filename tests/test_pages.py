@@ -249,7 +249,8 @@ def test_robots_and_sitemap_for_search_engines(client: TestClient) -> None:
 
 def test_service_page_is_findable_and_tells_agents_what_to_do(client: TestClient) -> None:
     html = client.get("/service/xyz.com").text
-    assert "<title>Is XYZ Booking down or blocking AI agents? · NotWorking</title>" in html
+    assert "<title>Is xyz.com down or blocking AI agents? · NotWorking</title>" in html
+    assert "about XYZ Booking (xyz.com): 403s, 429s, CAPTCHAs" in html
     assert f"{PUBLIC_URL}/v1/status?target=xyz.com" in html and f"{PUBLIC_URL}/mcp" in html
     assert f"]({PUBLIC_URL}/service/xyz.com)" in html  # the badge snippet links back
 
@@ -257,7 +258,7 @@ def test_service_page_is_findable_and_tells_agents_what_to_do(client: TestClient
 def test_pages_have_canonical_and_preview_tags_and_answer_head(client: TestClient) -> None:
     html = client.get("/service/xyz.com", params={"utm": "x"}).text
     assert f'<link rel="canonical" href="{PUBLIC_URL}/service/xyz.com">' in html
-    assert '<meta property="og:title" content="Is XYZ Booking down or blocking AI agents?' in html
+    assert '<meta property="og:title" content="Is xyz.com down or blocking AI agents?' in html
     head = client.head("/service/xyz.com")
     assert head.status_code == 200 and head.content == b""
     assert client.head("/service/nope.example").status_code == 404
