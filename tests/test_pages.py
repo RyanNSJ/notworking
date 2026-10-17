@@ -46,10 +46,10 @@ def test_board_ranks_raised_then_looked_up(
     client.get("/v1/status", params={"target": "other.net"})  # a lookup, not a report
     spike(client_from, app, "xyz.com")
     html = client.get("/").text
-    # Raised first; then quiet services by lookups (a lone report doesn't lift Example Org).
-    assert board_names(html) == ["XYZ Booking", "Other Net", "Example Org"]
+    # Raised first, most reported first (one report raises Example Org); then by lookups.
+    assert board_names(html) == ["XYZ Booking", "Example Org", "Other Net"]
     assert "xyz.com &middot; bot_block &middot; 5 in 24h" in html
-    assert 'class="bar-hot"' in html  # the last hour is coloured while raised
+    assert 'class="bar-hot"' in html  # reports are coloured while raised
 
 
 def test_board_ranks_lookups_today_before_earlier_ones(
@@ -88,7 +88,8 @@ def test_privacy_and_terms_pages(client: TestClient) -> None:
 
 def test_methodology_numbers_come_from_the_detector(client: TestClient) -> None:
     text = client.get("/methodology").text
-    assert "less than 1 time in 1,000" in text and "1 in 1,000,000" in text
+    assert "at least one failure report in the last 24 hours" in text
+    assert "at least 15 distinct agents" in text and "1 in 1,000,000" in text
     assert "none over 30%" in text and "30 minutes" in text
 
 

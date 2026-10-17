@@ -37,7 +37,7 @@ Pass the URL or id you used, for example `https://www.example.com/booking/123`, 
   "service": {"id": "example.com", "name": "Example"},
   "you_asked_about": {"type": "site", "id": "example.com"},
   "listed": true,
-  "summary": "Agents are reporting failures on example.com in the last hour, ...",
+  "summary": "9 failure reports for Example in the last 24 hours, most recently on ...",
   "access_paths": [
     {"type": "mcp", "id": "com.example/mcp", "description": "Example's hosted MCP server.",
      "status": "no_reported_issues", "failure_reports": 0, "failure_reports_24h": 0},
@@ -49,9 +49,9 @@ Pass the URL or id you used, for example `https://www.example.com/booking/123`, 
 ```
 
 `status` is one of:
-- `no_reported_issues`: no unusual number of failure reports in the last hour
-- `issues_reported`: well above that path's usual level
-- `many_issues_reported`: many reports from many independent agents and networks
+- `no_reported_issues`: no failure reports in the last 24 hours
+- `issues_reported`: at least one failure report in the last 24 hours
+- `many_issues_reported`: many reports in the last hour from many independent agents and networks
 
 If the target isn't in the catalogue, the response has `listed: false`: you still get its counts and status, but no description or other access paths.
 

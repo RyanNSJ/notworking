@@ -57,14 +57,13 @@ class ServiceRow:
 
 
 def strip_svg(buckets: list[int], status: str, *, height: int, label: str) -> Markup:
-    """A 24h bar strip: one bar per 15 minutes. The last hour takes the status colour."""
+    """A 24h bar strip: one bar per 15 minutes, in the status colour while raised."""
     width, top = 480, max(4, *buckets)
     bw = width / len(buckets)
-    recent = len(buckets) - 4  # the detector's 1h window
     bars = []
     for i, v in enumerate(buckets):
         h = max(1.0, v / top * (height - 2))
-        cls = "bar-hot" if v and i >= recent and status != NONE else "bar"
+        cls = "bar-hot" if v and status != NONE else "bar"
         bars.append(
             f'<rect class="{cls}" x="{i * bw + 0.5:.1f}" y="{height - h:.1f}" '
             f'width="{max(1.0, bw - 1):.1f}" height="{h:.1f}"/>'
@@ -317,7 +316,10 @@ def transitions_csv(request: Request) -> Response:
     state: AppState = request.app.state
     with state.engine.connect() as conn:
         transitions = store.listed_transitions(conn, _today(state))
-    keys = ["n", "reports", "baseline", "p", "prefixes", "agent_types", "top_prefix_share"]
+    keys = [
+        "n", "reports", "baseline", "p", "prefixes", "agent_types", "top_prefix_share",
+        "reports_24h",
+    ]  # fmt: skip
     rows = []
     for created, ttype, tid, old, new, inputs in transitions:
         data = inputs if isinstance(inputs, dict) else json.loads(inputs)

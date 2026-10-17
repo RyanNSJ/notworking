@@ -126,7 +126,7 @@ or a service name. Example response, trimmed:
   "service": {"id": "example.com", "name": "Example"},
   "you_asked_about": {"type": "site", "id": "example.com"},
   "listed": true,
-  "summary": "Agents are reporting failures on example.com in the last hour, ...",
+  "summary": "9 failure reports for Example in the last 24 hours, most recently on ...",
   "window": "1h",
   "access_paths": [
     {"type": "mcp", "id": "com.example/mcp", "description": "Example's hosted MCP server.",
@@ -145,9 +145,9 @@ or a service name. Example response, trimmed:
 
 Each access path's `status` is one of:
 
-- `no_reported_issues`: no unusual number of failure reports in the last hour
-- `issues_reported`: well above that path's usual level
-- `many_issues_reported`: many reports from many independent agents and networks
+- `no_reported_issues`: no failure reports in the last 24 hours
+- `issues_reported`: at least one failure report in the last 24 hours
+- `many_issues_reported`: many reports in the last hour from many independent agents and networks
 
 `failure_reports` and `unique_reporters` cover the last hour. `failure_reports_24h`, \
 `failure_reports_7d` and `breakdown_7d` cover the last 24 hours and 7 days, and \
@@ -295,7 +295,7 @@ trimmed:
   "service": {{"id": "example.com", "name": "Example"}},
   "you_asked_about": {{"type": "site", "id": "example.com"}},
   "listed": true,
-  "summary": "Agents are reporting failures on example.com in the last hour, ...",
+  "summary": "9 failure reports for Example in the last 24 hours, most recently on ...",
   "access_paths": [
     {{"type": "mcp", "id": "com.example/mcp", "description": "Example's hosted MCP server.",
      "status": "no_reported_issues", "failure_reports": 0, "failure_reports_24h": 0}},
@@ -307,9 +307,9 @@ trimmed:
 ```
 
 `status` is one of:
-- `no_reported_issues`: no unusual number of failure reports in the last hour
-- `issues_reported`: well above that path's usual level
-- `many_issues_reported`: many reports from many independent agents and networks
+- `no_reported_issues`: no failure reports in the last 24 hours
+- `issues_reported`: at least one failure report in the last 24 hours
+- `many_issues_reported`: many reports in the last hour from many independent agents and networks
 
 If the target isn't in the catalogue, the response has `listed: false`: you still get its \
 counts and status, but no description or other access paths.

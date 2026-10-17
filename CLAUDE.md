@@ -50,7 +50,7 @@ Nothing else goes into the MVP. Searching across services by task ("book a table
 
 **Status integrity**
 - Statuses describe recent reports, not whether anything works.
-- Every status transition is logged with its inputs. The detector is deterministic and explainable: Poisson + baseline plus the diversity rules, with no ML.
+- Every status transition is logged with its inputs. The detector is deterministic and explainable, with no ML: any failure report in the last 24 hours gives `issues_reported` (D20); `many_issues_reported` needs Poisson + baseline plus the diversity rules over the last hour.
 - `many_issues_reported` requires both the volume **and** the diversity rules. One network prefix can never produce it.
 - Unlisted targets return only their own counts and status (`listed: false`), never a description, service or alternatives, and never appear on pages, the board or in the dataset.
 - The canary gets no special weight or path. It reports through the public `POST /v1/report` as `agent_type: notworking_canary`.

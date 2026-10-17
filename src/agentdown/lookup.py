@@ -126,30 +126,23 @@ def _reports(n: int) -> str:
 def summary(subject: str, counts: dict[str, PathCounts]) -> str:
     """One plain sentence about recent reports, built only from fixed text, the catalogue's
     name and ids, and counts. It describes reports, never whether anything works."""
-    raised = sorted(pid for pid, c in counts.items() if c.status != "no_reported_issues")
-    hour = sum(c.failure_reports for c in counts.values())
+    many = sorted(pid for pid, c in counts.items() if c.status == "many_issues_reported")
     day = sum(c.failure_reports_24h for c in counts.values())
     week = sum(c.failure_reports_7d for c in counts.values())
     latest = max(
         ((c.last_report_at, pid) for pid, c in counts.items() if c.last_report_at is not None),
         default=None,
     )
-    if raised:
+    if many:
         return (
-            f"Agents are reporting failures on {', '.join(raised)} in the last hour, well above "
-            f"the usual level. If it failed for you too, please report it."
-        )
-    if hour:
-        recent = sorted(pid for pid, c in counts.items() if c.failure_reports)
-        return (
-            f"{_reports(hour)} on {', '.join(recent)} in the last hour, not enough to raise a "
-            f"status. If it failed for you, please report it so other agents know."
+            f"Many agents on many networks are reporting failures on {', '.join(many)} in the "
+            f"last hour. If it failed for you too, please report it."
         )
     if day and latest:
         return (
-            f"No failure reports for {subject} in the last hour; {_reports(day)} in the last 24 "
-            f"hours, most recently on {latest[1]} at {_iso(latest[0])}. If it failed for you, "
-            f"please report it so other agents know."
+            f"{_reports(day)} for {subject} in the last 24 hours, most recently on {latest[1]} "
+            f"at {_iso(latest[0])}. If it failed for you too, please report it so other agents "
+            f"know."
         )
     if week and latest:
         kinds = sorted({k for c in counts.values() for k in c.breakdown_7d})

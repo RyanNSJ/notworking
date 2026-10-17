@@ -1,9 +1,10 @@
-"""Spike detection (docs/design.md D16, D19, D20): one status per listed access path.
+"""Status detection (docs/design.md D16, D19, D20): one status per listed access path.
 
-Runs every 5 minutes. For each path it counts distinct failure reporters in the last hour
-(n) and compares n with that path's own baseline (lambda: the mean distinct reporters per
-hour over the 7 days before the window, floored). Deterministic and explainable: every
-status change is logged with the inputs below. No ML.
+Runs every 5 minutes. Any failure report on a path in the last 24 hours makes it
+`issues_reported`. `many_issues_reported` counts distinct failure reporters in the last hour
+(n) against that path's own baseline (lambda: the mean distinct reporters per hour over the
+7 days before the window, floored), plus the diversity rules. Deterministic and explainable:
+every status change is logged with the inputs below. No ML.
 """
 
 import datetime as dt
@@ -13,14 +14,13 @@ from collections import Counter, defaultdict
 from sqlalchemy.engine import Connection
 
 from agentdown import store
-from agentdown.store import WINDOW, CurrentStatus, FailureRow
+from agentdown.store import CONTEXT_WINDOW, WINDOW, CurrentStatus, FailureRow
 
 NONE, ISSUES, MANY = "no_reported_issues", "issues_reported", "many_issues_reported"
 LEVELS = [NONE, ISSUES, MANY]
 
 BASELINE_SPAN = dt.timedelta(days=7)
 BASELINE_FLOOR = 0.5  # expected reporters per hour when a path has little history
-ISSUES_MIN_N, ISSUES_P = 3, 1e-3
 MANY_MIN_N, MANY_P = 15, 1e-6
 MANY_MIN_PREFIXES = 5
 MANY_MIN_AGENT_TYPES = 2  # self-reported, so prefixes do the real work
@@ -58,14 +58,18 @@ def baseline(rows: list[FailureRow], window_start: dt.datetime) -> float:
     return max(BASELINE_FLOOR, len(seen) / hours)
 
 
-def classify(window: list[FailureRow], lam: float) -> tuple[str, dict[str, object]]:
-    """The status these window reports justify, and the inputs that decided it."""
+def classify(
+    window: list[FailureRow], lam: float, reports_24h: int
+) -> tuple[str, dict[str, object]]:
+    """The status these reports justify, and the inputs that decided it: the last hour's
+    reports (`window`) and the number of failure reports in the last 24 hours."""
     n = len({r.reporter_fp for r in window})
     p = poisson_tail(n, lam)
     prefixes = Counter(r.prefix_fp for r in window)
     agent_types = {r.agent_type for r in window if r.agent_type}
     top_share = max(prefixes.values()) / len(window) if window else 0.0
     inputs: dict[str, object] = {
+        "reports_24h": reports_24h,
         "n": n,
         "reports": len(window),
         "baseline": round(lam, 4),
@@ -74,18 +78,15 @@ def classify(window: list[FailureRow], lam: float) -> tuple[str, dict[str, objec
         "agent_types": len(agent_types),
         "top_prefix_share": round(top_share, 4),
     }
-    status = NONE
-    if n >= ISSUES_MIN_N and p < ISSUES_P:
-        status = ISSUES
-        if (
-            n >= MANY_MIN_N
-            and p < MANY_P
-            and len(prefixes) >= MANY_MIN_PREFIXES
-            and len(agent_types) >= MANY_MIN_AGENT_TYPES
-            and top_share <= MANY_MAX_PREFIX_SHARE
-        ):
-            status = MANY
-    return status, inputs
+    if (
+        n >= MANY_MIN_N
+        and p < MANY_P
+        and len(prefixes) >= MANY_MIN_PREFIXES
+        and len(agent_types) >= MANY_MIN_AGENT_TYPES
+        and top_share <= MANY_MAX_PREFIX_SHARE
+    ):
+        return MANY, inputs
+    return (ISSUES if reports_24h else NONE), inputs
 
 
 def step(current: CurrentStatus | None, computed: str, now: dt.datetime) -> CurrentStatus:
@@ -103,7 +104,7 @@ def step(current: CurrentStatus | None, computed: str, now: dt.datetime) -> Curr
 
 def run(conn: Connection, now: dt.datetime) -> int:
     """Evaluate every path with recent failures or a raised status. Returns transitions."""
-    window_start = now - WINDOW
+    window_start, day_start = now - WINDOW, now - CONTEXT_WINDOW
     # shortcut: loads 7 days of failure rows into memory; fine at our volume, move the
     # baseline into SQL (or a daily rollup) if reports grow past a few hundred thousand.
     rows = store.failures_since(conn, window_start - BASELINE_SPAN)
@@ -111,14 +112,15 @@ def run(conn: Connection, now: dt.datetime) -> int:
     for r in rows:
         by_target[r.target_pk].append(r)
     currents = store.current_statuses(conn)
-    active = {pk for pk, rs in by_target.items() if any(r.created_at > window_start for r in rs)}
+    active = {pk for pk, rs in by_target.items() if any(r.created_at > day_start for r in rs)}
     active |= {pk for pk, c in currents.items() if c.status != NONE}
 
     changes = 0
     for tpk in sorted(active):
         target_rows = by_target.get(tpk, [])
         window = [r for r in target_rows if r.created_at > window_start]
-        computed, inputs = classify(window, baseline(target_rows, window_start))
+        reports_24h = sum(1 for r in target_rows if r.created_at > day_start)
+        computed, inputs = classify(window, baseline(target_rows, window_start), reports_24h)
         before = currents.get(tpk)
         after = step(before, computed, now)
         store.save_status(conn, tpk, after, inputs, now)

@@ -1,4 +1,4 @@
-"""The M4 detector (D16, D19, D20): Poisson + baseline, diversity rules, hysteresis."""
+"""The M4 detector (D16, D19, D20): 24h reports, Poisson + baseline, diversity, hysteresis."""
 
 import datetime as dt
 from collections.abc import Callable
@@ -46,9 +46,14 @@ def test_poisson_tail_is_a_probability_that_falls_with_n(n: int, lam: float) -> 
     assert detector.poisson_tail(n + 1, lam) <= p
 
 
-def test_quiet_paths_need_five_reporters() -> None:
-    assert detector.classify(rows(4), detector.BASELINE_FLOOR)[0] == NONE
-    assert detector.classify(rows(5), detector.BASELINE_FLOOR)[0] == ISSUES
+def classify(window: list[FailureRow], lam: float) -> str:
+    return detector.classify(window, lam, len(window))[0]
+
+
+def test_one_report_in_24_hours_is_issues() -> None:
+    assert detector.classify([], detector.BASELINE_FLOOR, 0)[0] == NONE
+    assert detector.classify([], detector.BASELINE_FLOOR, 1)[0] == ISSUES  # outside the hour
+    assert classify(rows(1), detector.BASELINE_FLOOR) == ISSUES
 
 
 def test_baseline_raises_the_bar_for_busy_paths() -> None:
@@ -56,22 +61,23 @@ def test_baseline_raises_the_bar_for_busy_paths() -> None:
     history = [
         FailureRow(1, f"h{h}-{i}", f"p{i}", None, window_start - dt.timedelta(hours=h, minutes=1))
         for h in range(168)
-        for i in range(3)
+        for i in range(10)
     ]
     lam = detector.baseline(history, window_start)
-    assert abs(lam - 3.0) < 1e-9
-    assert detector.classify(rows(5), lam)[0] == NONE  # 5 is normal for this path
-    assert detector.classify(rows(12), lam)[0] == ISSUES
+    assert abs(lam - 10.0) < 1e-9
+    assert classify(rows(16), detector.BASELINE_FLOOR) == MANY
+    assert classify(rows(16), lam) == ISSUES  # 16 an hour is normal for this path
+    assert classify(rows(40), lam) == MANY
 
 
 def test_many_needs_volume_and_diversity() -> None:
     lam = detector.BASELINE_FLOOR
-    assert detector.classify(rows(16), lam)[0] == MANY
-    assert detector.classify(rows(14), lam)[0] == ISSUES  # volume
-    assert detector.classify(rows(20, prefixes=4), lam)[0] == ISSUES  # too few networks
-    assert detector.classify(rows(20, agent_types=1), lam)[0] == ISSUES  # one agent type
+    assert classify(rows(16), lam) == MANY
+    assert classify(rows(14), lam) == ISSUES  # volume
+    assert classify(rows(20, prefixes=4), lam) == ISSUES  # too few networks
+    assert classify(rows(20, agent_types=1), lam) == ISSUES  # one agent type
     lopsided = rows(16) + [FailureRow(1, f"x{i}", "p0", "claude", START) for i in range(6)]
-    assert detector.classify(lopsided, lam)[0] == ISSUES  # one network over 30%
+    assert classify(lopsided, lam) == ISSUES  # one network over 30%
 
 
 def test_hysteresis_steps_down_after_six_calm_runs() -> None:
@@ -102,22 +108,21 @@ def transitions(app: FastAPI) -> list[tuple[str, str]]:
         return [tuple(r) for r in conn.execute(sa.text(q)).all()]
 
 
-def test_reports_raise_and_calm_lowers_the_status(
-    client: TestClient,
-    client_from: Callable[[str], TestClient],
-    app: FastAPI,
-    clock: FixedClock,
+def test_one_report_raises_and_calm_lowers_the_status(
+    client: TestClient, app: FastAPI, clock: FixedClock
 ) -> None:
-    for i in range(5):
-        client_from(f"198.51.{100 + i}.1").post("/v1/report", json={"target": "xyz.com", **FAIL})
+    client.post("/v1/report", json={"target": "xyz.com", **FAIL})
     assert site_status(client) == NONE  # until the detector runs
     assert tick(app) == 1
     assert site_status(client) == ISSUES
     with app.state.engine.connect() as conn:
         inputs = conn.execute(sa.text("SELECT inputs FROM status_transitions")).scalar_one()
-    assert '"n": 5' in inputs and '"baseline": 0.5' in inputs
+    assert '"reports_24h": 1' in inputs and '"n": 1' in inputs
 
-    clock.advance(dt.timedelta(minutes=61))  # the reports leave the window
+    clock.advance(dt.timedelta(hours=2))
+    tick(app)
+    assert site_status(client) == ISSUES  # out of the hour, still in the 24 hours
+    clock.advance(dt.timedelta(hours=22, minutes=1))  # the report leaves the 24 hours
     for _ in range(5):
         tick(app)
         clock.advance(dt.timedelta(minutes=5))
@@ -154,6 +159,8 @@ def test_many_issues_from_many_networks(
         )
     tick(app)
     assert site_status(client) == MANY
+    summary = client.get("/v1/status", params={"target": "xyz.com"}).json()["summary"]
+    assert summary.startswith("Many agents on many networks are reporting failures on xyz.com")
 
 
 def test_tick_prunes_old_salts(client: TestClient, app: FastAPI, clock: FixedClock) -> None:

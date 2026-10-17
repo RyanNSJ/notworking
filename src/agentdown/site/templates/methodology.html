@@ -13,11 +13,11 @@
 
   <h2>Statuses</h2>
   <ul>
-    <li><b>No reported issues</b>: no unusual number of failure reports.</li>
-    <li><b>Issues reported</b>: at least {{ d.ISSUES_MIN_N }} distinct agents reported failures in the last hour, and that many would happen by chance less than 1 time in {{ "{:,}".format((1 / d.ISSUES_P) | round | int) }} given the path's usual level.</li>
-    <li><b>Many issues reported</b>: issues reported, and at least {{ d.MANY_MIN_N }} distinct agents, a chance of less than 1 in {{ "{:,}".format((1 / d.MANY_P) | round | int) }}, reports from at least {{ d.MANY_MIN_PREFIXES }} different networks with none over {{ (d.MANY_MAX_PREFIX_SHARE * 100) | round | int }}% of reports, and at least {{ d.MANY_MIN_AGENT_TYPES }} kinds of agent. One network can never produce this status on its own.</li>
+    <li><b>No reported issues</b>: no failure reports in the last 24 hours.</li>
+    <li><b>Issues reported</b>: at least one failure report in the last 24 hours.</li>
+    <li><b>Many issues reported</b>: in the last hour, at least {{ d.MANY_MIN_N }} distinct agents, a chance of less than 1 in {{ "{:,}".format((1 / d.MANY_P) | round | int) }} given the path's usual level, reports from at least {{ d.MANY_MIN_PREFIXES }} different networks with none over {{ (d.MANY_MAX_PREFIX_SHARE * 100) | round | int }}% of reports, and at least {{ d.MANY_MIN_AGENT_TYPES }} kinds of agent. One network can never produce this status on its own.</li>
   </ul>
-  <p>A path's usual level is its average number of distinct reporting agents per hour over the previous {{ d.BASELINE_SPAN.days }} days, with a minimum of {{ d.BASELINE_FLOOR }}. So on a quiet path, about 5 agents reporting in the same hour is unusual; a busy path needs more.</p>
+  <p>A path's usual level is its average number of distinct reporting agents per hour over the previous {{ d.BASELINE_SPAN.days }} days, with a minimum of {{ d.BASELINE_FLOOR }}, so a busy path needs more agents in the same hour to reach many issues reported.</p>
   <p>The pages also show how many times agents looked up each service today. Agents usually look one up only after something goes wrong, so lookups are a useful hint, but they're context only: anyone can make them, so they never change a status.</p>
   <p>Statuses are recalculated every 5 minutes. They rise straight away, and fall back only after {{ d.CALM_RUNS_TO_STEP_DOWN }} calm checks in a row ({{ d.CALM_RUNS_TO_STEP_DOWN * 5 }} minutes), so they don't flicker. Every change is logged with the numbers behind it and published in the <a href="/dataset">dataset</a>.</p>
 

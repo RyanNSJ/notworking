@@ -118,9 +118,7 @@ def test_bad_type_param(client: TestClient) -> None:
     assert r.json()["valid_values"]["type"] == ["site", "route", "mcp", "skill"]
 
 
-def test_summary_and_24h_context(
-    client: TestClient, client_from: Callable[[str], TestClient], app: FastAPI, clock: FixedClock
-) -> None:
+def test_summary_and_24h_context(client: TestClient, app: FastAPI, clock: FixedClock) -> None:
     def view() -> tuple[str, dict]:
         body = status(client, "xyz.com").json()
         return body["summary"], next(p for p in body["access_paths"] if p["id"] == "xyz.com")
@@ -131,15 +129,17 @@ def test_summary_and_24h_context(
     )
     assert "summary" not in report(client, "xyz.com").json()  # it would ask for a report
     text, path = view()
-    assert text.startswith("1 failure report on xyz.com in the last hour, not enough to raise")
+    assert text == (
+        "1 failure report for XYZ Booking in the last 24 hours, most recently on xyz.com at "
+        "2026-10-08T12:00:00Z. If it failed for you too, please report it so other agents know."
+    )
     assert path["failure_reports"] == 1 and path["failure_reports_24h"] == 1
 
-    clock.advance(dt.timedelta(hours=2))  # out of the status window, still in the 24h context
+    clock.advance(dt.timedelta(hours=2))  # out of the last hour, still in the 24 hours
+    jobs.tick(cast(AppState, app.state))
     text, path = view()
-    assert text.startswith(
-        "No failure reports for XYZ Booking in the last hour; 1 failure report in the last 24 "
-        "hours, most recently on xyz.com at 2026-10-08T12:00:00Z."
-    )
+    assert text.startswith("1 failure report for XYZ Booking in the last 24 hours")
+    assert path["status"] == "issues_reported"
     assert path["failure_reports"] == 0 and "breakdown" not in path
     assert path["failure_reports_24h"] == 1 and path["last_report_at"] == "2026-10-08T12:00:00Z"
 
@@ -154,11 +154,6 @@ def test_summary_and_24h_context(
     assert path["breakdown_7d"] == {"captcha": 1}
     assert path["last_report_at"] == "2026-10-08T12:00:00Z"
     assert "No failure reports on listed services in the last 24 hours." in client.get("/").text
-
-    for i in range(5):  # five networks: the status rises
-        report(client_from(f"198.51.{100 + i}.1"), "xyz.com/booking")
-    jobs.tick(cast(AppState, app.state))
-    assert view()[0].startswith("Agents are reporting failures on xyz.com/booking in the last hour")
 
     clock.advance(dt.timedelta(days=2))
     unlisted = status(client, "not-listed.com").json()
@@ -247,17 +242,13 @@ def test_lookup_misses_are_capped_per_day(
     assert rows == {"rand0.com": 2, "rand1.com": 1, "rand2.com": 1, store.OVER_CAP: 3}
 
 
-def test_unlisted_targets_get_counts_and_a_status(
-    client: TestClient, client_from: Callable[[str], TestClient], app: FastAPI
-) -> None:
+def test_unlisted_targets_get_counts_and_a_status(client: TestClient, app: FastAPI) -> None:
     """D71: anyone asking about an unlisted target sees its reports, without a service view."""
     r = report(client, "https://unknown-shop.sg/checkout?card=4111")
     assert r.status_code == 202
     body = r.json()
     assert body["listed"] is False and body["failure_reports"] == 1
     assert "access_paths" not in body and "4111" not in r.text
-    for i in range(4):
-        report(client_from(f"198.51.{100 + i}.1"), "unknown-shop.sg")
     jobs.tick(cast(AppState, app.state))  # the detector covers unlisted targets too
     assert status(client, "unknown-shop.sg").json()["status"] == "issues_reported"
     assert "unknown-shop.sg" not in client.get("/").text  # pages stay listed-only
